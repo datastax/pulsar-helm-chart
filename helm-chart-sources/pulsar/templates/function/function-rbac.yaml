@@ -1,0 +1,40 @@
+{{- if .Values.extra.function }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}"
+rules:
+- apiGroups: [""]
+  resources:
+  - services
+  - configmaps
+  - pods
+  - secrets
+  verbs:
+  - '*'
+- apiGroups:
+  - apps
+  resources:
+  - statefulsets
+  verbs:
+  - '*'
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}"
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}"
+subjects:
+- kind: ServiceAccount
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}"
+  namespace: {{ .Release.Namespace }}
+{{- end }}

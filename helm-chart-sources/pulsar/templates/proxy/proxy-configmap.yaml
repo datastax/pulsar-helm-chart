@@ -1,0 +1,123 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+{{- if .Values.extra.proxy }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.proxy.component }}
+    cluster: {{ template "pulsar.fullname" . }}
+data:
+  {{- if .Values.proxy.disableZookeeperDiscovery }}
+  {{- if .Values.proxy.useStsBrokersForDiscovery }}
+  brokerServiceURL: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}:6650"
+  brokerServiceURLTLS: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}:6651"
+  brokerWebServiceURL: "http://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}:8080"
+  brokerWebServiceURLTLS: "https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}:8443"
+  {{- else }}
+  brokerServiceURL: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6650"
+  brokerServiceURLTLS: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6651"
+  brokerWebServiceURL: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080"
+  brokerWebServiceURLTLS: "https://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8443"
+  {{- end }}
+  {{- end }}
+  zookeeperServers: 
+    {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
+    {{- if .Values.extra.zookeepernp }}
+    {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2281,{{ template "pulsar.fullname" . }}-{{ .Values.zookeepernp.component }}-ca:2281
+    {{- else }}
+    {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2281
+    {{- end }}
+    {{- else }}
+    {{- if .Values.extra.zookeepernp }}
+    {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2181,{{ template "pulsar.fullname" . }}-{{ .Values.zookeepernp.component }}-ca:2181
+    {{- else }}
+    {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2181
+    {{- end }}
+    {{- end }}
+  configurationStoreServers:
+    {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
+    {{- if .Values.extra.zookeepernp }}
+    {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2281,{{ template "pulsar.fullname" . }}-{{ .Values.zookeepernp.component }}-ca:2281
+    {{- else }}
+    {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2281
+    {{- end }}
+    {{- else }}
+    {{- if .Values.extra.zookeepernp }}
+    {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2181,{{ template "pulsar.fullname" . }}-{{ .Values.zookeepernp.component }}-ca:2181
+    {{- else }}
+    {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2181
+    {{- end }}
+    {{- end }}
+  {{- if .Values.extra.function }}
+  functionWorkerWebServiceURL: "http://{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-ca:6750"
+  {{- end }}
+{{- if .Values.enableTls }}
+  tlsEnabledInProxy: "true"
+  tlsCertificateFilePath: /pulsar/certs/tls.crt
+  tlsKeyFilePath: /pulsar/tls-pk8.key
+  {{- if .Values.secrets }}
+  tlsTrustCertsFilePath: /pulsar/certs/ca.crt
+  {{- else }}
+  tlsTrustCertsFilePath: "{{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}"
+  {{- end }}
+  tlsProtocols: "TLSv1.2,TLSv1.1"
+  {{- if .Values.secrets }}
+  brokerClientTrustCertsFilePath: /pulsar/certs/ca.crt
+  {{- else }}
+  brokerClientTrustCertsFilePath: "{{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}"
+  {{- end }}
+  brokerServicePortTls: "6651"
+  webServicePortTls: "8443"
+  servicePortTls: "6651"
+  {{- if .Values.extra.function }}
+  {{- if .Values.tls.function.enabled }}
+  tlsEnabledWithBroker: "true"
+  functionWorkerWebServiceURLTLS: "https://{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-ca:6751"
+  {{- else }}
+  tlsEnabledWithBroker: "false"
+  functionWorkerWebServiceURL: "http://{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-ca:6750"
+  {{- end }}
+  {{- end }}
+{{- end }}
+{{- if .Values.enableTokenAuth }}
+  authenticationEnabled: "true"
+  authorizationEnabled: "true"
+  superUserRoles: "{{ .Values.superUserRoles }}"
+  {{- if .Values.proxy.extraAuthProvider }}
+  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken,{{ .Values.proxy.extraAuthProvider }}"
+  {{- else }}
+  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
+  {{- end }}
+  tokenPublicKey: "file:///pulsar/token-public-key/{{ .Values.tokenPublicKeyFile }}"
+  brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
+  brokerClientAuthenticationParameters: "file:///pulsar/token-proxy/proxy.jwt"
+{{- end }}
+{{ toYaml .Values.proxy.configData | indent 2 }}
+  # Workaround for double-quoted values in old values files
+  PULSAR_MEM: {{ .Values.proxy.configData.PULSAR_MEM }}
+  PULSAR_GC: {{ .Values.proxy.configData.PULSAR_GC }}
+{{- end }}

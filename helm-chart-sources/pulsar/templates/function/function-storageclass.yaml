@@ -1,0 +1,70 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+{{- if .Values.persistence }}
+{{- if .Values.extra.function }}
+{{- if not .Values.default_storage.existingStorageClassName }}
+{{- if not .Values.function.volumes.data.existingStorageClassName }}
+{{- if or .Values.function.volumes.data.storageClass .Values.default_storage}}
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-{{ .Values.function.volumes.data.name }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.function.component }}
+    cluster: {{ template "pulsar.fullname" . }}
+allowVolumeExpansion: true
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer
+{{- if .Values.function.volumes.data.storageClass }}
+provisioner: {{ .Values.function.volumes.data.storageClass.provisioner }}
+parameters:
+  {{- if .Values.function.volumes.data.storageClass.type }}
+  type: {{ .Values.function.volumes.data.storageClass.type }}
+  {{- end }}
+  {{- if .Values.function.volumes.data.storageClass.fsType }}
+  fsType: {{ .Values.function.volumes.data.storageClass.fsType }}
+  {{- end }}
+  {{- if .Values.function.volumes.data.storageClass.extraParams }}
+{{ toYaml .Values.function.volumes.data.storageClass.extraParams | indent 2 }}
+  {{- end }}
+{{- else if .Values.default_storage }}
+provisioner: {{ .Values.default_storage.provisioner }}
+parameters:
+  {{- if .Values.default_storage.type }}
+  type: {{ .Values.default_storage.type }}
+  {{- end }}
+  {{- if .Values.default_storage.fsType }}
+  fsType: {{ .Values.default_storage.fsType }}
+  {{- end }}
+  {{- if .Values.default_storage.extraParams }}
+{{ toYaml .Values.default_storage.extraParams | indent 2 }}
+  {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+

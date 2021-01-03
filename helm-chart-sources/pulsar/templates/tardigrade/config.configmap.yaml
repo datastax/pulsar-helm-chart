@@ -1,0 +1,15 @@
+{{- if .Values.extra.tardigrade }}
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-tardigrade
+  namespace: {{ .Release.Namespace }} 
+  labels:
+    app: {{ .Release.Name }}-tardigrade-gateway
+data: 
+  config.yaml: |
+    access: {{ .Values.tardigrade.access }}
+    minio.access-key: {{ .Values.tardigrade.accessKey }}
+    minio.secret-key: {{ .Values.tardigrade.secretKey }}
+{{- end }}

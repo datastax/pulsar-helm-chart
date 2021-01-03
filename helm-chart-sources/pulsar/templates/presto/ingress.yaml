@@ -1,0 +1,27 @@
+{{- if .Values.extra.pulsarSQL }}
+{{- if .Values.pulsarSQL.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarSQL.component }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.pulsarSQL.component }}
+    cluster: {{ template "pulsar.fullname" . }}
+  annotations:
+{{ toYaml .Values.pulsarSQL.ingress.annotations | indent 4 }}
+spec:
+  rules:
+    - host: {{ .Values.pulsarSQL.ingress.host }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarSQL.component }}"
+              servicePort: 8080
+{{- end }}
+{{- end }}

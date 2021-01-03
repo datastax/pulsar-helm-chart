@@ -1,0 +1,163 @@
+{{- if .Values.enableExtendedTests }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-schema-test-file"
+data:
+  test.sh: |-
+    #!/bin/bash
+
+    exit_if_error() {
+      local exit_code=$1
+      shift
+      [[ $exit_code ]] &&               # do nothing if no error code passed
+        ((exit_code != 0)) && {         # do nothing if error code is 0
+          printf 'ERROR: %s\n' "$@" >&2 # we can use better logging here
+          exit "$exit_code"             # we could also check to make sure
+                                        # error code is numeric when passed
+        }
+    }
+
+    ADM_CMD=/pulsar/bin/pulsar-admin
+    PERF_CMD=/pulsar/bin/pulsar-perf
+    CLIENT_CMD=/pulsar/bin/pulsar-client
+    TOPIC=test/schema/schematest
+    TENANT=test
+    NS=schema
+    DIR=/tmp
+
+    step="Creating tenant..."
+    echo $step
+    $ADM_CMD tenants create $TENANT
+    exit_if_error $? "$step failed"
+
+    step="Creating namespace..."
+    echo $step
+    $ADM_CMD namespaces create $TENANT/$NS
+    exit_if_error $? "$step failed"
+
+    step="Change auto-update compat to backward"
+    echo $step
+    $ADM_CMD namespaces set-schema-autoupdate-strategy --compatibility backward $TENANT/$NS
+    exit_if_error $? "$step failed"
+
+    echo -n "Get schema-autoupdate-strategy"
+    echo $step
+    $ADM_CMD namespaces get-schema-autoupdate-strategy $TENANT/$NS
+    exit_if_error $? "$step failed"
+
+    step="Creating schema with 2 fields"
+    echo $step
+    # schema has 2 fields "goumba" and "yoshi"
+    cat > "$DIR/definition2.json" << EOF
+    {
+        "type": "AVRO",
+        "schema": "{\"name\": \"ZSchema\", \"type\": \"record\", \"fields\": [{\"name\": \"goumba\", \"type\": \"string\"}, {\"name\": \"yoshi\", \"type\": \"string\"}]}",
+        "properties": {
+            "key1": "value1"
+        }
+    }
+    EOF
+    exit_if_error $? "$step failed"
+
+    step="Creating schema with 2 fields"
+    echo $step
+    # has 3 fields "goumba", "yoshi" and "lakitu"
+    cat > "$DIR/definition3.json" << EOF
+    {
+        "type": "AVRO",
+        "schema": "{\"name\": \"ZSchema\", \"type\": \"record\", \"fields\": [{\"name\": \"goumba\", \"type\": \"string\"}, {\"name\": \"yoshi\", \"type\": \"string\"}, {\"name\": \"lakitu\", \"type\": \"string\"}]}",
+        "properties": {
+            "key1": "value1"
+        }
+    }
+    EOF
+    exit_if_error $? "$step failed"
+
+    step="Creating topic..."
+    echo $step
+    $ADM_CMD topics create $TOPIC
+    exit_if_error $? "$step failed"
+
+    step="Uploading definition with 3 fields...."
+    echo $step
+    $ADM_CMD schemas upload -f "$DIR/definition3.json" $TOPIC
+    exit_if_error $? "$step failed"
+
+    step="Current Schema is contains goumba"
+    echo $step
+    $ADM_CMD schemas get $TOPIC | grep goumba
+    exit_if_error $? "$step failed"
+
+    step="Uploading definition with 2 fields (1 field removed....)"
+    echo $step
+    $ADM_CMD schemas upload -f "$DIR/definition2.json" $TOPIC
+    exit_if_error $? "$step failed"
+
+    step="Current Schema does not contain lakitu"
+    echo $step
+    $ADM_CMD schemas get $TOPIC | grep -v lakitu
+    exit_if_error $? "$step failed"
+
+    step="Current Schema does contain yoshi"
+    echo $step
+    $ADM_CMD schemas get $TOPIC | grep yoshi
+    exit_if_error $? "$step failed"
+
+    step="Getting topic...."
+    echo $step
+    $ADM_CMD topics stats-internal $TOPIC
+    exit_if_error $? "$step failed"
+
+    step="Removing topic..."
+    echo $step
+    $ADM_CMD topics delete --deleteSchema $TOPIC
+    exit_if_error $? "$step failed"
+
+    step="Removing namespace..."
+    echo $step
+    $ADM_CMD namespaces delete $TENANT/$NS
+    exit_if_error $? "$step failed"
+
+    step="Removing tenant..."
+    echo $step
+    $ADM_CMD tenants delete $TENANT
+    exit_if_error $? "$step failed"
+
+    # If we made it to here, all good
+    exit 0
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Release.Name }}-test-schema"
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+  - name: "{{ template "pulsar.fullname" . }}-test-schema-plain-text"
+    image: "{{ .Values.image.bastion.repository }}:{{ .Values.image.bastion.tag }}"
+    imagePullPolicy: {{ .Values.image.bastion.pullPolicy }}
+    command: ["sh", "-c"]
+    args:
+    - >
+          bin/apply-config-from-env.py conf/client.conf &&
+          /pulsar/tests/test.sh
+    env:
+    - name: webServiceUrl
+      value: http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080/
+    - name: brokerServiceUrl
+      value: pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6650/
+    volumeMounts:
+      - name: test-scripts
+        mountPath: /pulsar/tests
+    
+  # Do not restart containers after they exit
+  restartPolicy: Never
+  volumes:
+    - name: test-scripts
+      configMap:
+        name: "{{ template "pulsar.fullname" . }}-schema-test-file"
+        defaultMode: 0744
+{{- end }}

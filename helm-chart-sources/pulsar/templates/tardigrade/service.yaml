@@ -1,0 +1,16 @@
+{{- if .Values.extra.tardigrade }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-tardigrade-gateway-svc
+  namespace: {{ .Release.Namespace }} 
+  labels:
+    app: {{ .Release.Name }}-tardigrade-gateway
+spec:
+  type: {{ .Values.tardigrade.service.type }}
+  selector:
+    app: {{ .Release.Name }}-tardigrade-gateway
+  ports:
+    - protocol: TCP
+      port: {{ .Values.tardigrade.service.port }}
+ {{- end }}     

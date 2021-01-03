@@ -1,0 +1,110 @@
+
+{{- if .Values.extra.pulsarMonitor }}
+apiVersion: apps/v1
+kind: Deployment
+# trigger a build
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarMonitor.component }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.pulsarMonitor.component }}
+    cluster: {{ template "pulsar.fullname" . }}
+spec:
+  replicas: {{ .Values.pulsarMonitor.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app: {{ template "pulsar.name" . }}
+      release: {{ .Release.Name }}
+      component: {{ .Values.pulsarMonitor.component }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app: {{ template "pulsar.name" . }}
+        release: {{ .Release.Name }}
+        component: {{ .Values.pulsarMonitor.component }}
+        cluster: {{ template "pulsar.fullname" . }}
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/pulsar-monitor/pulsar-monitor-configmap.yaml") . | sha256sum }}
+{{ toYaml .Values.pulsarMonitor.annotations | indent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarMonitor.component }}"
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: "{{ include "pulsar.fullname" . }}-{{ .Values.pulsarMonitor.component }}-config"
+      initContainers:
+      {{- if .Values.pulsarMonitor.enableWaitContainers | default true }}
+      # This init container will wait for bookkeeper to be ready before
+      - name: wait-bookkeeper-ready
+        image: "{{ .Values.image.broker.repository }}:{{ .Values.image.broker.tag }}"
+        imagePullPolicy: {{ .Values.image.broker.pullPolicy }}
+        command: ["sh", "-c"]
+        args:
+          - >-
+            until curl --connect-timeout 5 http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080; do
+              sleep 3;
+            done;
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.pulsarMonitor.repository }}:{{ .Values.image.pulsarMonitor.tag }}"
+          imagePullPolicy: {{ .Values.image.pulsarMonitor.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.pulsarMonitor.port | default 8089 }} 
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /metrics
+              port: http
+          resources:
+            {{- toYaml .Values.pulsarMonitor.resources | nindent 12 }}
+          volumeMounts:
+          - name: config-volume
+            mountPath: /config
+          env:
+          - name: DeployEnv
+            value: production
+          - name: ClusterName
+            value: "{{ template "pulsar.fullname" . }}"
+          - name: BrokerProxyURL
+            value: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080"
+          {{- if .Values.enableTokenAuth }}
+          - name: PulsarToken
+            valueFrom:
+              secretKeyRef:
+                name: token-superuser
+                key: superuser.jwt
+          {{- end }}
+          - name: PulsarURL
+            value: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6650"
+      {{- with .Values.pulsarMonitor.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.pulsarMonitor.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.pulsarMonitor.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end }}

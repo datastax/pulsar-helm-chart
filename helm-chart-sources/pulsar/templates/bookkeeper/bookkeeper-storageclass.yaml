@@ -1,0 +1,171 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+{{- if .Values.persistence }}
+{{- if not .Values.default_storage.existingStorageClassName }}
+{{- if not .Values.bookkeeper.volumes.journal.existingStorageClassName }}
+{{- if or .Values.bookkeeper.volumes.journal.storageClass .Values.default_storage}}
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-{{ .Values.bookkeeper.volumes.journal.name }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.bookkeeper.component }}
+    cluster: {{ template "pulsar.fullname" . }}
+allowVolumeExpansion: true
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer
+{{- if .Values.bookkeeper.volumes.journal.storageClass }}
+provisioner: {{ .Values.bookkeeper.volumes.journal.storageClass.provisioner }}
+parameters:
+  {{- if .Values.bookkeeper.volumes.journal.storageClass.type }}
+  type: {{ .Values.bookkeeper.volumes.journal.storageClass.type }}
+  {{- end }}
+  {{- if .Values.bookkeeper.volumes.journal.storageClass.fsType }}
+  fsType: {{ .Values.bookkeeper.volumes.journal.storageClass.fsType }}
+  {{- end }}
+  {{- if .Values.bookkeeper.volumes.journal.storageClass.extraParams }}
+{{ toYaml .Values.bookkeeper.volumes.journal.storageClass.extraParams | indent 2 }}
+  {{- end }}
+{{- else if .Values.default_storage }}
+provisioner: {{ .Values.default_storage.provisioner }}
+parameters:
+  {{- if .Values.default_storage.type }}
+  type: {{ .Values.default_storage.type }}
+  {{- end }}
+  {{- if .Values.default_storage.fsType }}
+  fsType: {{ .Values.default_storage.fsType }}
+  {{- end }}
+  {{- if .Values.default_storage.extraParams }}
+{{ toYaml .Values.default_storage.extraParams | indent 2 }}
+  {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+
+
+---
+{{- if not .Values.default_storage.existingStorageClassName }}
+{{- if not .Values.bookkeeper.volumes.ledgers.existingStorageClassName }}
+{{- if or .Values.bookkeeper.volumes.ledgers.storageClass .Values.default_storage}}
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-{{ .Values.bookkeeper.volumes.ledgers.name }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.bookkeeper.component }}
+    cluster: {{ template "pulsar.fullname" . }}
+allowVolumeExpansion: true
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer
+{{- if .Values.bookkeeper.volumes.ledgers.storageClass }}
+provisioner: {{ .Values.bookkeeper.volumes.ledgers.storageClass.provisioner }}
+parameters:
+  {{- if .Values.bookkeeper.volumes.ledgers.storageClass.type }}
+  type: {{ .Values.bookkeeper.volumes.ledgers.storageClass.type }}
+  {{- end }}
+  {{- if .Values.bookkeeper.volumes.ledgers.storageClass.fsType }}
+  fsType: {{ .Values.bookkeeper.volumes.ledgers.storageClass.fsType }}
+  {{- end }}
+  {{- if .Values.bookkeeper.volumes.ledgers.storageClass.extraParams }}
+{{ toYaml .Values.bookkeeper.volumes.ledgers.storageClass.extraParams | indent 2 }}
+  {{- end }}
+{{- else if .Values.default_storage }}
+provisioner: {{ .Values.default_storage.provisioner }}
+parameters:
+  {{- if .Values.default_storage.type }}
+  type: {{ .Values.default_storage.type }}
+  {{- end }}
+  {{- if .Values.default_storage.fsType }}
+  fsType: {{ .Values.default_storage.fsType }}
+  {{- end }}
+  {{- if .Values.default_storage.extraParams }}
+{{ toYaml .Values.default_storage.extraParams | indent 2 }}
+  {{- end }}  
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+---
+{{- if .Values.function.enableStateStorage }}
+{{- if not .Values.extra.stateStorage }}
+{{- if not .Values.default_storage.existingStorageClassName }}
+{{- if not .Values.bookkeeper.volumes.ranges.existingStorageClassName }}
+{{- if or .Values.bookkeeper.volumes.ranges.storageClass .Values.default_storage}}
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-{{ .Values.bookkeeper.volumes.ranges.name }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.bookkeeper.component }}
+    cluster: {{ template "pulsar.fullname" . }}
+allowVolumeExpansion: true
+reclaimPolicy: Retain
+volumeBindingMode: WaitForFirstConsumer
+{{- if .Values.bookkeeper.volumes.ranges.storageClass }}
+provisioner: {{ .Values.bookkeeper.volumes.ranges.storageClass.provisioner }}
+parameters:
+  {{- if .Values.bookkeeper.volumes.ranges.storageClass.type }}
+  type: {{ .Values.bookkeeper.volumes.ranges.storageClass.type }}
+  {{- end }}
+  {{- if .Values.bookkeeper.volumes.ranges.storageClass.fsType }}
+  fsType: {{ .Values.bookkeeper.volumes.ranges.storageClass.fsType }}
+  {{- end }}
+  {{- if .Values.bookkeeper.volumes.ranges.storageClass.extraParams }}
+{{ toYaml .Values.bookkeeper.volumes.ranges.storageClass.extraParams | indent 2 }}
+  {{- end }}
+{{- else if .Values.default_storage }}
+provisioner: {{ .Values.default_storage.provisioner }}
+parameters:
+  {{- if .Values.default_storage.type }}
+  type: {{ .Values.default_storage.type }}
+  {{- end }}
+  {{- if .Values.default_storage.fsType }}
+  fsType: {{ .Values.default_storage.fsType }}
+  {{- end }}
+  {{- if .Values.default_storage.extraParams }}
+{{ toYaml .Values.default_storage.extraParams | indent 2 }}
+  {{- end }}  
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+# End for if persistence for whole file
+{{- end }}
+

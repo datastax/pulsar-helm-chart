@@ -1,0 +1,44 @@
+{{- if or .Values.enableProvisionContainer .Values.extra.pulsarHealer .Values.extra.pulsarDashboard }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-burnell"
+rules:
+- apiGroups: [""]
+  resources:
+  - services
+  - configmaps
+  - pods
+  - secrets
+  - namespaces
+  verbs:
+  - '*'
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  - statefulsets
+  - secrets
+  - namespaces 
+  verbs:
+  - '*'
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-burnell"
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-burnell"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: "{{ template "pulsar.fullname" . }}-burnell"
+subjects:
+- kind: ServiceAccount
+  name: "{{ template "pulsar.fullname" . }}-burnell"
+  namespace: {{ .Release.Namespace }}
+{{- end }}

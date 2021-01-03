@@ -1,0 +1,154 @@
+{{- if .Values.extra.pulsarSQL }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "presto.coordinator" . }}
+  labels:
+    app: {{ template "presto.name" . }}
+    chart: {{ template "presto.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: coordinator
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "presto.name" . }}
+      release: {{ .Release.Name }}
+      component: coordinator
+  template:
+    metadata:
+      labels:
+        app: {{ template "presto.name" . }}
+        release: {{ .Release.Name }}
+        component: coordinator
+    spec:
+      {{- if .Values.pulsarSQL.image.securityContext.enabled }}
+      securityContext:
+        runAsUser: {{ .Values.pulsarSQL.image.securityContext.runAsUser }}
+        runAsGroup: {{ .Values.pulsarSQL.image.securityContext.runAsGroup }}
+      {{- end }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: {{ template "presto.coordinator" . }}
+      {{- if .Values.enableTls }}
+        - name: certs
+          secret:
+            secretName: "{{ .Values.tlsSecretName }}"
+          {{- if .Values.tls.zookeeper.enabled}}
+        - name: certconverter
+          configMap: 
+            name: "{{ template "pulsar.fullname" . }}-certconverter-configmap"
+            defaultMode: 0755
+          {{- end }}
+        {{- end }}
+        {{- if .Values.enableTokenAuth }}
+        - name: token-public-key
+          secret:
+            secretName: token-public-key
+        - name: token-superuser
+          secret:
+            secretName: token-superuser
+        {{- end }}
+        {{- if .Values.storageOffload.driver }}
+        {{- if eq .Values.storageOffload.driver "google-cloud-storage" }}
+        - name: gcp-service-account
+          secret:
+            secretName: {{ .Values.storageOffload.gcsServiceAccountSecret }}
+        {{- end }}
+        {{- end }} 
+      containers:
+        - name: {{ .Chart.Name }}-coordinator
+          image: "{{ .Values.image.pulsarSQL.repository }}:{{ .Values.image.pulsarSQL.tag }}"
+          imagePullPolicy: {{ .Values.image.pulsarSQL.pullPolicy }}
+          {{- if .Values.storageOffload.driver }}
+          {{- if eq .Values.storageOffload.driver "aws-s3" }}
+          env:
+          - name: AWS_ACCESS_KEY_ID
+            value: {{ .Values.storageOffload.accessKey }}
+          - name: AWS_SECRET_ACCESS_KEY
+            value: {{ .Values.storageOffload.accessSecret }}
+          {{- end }}
+          {{- end }}
+          volumeMounts:
+            - mountPath: /pulsar/conf/presto/node.properties
+              name: config-volume
+              subPath: node.properties
+            - mountPath: /pulsar/conf/presto/log.properties
+              name: config-volume
+              subPath: log.properties
+            - mountPath: /pulsar/conf/presto/jvm.config
+              name: config-volume
+              subPath: jvm.config
+            - mountPath: /pulsar/conf/presto/config.properties
+              name: config-volume
+              subPath: config.properties
+            - mountPath: /pulsar/conf/presto/catalog/pulsar.properties
+              name: config-volume
+              subPath: pulsar.properties
+            {{- if .Values.enableTls }}
+            - name: certs
+              readOnly: true
+              mountPath: /pulsar/certs
+              {{- if .Values.tls.zookeeper.enabled}}
+            - name: certconverter
+              mountPath: /pulsar/tools
+              {{- end }}
+            {{- end }}
+            {{- if .Values.enableTokenAuth }}
+            - mountPath: "/pulsar/token-public-key"
+              name: token-public-key
+              readOnly: true
+            - mountPath: "/pulsar/token-superuser"
+              name: token-superuser
+              readOnly: true
+            {{- end }}
+            {{- if .Values.storageOffload.driver }}
+            {{- if eq .Values.storageOffload.driver "google-cloud-storage" }}
+            - name: gcp-service-account
+              readOnly: true
+              mountPath: /pulsar/gcp-service-account
+            {{- end }}
+            {{- end }}
+          command: ["sh", "-c"]
+          args:
+            - >-
+              {{- if .Values.enableTokenAuth }}
+              cat /pulsar/token-superuser/superuser.jwt | tr -d '\n' > /pulsar/token-superuser-stripped.jwt &&
+              {{- end }}
+              {{- if .Values.enableTls }}
+              openssl pkcs8 -topk8 -inform PEM -outform PEM -in /pulsar/certs/tls.key -out /pulsar/tls-pk8.key -nocrypt &&
+              {{- end }}
+              {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
+              /pulsar/tools/certconverter.sh &&
+              {{- end }}
+              bin/pulsar sql-worker run \
+                --etc-dir=/pulsar/conf/presto \
+                --data-dir=/pulsar/data;
+          ports:
+            - name: http-coord
+              containerPort: {{ .Values.pulsarSQL.server.config.http.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /v1/cluster
+              port: http-coord
+          readinessProbe:
+            httpGet:
+              path: /v1/cluster
+              port: http-coord
+          resources:
+{{ toYaml .Values.pulsarSQL.resources | indent 12 }}
+    {{- with .Values.pulsarSQL.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.pulsarSQL.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.pulsarSQL.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+{{- end }}

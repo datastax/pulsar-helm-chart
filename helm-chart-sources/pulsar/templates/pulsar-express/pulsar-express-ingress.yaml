@@ -1,0 +1,27 @@
+{{- if .Values.extra.pulsarexpress }}
+{{- if .Values.pulsarexpress.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarexpress.component }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.pulsarexpress.component }}
+    cluster: {{ template "pulsar.fullname" . }}
+  annotations:
+{{ toYaml .Values.pulsarexpress.ingress.annotations | indent 4 }}
+spec:
+  rules:
+    - host: {{ .Values.pulsarexpress.ingress.host }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarexpress.component }}"
+              servicePort: 3000
+{{- end }}
+{{- end }}

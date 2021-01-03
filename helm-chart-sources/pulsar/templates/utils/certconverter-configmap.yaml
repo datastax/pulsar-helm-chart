@@ -1,0 +1,61 @@
+{{- if .Values.tls.zookeeper.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-certconverter-configmap"
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    cluster: {{ template "pulsar.fullname" . }}
+    component: certconverter 
+data:
+  certconverter.sh: |
+    #!/bin/bash
+    name=pulsar
+    crtFile=/pulsar/certs/tls.crt
+    keyFile=/pulsar/certs/tls.key
+    
+    {{- if .Values.secrets }}
+    caFile=/pulsar/certs/ca.crt
+    {{- else }}
+    caFile={{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}
+    {{- end }}
+    p12File=/pulsar/tls.p12
+    keyStoreFile=/pulsar/tls.keystore.jks
+    trustStoreFile=/pulsar/tls.truststore.jks
+    
+    PASSWORD=$(head /dev/urandom | base64 | head -c 24)
+    
+    openssl pkcs12 \
+        -export \
+        -in ${crtFile} \
+        -inkey ${keyFile} \
+        -out ${p12File} \
+        -name ${name} \
+        -passout "pass:${PASSWORD}"
+    
+    keytool -importkeystore \
+        -srckeystore ${p12File} \
+        -srcstoretype PKCS12 -srcstorepass "${PASSWORD}" \
+        -alias ${name} \
+        -destkeystore ${keyStoreFile} \
+        -deststorepass "${PASSWORD}"
+    
+    keytool -import \
+        -file ${caFile} \
+        -storetype JKS \
+        -alias ${name} \
+        -keystore ${trustStoreFile} \
+        -storepass "${PASSWORD}" \
+        -trustcacerts -noprompt
+
+    echo $'\n' >> conf/pulsar_env.sh
+    echo "PULSAR_EXTRA_OPTS=\"${PULSAR_EXTRA_OPTS} -Dzookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty -Dzookeeper.client.secure=true -Dzookeeper.ssl.keyStore.location=${keyStoreFile} -Dzookeeper.ssl.keyStore.password=${PASSWORD} -Dzookeeper.ssl.trustStore.location=${trustStoreFile} -Dzookeeper.ssl.trustStore.password=${PASSWORD} -Dzookeeper.sslQuorum=true -Dzookeeper.serverCnxnFactory=org.apache.zookeeper.server.NettyServerCnxnFactory -Dzookeeper.ssl.quorum.keyStore.location=${keyStoreFile} -Dzookeeper.ssl.quorum.keyStore.password=${PASSWORD} -Dzookeeper.ssl.quorum.trustStore.location=${trustStoreFile} -Dzookeeper.ssl.quorum.trustStore.password=${PASSWORD} -Dzookeeper.ssl.hostnameVerification=false -Dzookeeper.ssl.quorum.hostnameVerification=false\"" >> conf/pulsar_env.sh
+    
+    echo $'\n' >> conf/bkenv.sh
+    echo "BOOKIE_EXTRA_OPTS=\"${BOOKIE_EXTRA_OPTS} -Dzookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty -Dzookeeper.client.secure=true -Dzookeeper.ssl.keyStore.location=${keyStoreFile} -Dzookeeper.ssl.keyStore.password=${PASSWORD} -Dzookeeper.ssl.trustStore.location=${trustStoreFile} -Dzookeeper.ssl.trustStore.password=${PASSWORD} -Dzookeeper.ssl.hostnameVerification=false\"" >> conf/bkenv.sh
+
+{{- end }}

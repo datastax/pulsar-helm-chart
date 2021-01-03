@@ -1,0 +1,144 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+{{- if .Values.extra.pulsarexpress }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarexpress.component }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.pulsarexpress.component }}
+    cluster: {{ template "pulsar.fullname" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ template "pulsar.name" . }}
+      release: {{ .Release.Name }}
+      component: {{ .Values.pulsarexpress.component }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "pulsar.name" . }}
+        release: {{ .Release.Name }}
+        component: {{ .Values.pulsarexpress.component }}
+        cluster: {{ template "pulsar.fullname" . }}
+      annotations:
+{{ toYaml .Values.pulsarexpress.annotations | indent 8 }}
+      {{- if .Values.restartOnConfigMapChange.enabled }}
+        checksum/config: {{ include (print $.Template.BasePath "/pulsar-express/pulsar-express-configmap.yaml") . | sha256sum }}
+      {{- end }}
+    spec:
+      {{- if .Values.priorityClass.enabled }}
+      priorityClassName: pulsar-priority
+      {{- end }}
+    {{- if .Values.pulsarexpress.nodeAffinity }}
+      affinity:
+        nodeAffinity:
+{{ toYaml .Values.pulsarexpress.nodeAffinity | indent 10 }}
+      {{- end }}
+    {{- if and (.Values.nodeSelector) (not .Values.pulsarexpress.nodeSelector) }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.pulsarexpress.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.pulsarexpress.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.pulsarexpress.tolerations }}
+      tolerations:
+{{ toYaml .Values.pulsarexpress.tolerations | indent 8 }}
+    {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.pulsarexpress.gracePeriod }}
+      containers:
+        - name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarexpress.component }}"
+          image: "{{ .Values.image.pulsarexpress.repository }}:{{ .Values.image.pulsarexpress.tag }}"
+          imagePullPolicy: {{ .Values.image.pulsarexpress.pullPolicy }}
+        {{- if .Values.pulsarexpress.resources }}
+          resources:
+{{ toYaml .Values.pulsarexpress.resources | indent 12 }}
+        {{- end }}
+          ports:
+          - containerPort: 9527
+          volumeMounts:
+          - name: pulsarexpress-data
+            mountPath: /data
+          {{- if .Values.enableTls }}
+          - name: certs
+            readOnly: true
+            mountPath: /pulsar/certs
+          {{- end }}
+          envFrom:
+          - configMapRef:
+              name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarexpress.component }}"
+          env:
+          {{- if .Values.enableTls }}
+          - name: PE_CONNECTION_URL
+            value: https://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8443
+          - name: PE_CA_PATH
+            {{- if .Values.secrets }}
+            value: /pulsar/certs/ca.crt
+            {{- else }}
+            value: "{{ .Values.pulsarexpress.tlsCaPath }}/{{ .Values.pulsarexpress.tlsCaCert }}"
+            {{- end }}
+          {{- else }}
+          - name: PE_CONNECTION_URL
+            value: http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080
+          {{- end }}
+          {{- if .Values.enableTokenAuth }}
+          - name: PE_CONNECTION_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: token-superuser
+                key: superuser.jwt 
+          {{- end }}
+          {{- if .Values.extra.function }}
+            {{- if .Values.enableTls }}
+          - name: PE_CONNECTION_FCT_WORKER_URL
+            value: https://{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}:6751
+            {{- else }}
+          - name: PE_CONNECTION_FCT_WORKER_URL
+            value: http://{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}:6750
+            {{- end }}
+          {{- else }}
+            {{- if .Values.broker.functionsWorkerEnabled }}
+              {{- if .Values.enableTls }}
+          - name: PE_CONNECTION_FCT_WORKER_URL
+            value: https://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8443
+              {{- else }}
+          - name: PE_CONNECTION_FCT_WORKER_URL
+            value: http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080
+              {{- end }}
+            {{- end }}
+          {{- end }}
+      volumes:
+        - name: pulsarexpress-data
+          emptyDir: {}
+        {{- if .Values.enableTls }}
+        - name: certs
+          secret:
+            secretName: "{{ .Values.tlsSecretName }}" 
+        {{- end }}
+
+{{- end }}

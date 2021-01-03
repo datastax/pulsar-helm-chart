@@ -1,0 +1,101 @@
+{{- if .Values.extra.pulsarSQL }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "presto.coordinator" . }}
+  labels:
+    app: {{ template "presto.name" . }}
+    chart: {{ template "presto.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: coordinator
+data:
+  node.properties: |
+    node.environment={{ .Values.pulsarSQL.server.node.environment }}
+    node.data-dir=/pulsar/data
+
+  jvm.config: |
+    -server
+    -Xmx{{ .Values.pulsarSQL.server.jvm.maxHeapSize }}
+    -XX:+{{ .Values.pulsarSQL.server.jvm.gcMethod.type }}
+    -XX:G1HeapRegionSize={{ .Values.pulsarSQL.server.jvm.gcMethod.g1.heapRegionSize }}
+    -XX:+UseGCOverheadLimit
+    -XX:+ExplicitGCInvokesConcurrent
+    -XX:+HeapDumpOnOutOfMemoryError
+    -XX:+ExitOnOutOfMemoryError
+    -Djdk.attach.allowAttachSelf=true
+
+  config.properties: |
+    coordinator=true
+    {{- if .Values.pulsarSQL.server.scheduleCoordinator }}
+    node-scheduler.include-coordinator=true
+    {{- else }}
+    node-scheduler.include-coordinator=false
+    {{- end }}
+    http-server.http.port={{ .Values.pulsarSQL.server.config.http.port }}
+    query.max-memory={{ .Values.pulsarSQL.server.config.query.maxMemory }}
+    query.max-memory-per-node={{ .Values.pulsarSQL.server.config.query.maxMemoryPerNode }}
+    discovery-server.enabled=true
+    discovery.uri=http://localhost:{{ .Values.pulsarSQL.server.config.http.port }}
+
+  log.properties: |
+    io.prestosql={{ .Values.pulsarSQL.server.log.presto.level }}
+
+  pulsar.properties: |
+    connector.name=pulsar
+    {{- if .Values.enableTls }}
+    # pulsar.broker-service-url=https://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8443
+    pulsar.broker-service-url=http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080
+    pulsar.tls-allow-insecure-connection = false
+    pulsar.tls-hostname-verification-enable = false
+    {{- if .Values.secrets }}
+    pulsar.tls-trust-cert-file-path = /pulsar/certs/ca.crt
+    {{- else }}
+    pulsar.tls-trust-cert-file-path = {{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}
+    {{- end }}
+    {{- else }}
+    pulsar.broker-service-url=http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080
+    {{- end }}
+    {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
+    pulsar.zookeeper-uri={{ include "pulsar.zkConnectStringTls" . }}
+    {{- else }}
+    pulsar.zookeeper-uri={{ include "pulsar.zkConnectString" . }}
+    {{- end }}
+    pulsar.max-entry-read-batch-size={{ .Values.pulsarSQL.catalog.pulsar.maxEntryReadBatchSize }}
+    pulsar.target-num-splits={{ .Values.pulsarSQL.catalog.pulsar.targetNumSplits }}
+    pulsar.max-split-message-queue-size={{ .Values.pulsarSQL.catalog.pulsar.maxSplitMessageQueueSize }}
+    pulsar.max-split-entry-queue-size={{ .Values.pulsarSQL.catalog.pulsar.maxSplitEntryQueueSize }}
+    pulsar.namespace-delimiter-rewrite-enable={{ .Values.pulsarSQL.catalog.pulsar.namespaceDelimiterRewriteEnable }}
+    pulsar.rewrite-namespace-delimiter={{ .Values.pulsarSQL.catalog.pulsar.rewriteNamespaceDelimiter }}
+    {{- if .Values.enableTokenAuth }}
+    pulsar.auth-params=file:///pulsar/token-superuser-stripped.jwt
+    pulsar.auth-plugin=org.apache.pulsar.client.impl.auth.AuthenticationToken
+    {{- end }}
+    # pulsar.managed-ledger-cache-size-MB = {{ .Values.pulsarSQL.catalog.pulsar.managedLedgerCacheSizeMB }}
+    {{- if .Values.storageOffload.driver }}
+    pulsar.offloaders-directory = /pulsar/offloaders
+    pulsar.managed-ledger-offload-max-threads = 2
+    pulsar.managed-ledger-offload-driver =  {{ .Values.storageOffload.driver }}
+    {{- if eq .Values.storageOffload.driver "aws-s3" }}
+    pulsar.offloader-properties = \
+      { "s3ManagedLedgerOffloadBucket": "{{ .Values.storageOffload.bucket }}", \
+      "s3ManagedLedgerOffloadRegion": "{{ .Values.storageOffload.region }}", \
+      "AWS_ACCESS_KEY_ID": "{{ .Values.storageOffload.accessKey }}", \
+      "AWS_SECRET_ACCESS_KEY": "{{ .Values.storageOffload.accessSecret }}" }
+    {{- end }}
+    {{- if eq .Values.storageOffload.driver "s3" }}
+    pulsar.offloader-properties = \
+      { "s3ManagedLedgerOffloadBucket": "{{ .Values.storageOffload.bucket }}", \
+      "s3ManagedLedgerOffloadRegion": "{{ .Values.storageOffload.region }}", \
+      "AWS_ACCESS_KEY_ID": "{{ .Values.storageOffload.accessKey }}", \
+      "AWS_SECRET_ACCESS_KEY": "{{ .Values.storageOffload.accessSecret }}", \
+      "s3ManagedLedgerOffloadServiceEndpoint": "{{ .Values.storageOffload.serviceEndpoint }}" }
+    {{- end }}
+    {{- if eq .Values.storageOffload.driver "google-cloud-storage" }}
+    pulsar.offloader-properties = \
+      { "gcsManagedLedgerOffloadBucket": "{{ .Values.storageOffload.bucket }}", \
+      "gcsManagedLedgerOffloadRegion": "{{ .Values.storageOffload.region }}", \
+      "gcsManagedLedgerOffloadServiceAccountKeyFile": "/pulsar/gcp-service-account/{{ .Values.storageOffload.gcsServiceAccountJsonFile }}" }
+    {{- end }}
+    {{- end }}
+{{- end }}

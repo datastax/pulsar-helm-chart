@@ -1,0 +1,92 @@
+{{- if .Values.enableTests }}
+{{- if .Values.storageOffload.driver }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-offload-test-file"
+data:
+  test.sh: |-
+    #!/bin/bash
+
+    exit_if_error() {
+      local exit_code=$1
+      shift
+      [[ $exit_code ]] &&               # do nothing if no error code passed
+        ((exit_code != 0)) && {         # do nothing if error code is 0
+          printf 'ERROR: %s\n' "$@" >&2 # we can use better logging here
+          exit "$exit_code"             # we could also check to make sure
+                                        # error code is numeric when passed
+        }
+    }
+
+    ADM_CMD=/pulsar/bin/pulsar-admin
+    PERF_CMD=/pulsar/bin/pulsar-perf
+    CLIENT_CMD=/pulsar/bin/pulsar-client
+    TOPIC=public/default/test-topic
+    SUBSCRIPTION=sub
+
+    echo "Create subscription"
+    $ADM_CMD topics create-subscription -s $SUBSCRIPTION $TOPIC
+    exit_if_error $? "Create subscription failed"
+
+    echo "Publish enough messages to allow offload"
+    $PERF_CMD produce -s 10 -r 200 -m 14000 $TOPIC
+    exit_if_error $? "Publishing messages failed"
+
+    #echo "Manually trigger offload"
+    #$ADM_CMD topics offload -s 1 $TOPIC
+    #exit_if_error $? "Manually triggering offload failed"
+
+    echo "Wait for offload to complete and BookKeeper copy to be deleted"
+    sleep 121
+
+    echo "Make sure some ledgers are offloaded"
+    $ADM_CMD topics stats-internal $TOPIC  | grep '"offloaded" : true'
+    exit_if_error $? "Checking for offloaded=true failed"
+
+    echo "Consume offload messages"
+    $CLIENT_CMD consume -n 14000 -s $SUBSCRIPTION $TOPIC > /dev/null
+    exit_if_error $? "Consuming messages failed"
+
+    echo "Delete topic"
+    $ADM_CMD topics delete $TOPIC
+    exit_if_error $? "Deleting the topic failed"
+
+    # If we made it to here, all good
+    exit 0
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Release.Name }}-test-offload"
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+  - name: "{{ template "pulsar.fullname" . }}-test-admin-proxy-plain-text"
+    image: "{{ .Values.image.bastion.repository }}:{{ .Values.image.bastion.tag }}"
+    imagePullPolicy: {{ .Values.image.bastion.pullPolicy }}
+    command: ["sh", "-c"]
+    args:
+    - >
+          bin/apply-config-from-env.py conf/client.conf &&
+          /pulsar/tests/test.sh
+    env:
+    - name: webServiceUrl
+      value: http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080/
+    - name: brokerServiceUrl
+      value: pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6650/
+    volumeMounts:
+      - name: test-scripts
+        mountPath: /pulsar/tests
+    
+  # Do not restart containers after they exit
+  restartPolicy: Never
+  volumes:
+    - name: test-scripts
+      configMap:
+        name: "{{ template "pulsar.fullname" . }}-offload-test-file"
+        defaultMode: 0744
+{{- end }}
+{{- end }}

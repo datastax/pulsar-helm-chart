@@ -1,0 +1,89 @@
+
+persistence: no
+enableTests: yes
+extra:
+  autoRecovery: no
+  bastion: yes
+
+image:
+  broker:
+    # If using tiered storage, use pulsar-all image for broker
+    repository: datastax/pulsar-all
+
+storageOffload:
+
+  bucket: tiered-storage 
+  region: us-east-1 
+  maxBlockSizeInBytes: "64000000" 
+  readBufferSizeInBytes: "1000000"
+  ## The following are default values for the cluster. They can be changed
+  ## on each namespace.
+  managedLedgerOffloadDeletionLagMs: "60000"
+  managedLedgerOffloadAutoTriggerSizeThresholdBytes: "1000"
+
+  # For AWS S3
+  # ======
+  # You must create an IAM account with access to the bucket and 
+  # generate keys for that account.
+  #
+  driver: s3
+  accessKey: "access key for s3 compatiables"
+  accessSecret: "access secret for s3 compatiables" # pragma: allowlist secret
+  ## For s3 compatible services, need to specify the endpoint but
+  ## not needed for AWS
+  serviceEndpoint: http://127.0.0.1:7777 
+
+zookeeper:
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 0.3 
+  configData:
+    PULSAR_MEM: "\"-Xms512m -Xmx512m -Dzookeeper.forceSync=no\""
+
+bookkeeper:
+  replicaCount: 2
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 0.3 
+  configData:
+    PULSAR_MEM: "\"-Xms512m -Xmx512m -XX:MaxDirectMemorySize=512m -XX:+ExitOnOutOfMemoryError\""
+
+broker:
+  component: broker
+  replicaCount: 1
+  resources:
+    requests:
+      memory: 1000Mi
+      cpu: 0.3 
+  configData:
+    PULSAR_MEM: "\"-Xms512m -Xmx1000m -XX:MaxDirectMemorySize=1000m -XX:+ExitOnOutOfMemoryError\""
+    managedLedgerMaxEntriesPerLedger: "5000"
+    managedLedgerMinLedgerRolloverTimeMinutes: "1"
+    managedLedgerMaxLedgerRolloverTimeMinutes: "2"
+
+
+
+function:
+  replicaCount: 1
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 0.3 
+  configData:
+    PULSAR_MEM: "\"-Xms512m -Xmx512m -XX:MaxDirectMemorySize=512m -XX:+ExitOnOutOfMemoryError\""
+
+proxy:
+  replicaCount: 1 
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 0.3 
+  wsResources:
+    requests:
+      memory: 512Mi
+      cpu: 0.3
+  configData:
+    PULSAR_MEM: "\"-Xms512m -Xmx512m -XX:MaxDirectMemorySize=512m\""
+  

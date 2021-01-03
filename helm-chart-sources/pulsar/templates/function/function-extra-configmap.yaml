@@ -1,0 +1,46 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+{{- if .Values.extra.function }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-extra"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.function.component }}
+    cluster: {{ template "pulsar.fullname" . }}
+data:
+  {{- if .Values.enableTokenAuth }}
+  authorizationEnabled: "true"
+  authenticationEnabled: "true"
+  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken,org.apache.pulsar.broker.authentication.AuthenticationProviderTls" 
+  superUserRoles: "{{ .Values.superUserRoles }}"
+  tokenPublicKey: "file:///pulsar/token-public-key/{{ .Values.tokenPublicKeyFile }}"
+  brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
+  brokerClientAuthenticationParameters: "file:///pulsar/token-superuser/superuser.jwt"
+  {{- end }}
+{{ toYaml .Values.function.configData | indent 2 }}
+  # Workaround for double-quoted values in old values files
+  PULSAR_MEM: {{ .Values.function.configData.PULSAR_MEM }}
+  PULSAR_GC: {{ .Values.function.configData.PULSAR_GC }}
+{{- end }}

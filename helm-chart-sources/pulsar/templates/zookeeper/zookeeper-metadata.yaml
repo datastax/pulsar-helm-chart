@@ -1,0 +1,85 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+{{- if .Release.IsInstall }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeperMetadata.component }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.zookeeperMetadata.component }}
+    cluster: {{ template "pulsar.fullname" . }}
+spec:
+  template:
+    spec:
+      {{- if .Values.zookeeper.nodeAffinity }}
+      affinity:
+        nodeAffinity:
+{{ toYaml .Values.zookeeper.nodeAffinity | indent 10 }}
+      {{- end }}
+    {{- if and (.Values.nodeSelector) (not .Values.zookeeper.nodeSelector) }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.zookeeper.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.zookeeper.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.zookeeper.tolerations }}
+      tolerations:
+{{ toYaml .Values.zookeeper.tolerations | indent 8 }}
+    {{- end }}
+      initContainers:
+      - name: wait-zookeeper-ready
+        image: "{{ .Values.image.zookeeper.repository }}:{{ .Values.image.zookeeper.tag }}"
+        imagePullPolicy: {{ .Values.image.zookeeper.pullPolicy }}
+        command: ["sh", "-c"]
+        args:
+          - >-
+            until nslookup {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-{{ add (.Values.zookeeper.replicaCount | int) -1 }}.{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}.{{ .Release.Namespace }}; do
+              sleep 3;
+            done;
+      containers:
+      - name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeperMetadata.component }}"
+        image: "{{ .Values.image.zookeeper.repository }}:{{ .Values.image.zookeeper.tag }}"
+        imagePullPolicy: {{ .Values.image.zookeeper.pullPolicy }}
+      {{- if .Values.zookeeperMetadata.resources }}
+        resources:
+{{ toYaml .Values.zookeeperMetadata.resources | indent 10 }}
+      {{- end }}
+        command: ["sh", "-c"]
+        args:
+          - >
+            bin/pulsar initialize-cluster-metadata \
+              --cluster {{ template "pulsar.fullname" . }} \
+              --zookeeper {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }} \
+              --configuration-store {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }} \
+              {{- if .Values.enableTls }}
+              --web-service-url-tls https://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}:8443/ \
+              --broker-service-url-tls pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}:6651/ \
+              {{- end }}
+              --web-service-url http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}:8080/ \
+              --broker-service-url pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}:6650/ || true;
+      restartPolicy: Never
+{{- end }}

@@ -1,0 +1,153 @@
+{{- if .Values.extra.pulsarDashboard }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarDashboard.component }}-nginx"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.pulsarDashboard.component }}-nginx
+    cluster: {{ template "pulsar.fullname" . }}
+data: 
+  nginx.conf: |
+    worker_processes  3;
+    error_log  /var/log/nginx/error.log;
+    events {
+      worker_connections  10240;
+    }
+    http {
+      log_format  main
+              'remote_addr:$remote_addr\t'
+              'time_local:$time_local\t'
+              'method:$request_method\t'
+              'uri:$request_uri\t'
+              'host:$host\t'
+              'status:$status\t'
+              'bytes_sent:$body_bytes_sent\t'
+              'referer:$http_referer\t'
+              'useragent:$http_user_agent\t'
+              'forwardedfor:$http_x_forwarded_for\t'
+              'request_time:$request_time';
+      access_log        /var/log/nginx/access.log main;
+
+      upstream backend {
+        server localhost:6454;
+      }
+
+
+      upstream http-pulsar-proxy {
+        server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8080;
+      }
+
+      upstream https-pulsar-proxy {
+        server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8443;
+      }
+
+      upstream pulsar-burnell {
+        server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8964;
+      }
+
+
+      server {
+
+
+            location /ruok {
+              access_log off;
+              return 200 "I'm good\n";
+            }
+
+            location / {
+               proxy_set_header Host $host;
+               proxy_set_header X-Forwarded-For $remote_addr;
+               proxy_set_header X-Forwarded-Proto $scheme;
+               proxy_pass_header Set-Cookie;
+               proxy_pass http://backend;
+            }
+
+            location /ws/ {
+              {{- if .Values.enableTls }}
+              proxy_pass https://pulsar-burnell;
+              {{- else }}
+              proxy_pass http://pulsar-burnell;
+              {{- end }}
+              proxy_http_version 1.1;
+              proxy_set_header Upgrade $http_upgrade;
+              proxy_set_header Connection "Upgrade";
+              proxy_set_header Host $host;
+            }
+
+            # General cluster forwarding rule for functions
+            location ^~ /api/v1/{{ template "pulsar.fullname" . }}/functions {
+              proxy_set_header Accepts application/json;
+              rewrite ^/api/v1/{{ template "pulsar.fullname" . }}/functions/(.*)$ /admin/v3/functions/$1 break;
+              proxy_pass http://http-pulsar-proxy$uri$is_args$args;
+            }
+
+            # Cluster forwarding rule for sinks
+            location ^~ /api/v1/{{ template "pulsar.fullname" . }}/sinks {
+              rewrite ^/api/v1/{{ template "pulsar.fullname" . }}/sinks/(.*)$ /admin/v3/sinks/$1 break;
+              proxy_pass http://http-pulsar-proxy$uri$is_args$args;
+            }
+
+            # Cluster forwarding rule for sources
+            location ^~ /api/v1/{{ template "pulsar.fullname" . }}/sources {
+              rewrite ^/api/v1/{{ template "pulsar.fullname" . }}/sources/(.*)$ /admin/v3/sources/$1 break;
+              proxy_pass http://http-pulsar-proxy$uri$is_args$args;
+            }
+
+            # Cluster forwarding rule for Burnell
+            location ^~ /api/v2/{{ template "pulsar.fullname" . }}/br/ {
+              rewrite ^/api/v2/{{ template "pulsar.fullname" . }}/br/(.*)$ /$1 break;
+              {{- if .Values.enableTls }}
+              proxy_pass https://pulsar-burnell$uri$is_args$args;
+              {{- else }}
+              proxy_pass http://pulsar-burnell$uri$is_args$args;
+              {{- end }}
+            }
+
+            # K8s cluster forwarding rule api v2 (Burnell)
+            location ^~ /api/v2/{{ template "pulsar.fullname" . }} {
+              rewrite ^/api/v2/{{ template "pulsar.fullname" . }}/(.*)$ /admin/v2/$1 break;
+              {{- if .Values.enableTls }}
+              proxy_pass https://pulsar-burnell$uri$is_args$args;
+              {{- else }}
+              proxy_pass http://pulsar-burnell$uri$is_args$args;
+              {{- end }}
+            }
+
+            # K8s cluster forwarding rule api v1
+            location ^~ /api/v1/{{ template "pulsar.fullname" . }} {
+              rewrite ^/api/v1/{{ template "pulsar.fullname" . }}/(.*)$ /admin/v2/$1 break;
+              proxy_pass http://http-pulsar-proxy$uri$is_args$args;
+            }
+
+            listen 80 default_server;
+            {{- if .Values.tlsEnabled }}
+            listen 443 ssl;
+            ssl_certificate /certs/tls.crt;
+            ssl_certificate_key /certs/tls.key;
+            ssl_protocols TLSv1.1 TLSv1.2 TLSv1.3;
+            {{- end }}
+
+      }
+
+      server {
+
+        location = /nginx_status {
+          stub_status;
+
+          access_log off;
+          allow 127.0.0.1;
+          deny all;
+
+        }
+
+        listen 8080 ;
+
+      }
+
+    }
+{{- end }}

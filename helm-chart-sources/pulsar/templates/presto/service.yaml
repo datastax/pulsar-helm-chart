@@ -1,0 +1,22 @@
+{{- if .Values.extra.pulsarSQL }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarSQL.component }}"
+  labels:
+    app: {{ template "presto.name" . }}
+    chart: {{ template "presto.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.pulsarSQL.service.type }}
+  ports:
+    - port: {{ .Values.pulsarSQL.server.config.http.port }}
+      targetPort: http-coord
+      protocol: TCP
+      name: http-coord
+  selector:
+    app: {{ template "presto.name" . }}
+    release: {{ .Release.Name }}
+    component: coordinator
+{{- end }}

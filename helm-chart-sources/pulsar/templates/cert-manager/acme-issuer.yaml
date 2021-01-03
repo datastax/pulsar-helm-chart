@@ -1,0 +1,118 @@
+{{- if .Values.createCertificates.acme.enabled }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-server-tls"
+  namespace: {{ .Release.Namespace }}
+spec:
+  secretName: {{ .Values.tlsSecretName }}
+  issuerRef:
+    name: "{{ template "pulsar.fullname" . }}-acme-issuer"
+    kind: Issuer
+  commonName: "{{ .Values.dnsName}}" 
+  dnsNames:
+  - "{{ .Values.dnsName}}"
+--- 
+{{- if .Values.createCertificates.acme.httpSolver.enabled }}
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-acme-issuer"
+spec:
+  acme:
+    email: {{ .Values.createCertificates.acme.email }}
+    server: {{ .Values.createCertificates.acme.server }}
+    privateKeySecretRef:
+      name: "{{ template "pulsar.fullname" . }}-acme-key"
+    solvers:
+    - http01:
+       ingress:
+         class: {{ .Values.createCertificates.acme.httpSolver.ingressClass }}
+---
+{{- end }}
+{{- if .Values.createCertificates.acme.azureDns.enabled }}
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-acme-issuer"
+spec:
+  acme:
+    email: {{ .Values.createCertificates.acme.email }}
+    server: {{ .Values.createCertificates.acme.server }}
+    privateKeySecretRef:
+      name: "{{ template "pulsar.fullname" . }}-acme-key"
+    solvers:
+    - dns01:
+        azureDNS:
+          clientID: {{ .Values.createCertificates.acme.azureDns.clientId }}
+          clientSecretSecretRef:
+            name: {{ .Values.createCertificates.acme.azureDns.clientSecretName }}
+            key: {{ .Values.createCertificates.acme.azureDns.clientSecretKey }}
+          subscriptionID: {{ .Values.createCertificates.acme.azureDns.subscriptionId }}
+          tenantID: {{ .Values.createCertificates.acme.azureDns.tenantId }}
+          resourceGroupName: {{ .Values.createCertificates.acme.azureDns.resourceGroupName }}
+          hostedZoneName: {{ .Values.createCertificates.acme.azureDns.dnsZone }}
+          environment: AzurePublicCloud
+---
+{{- end }}
+{{- if .Values.createCertificates.acme.awsDns.enabled }}
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-acme-issuer"
+spec:
+  acme:
+    email: {{ .Values.createCertificates.acme.email }}
+    server: {{ .Values.createCertificates.acme.server }}
+    privateKeySecretRef:
+      name: "{{ template "pulsar.fullname" . }}-acme-key"
+    solvers:
+    - dns01:
+        route53:
+          region: {{ .Values.createCertificates.acme.awsDns.region }}
+          accessKeyID: {{ .Values.createCertificates.acme.awsDns.accessKey }}
+          secretAccessKeySecretRef:
+            name: {{ .Values.createCertificates.acme.awsDns.accessSecretName }}
+            key: {{ .Values.createCertificates.acme.awsDns.accessSecretKey }}
+---
+{{- end }}
+{{- if .Values.createCertificates.acme.gcpDns.enabled }}
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-acme-issuer"
+spec:
+  acme:
+    email: {{ .Values.createCertificates.acme.email }}
+    server: {{ .Values.createCertificates.acme.server }}
+    privateKeySecretRef:
+      name: "{{ template "pulsar.fullname" . }}-acme-key"
+    solvers:
+    - dns01:
+        cloudDNS:
+          project: {{ .Values.createCertificates.acme.gcpDns.projectId }}
+          serviceAccountSecretRef:
+            name: {{ .Values.createCertificates.acme.gcpDns.secretName }}
+            key: {{ .Values.createCertificates.acme.gcpDns.secretKey }}
+---
+{{- end }}
+{{- if .Values.createCertificates.acme.digitalOceanDns.enabled }}
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-acme-issuer"
+spec:
+  acme:
+    email: {{ .Values.createCertificates.acme.email }}
+    server: {{ .Values.createCertificates.acme.server }}
+    privateKeySecretRef:
+      name: "{{ template "pulsar.fullname" . }}-acme-key"
+    solvers:
+    - dns01:
+        digitalocean:
+          tokenSecretRef:
+            name: {{ .Values.createCertificates.acme.digitalOceanDns.secretName }}
+            key: {{ .Values.createCertificates.acme.digitalOceanDns.secretKey }}
+---
+{{- end }}
+{{- end }}

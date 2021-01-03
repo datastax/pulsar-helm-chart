@@ -1,0 +1,182 @@
+
+persistence: no
+enableTests: yes
+extra:
+  autoRecovery: no
+  bastion: no
+  pulsarMonitor: no
+enableTls: yes
+tlsSecretName: pulsar-tls
+secrets:
+  key: |
+    -----BEGIN RSA PRIVATE KEY-----
+    MIIEpQIBAAKCAQEAvaHNpFGEt7yi5dSkc3a8YO12wL3dAUCwzDFhJmTV+enmGhGd
+    mmXU5YkG5zbQruYuGNGs/q9wpCXxnhQn28quv06U2FRILeuK3mOLWsvPMYcFJZoR
+    4DAJOKf99NyHRlhrSLIpJyPl3eAwTwj38p4wTCktqGCNJIC6Uox2iDW+gS7H68EY
+    5BWAyz/QX24/4QhbwFA8NniqdTh4EYEHRm8/KZeofgWls97QRgZgZOY0advvtNOq
+    FbesXobiKTSBk7Ctkd8vMzQAbi+n4vBSXxAF8F14i5GFXPXzM1OuAo3BqoHCmU1Y
+    YgMg2FTNqwBzQnKj8kgEsnh5VKPlrUVWAlNnHQIDAQABAoIBAQCiU3NZCX72WT+I
+    RbJQNH+k6SESdHROsjWlVU+4MfEI8TPLdPDYTfskUVvbaIzSaq9jB3lyunNN0D03
+    +ED2YFWd5YJ8fAkdZdeF7uhHXNeLqey591z976C1Ivi9NlmF2gJcREX9/zix6Urx
+    HNhCky78wvMWgy/O43KbXynIB1l/8jXwYI0uvK0qONcG4uXdIDhwythEqaCnfbRO
+    5J0YLDQ2HF8Ruv/WGf4o1nN5xVtY9e6x6viYG6DAv78S4JQyuDbq4lTiuN8CmjZB
+    KKUqOk+kYCQHp9jyVIQ6Jq+vfwEjpw+6rv5mNSHvwoj7QKTEHiu2WdZaigwQKVCg
+    JAadajyBAoGBAOgHCdJwD/MebGL+QchFlpO+dmYeUrRPSsAitBLTE1wU4s46JMPQ
+    /CPbe/BlLpuXKiHaazaysW0oBGYRiEZ3WTYc8mOKI5ytnWikeI2T4mjt4ImoSjkS
+    b7t7eoIgquDVh/HpCbIz8O6we6WWx9hzYrKGjf0xLhlgccZDqLDgpdkVAoGBANE5
+    b38v6SuWfkCkdtO2W7lvxkOdg+LUzQvboXCDc8dTWTdwD0+nz1xKUjwWBMjIGhX0
+    IyaCRdGQkX1XB+uoeA8pm16TMFMgRE1knzP/LwdNunZrC7eSsMEGMhech8Ym6cYF
+    T7WihzKgTGdDXIuHClJlsjINJOOoh8NDn8pOfEfpAoGBAN8OXR/jwUGMns/v9Bdu
+    5pn0AOidAA79JzRcaFasejEMlxmAhfWFg8+I4bYx30OOZ9+RlX5I/Q6d6NSiyCpN
+    9AJ0g4SzuRaXRPrjGk2ovID5JeHQWkJRef53b0eH1h48yOsDh+G700Pzf3qp4Ecy
+    bdCIUBn23IVi1R2vz4zy+h0dAoGAFA1GI1FrLnNA7F8WyFmc1tvgi5BoGHA+qplF
+    Eqx2hy70yPxja0Xw+K5izUFq+fc7kMkSKVmo6VnKp9GUf8BoqUNakajXo8/e2+/9
+    1hTp4/BOI5VEzTYw3H8EhADLfnEyTHkr14OZI3/7cpYhI3owwg7fEi7yTyNSx6MO
+    iGwXOykCgYEAip3EKOWtylKTRgmMTTOY8+3P9Mt0MZkJHNYJCKfcYIPJm3yxokEU
+    cP3po9J9a86+UkmlPZr+h3axOjz1xEqHrjUDdmLZpPlH3tUqLileSgfZvsvTouFI
+    esPaaCpyP/GZs8tbBfooOplR1teWRZAp85Sa9TIYPXj2OJisK/OSkb4=
+    -----END RSA PRIVATE KEY-----
+  certificate: |
+    -----BEGIN CERTIFICATE-----
+    MIIFVTCCAz2gAwIBAgICEAAwDQYJKoZIhvcNAQELBQAwWDELMAkGA1UEBhMCVVMx
+    EzARBgNVBAgMCkNhbGlmb3JuaWExEjAQBgNVBAcMCVBhbG8gQWx0bzETMBEGA1UE
+    CgwKTXkgY29tcGFueTELMAkGA1UECwwCSVQwHhcNMTkwNDAzMTczNjU4WhcNMjEx
+    MjI4MTczNjU4WjBYMQswCQYDVQQGEwJVUzETMBEGA1UECAwKQ2FsaWZvcm5pYTET
+    MBEGA1UECgwKTXkgY29tcGFueTELMAkGA1UECwwCSVQxEjAQBgNVBAMMCWxvY2Fs
+    aG9zdDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAL2hzaRRhLe8ouXU
+    pHN2vGDtdsC93QFAsMwxYSZk1fnp5hoRnZpl1OWJBuc20K7mLhjRrP6vcKQl8Z4U
+    J9vKrr9OlNhUSC3rit5ji1rLzzGHBSWaEeAwCTin/fTch0ZYa0iyKScj5d3gME8I
+    9/KeMEwpLahgjSSAulKMdog1voEux+vBGOQVgMs/0F9uP+EIW8BQPDZ4qnU4eBGB
+    B0ZvPymXqH4FpbPe0EYGYGTmNGnb77TTqhW3rF6G4ik0gZOwrZHfLzM0AG4vp+Lw
+    Ul8QBfBdeIuRhVz18zNTrgKNwaqBwplNWGIDINhUzasAc0Jyo/JIBLJ4eVSj5a1F
+    VgJTZx0CAwEAAaOCAScwggEjMAkGA1UdEwQCMAAwEQYJYIZIAYb4QgEBBAQDAgZA
+    MDMGCWCGSAGG+EIBDQQmFiRPcGVuU1NMIEdlbmVyYXRlZCBTZXJ2ZXIgQ2VydGlm
+    aWNhdGUwHQYDVR0OBBYEFKVrbz6AIFVuW2vtG4XdPKlKwjGgMIGJBgNVHSMEgYEw
+    f4AUCe1vXJY1kAtn2pI2k8G+QXtUZb2hXKRaMFgxCzAJBgNVBAYTAlVTMRMwEQYD
+    VQQIDApDYWxpZm9ybmlhMRIwEAYDVQQHDAlQYWxvIEFsdG8xEzARBgNVBAoMCk15
+    IGNvbXBhbnkxCzAJBgNVBAsMAklUggkA1Gbfb1mT3OYwDgYDVR0PAQH/BAQDAgWg
+    MBMGA1UdJQQMMAoGCCsGAQUFBwMBMA0GCSqGSIb3DQEBCwUAA4ICAQBwAj7hVew0
+    gAcrmdcOFwpGyNMy6fLEHNn9Wi22cdWjNaxx9WQ6R257IB43pOvjUmFy8P5E30Bs
+    A8zfc9p6Uw9R0nqYTPAEIOaennHZz0+a5mShp86WwFWK95CEETRFKznuveT8o+1N
+    VeNDs9EtlX3knKHt3C4wQ/yBVIIEkxDLTyCZn8PXOrws+6hVKObBwS4gx3gMix2N
+    hLcWCdQMPzdvTGVuBAOuJRJmjbF3BCpVNrcQ2FR2rQDglVsRM3IeLj2dmoYeTHFM
+    OS/E2HBD1e98tRwluSiiRXbUJIefrnkGkMrpMJf7na6eds2j/IYP7suxpzfR8BHj
+    8IMA/e+IIs8Ed5E5VYi2yESfHGgIw8giaz4fby4kgE+pwHax0oUInw9flzNRIOyu
+    NWbmLjjGmFN/9hjgJaLa618l7fEwaDnb+K66gqmh6PczENXfKZ/0Ev3heNd5S8oe
+    Z7lVOHiG1L47kILhFLoJDhxlgaFaNlvleTgcOAVnlioQWXsmo7zYojCqrVrOkxBT
+    dMQVn9IrtTfqvq+8SOHJxvqD9zGiCME6nnJQb9N6lnV0gFUoyRMhrF0tqDdPdpZM
+    WTw2eTiddWWr1UXGd7sMH/yYTHwGeDMf4xNIYLCxZ54orEznm7dKS3NQ5B+iS8up
+    wl8gGJ5OJcg0890G36IugaODwfonzXnrUQ==
+    -----END CERTIFICATE-----
+  caCertificate: |
+    -----BEGIN CERTIFICATE-----
+    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
+    -----END CERTIFICATE-----
+
+image:
+  broker:
+    repository: datastax/pulsar
+
+zookeeper:
+  replicaCount: 1
+  resources:
+    requests:
+      memory: 400Mi
+      cpu: 0.3 
+  configData:
+    PULSAR_MEM: "\"-Xms256m -Xmx400m -Djute.maxbuffer=10485760 -Dzookeeper.forceSync=no\""
+
+bookkeeper:
+  replicaCount: 2
+  resources:
+    requests:
+      memory: 400Mi
+      cpu: 0.3 
+  configData:
+    BOOKIE_MEM: "\"-Xms512m -Xmx512m -XX:MaxDirectMemorySize=512m -XX:+ExitOnOutOfMemoryError\""
+    BOOKIE_GC: "\"-XX:+UseG1GC -XX:MaxGCPauseMillis=10\""
+
+
+broker:
+  component: broker
+  replicaCount: 1
+  resources:
+    requests:
+      memory: 400Mi
+      cpu: 0.3 
+  configData:
+    PULSAR_MEM: "\"-Xms256m -Xmx400m -XX:MaxDirectMemorySize=400m -XX:+ExitOnOutOfMemoryError\""
+
+function:
+  replicaCount: 1
+  resources:
+    requests:
+      memory: 400Mi
+      cpu: 0.3 
+  configData:
+    PULSAR_MEM: "\"-Xms256m -Xmx400m -XX:MaxDirectMemorySize=400m -XX:+ExitOnOutOfMemoryError\""
+
+proxy:
+  replicaCount: 1 
+  resources:
+    requests:
+      memory: 400Mi
+      cpu: 0.3 
+  wsResources:
+    requests:
+      memory: 400Mi
+      cpu: 0.3
+  configData:
+    PULSAR_MEM: "\"-Xms256m -Xmx400m -XX:MaxDirectMemorySize=400m\""
+  service:
+    annotations: {}
+    type: ClusterIP
+    ports:
+    - name: http
+      port: 8080
+      protocol: TCP
+    - name: pulsar
+      port: 6650
+      protocol: TCP
+    - name: ws
+      port: 8000
+      protocol: TCP
+    - name: https
+      port: 8443
+      protocol: TCP
+    - name: pulsarssl
+      port: 6651
+      protocol: TCP
+    - name: wss
+      port: 8001
+      protocol: TCP
+  

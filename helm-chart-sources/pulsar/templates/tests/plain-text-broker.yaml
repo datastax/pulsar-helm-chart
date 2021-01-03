@@ -1,0 +1,33 @@
+{{- if .Values.enableTests }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Release.Name }}-test-admin-plain-text-broker"
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+  - name: "{{ template "pulsar.fullname" . }}-test-admin-broker-plain-text"
+    image: "{{ .Values.image.bastion.repository }}:{{ .Values.image.bastion.tag }}"
+    imagePullPolicy: {{ .Values.image.bastion.pullPolicy }}
+    command: ["/pulsar/bin/pulsar-admin"]
+    args: ["--admin-url", "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080", "tenants", "list"]
+  # Do not restart containers after they exit
+  restartPolicy: Never
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ .Release.Name }}-test-client-plain-text-broker"
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+  - name: "{{ template "pulsar.fullname" . }}-test-client-broker-plain-text-broker"
+    image: "{{ .Values.image.bastion.repository }}:{{ .Values.image.bastion.tag }}"
+    imagePullPolicy: {{ .Values.image.bastion.pullPolicy }}
+    command: ["/pulsar/bin/pulsar-client"]
+    args: ["--url", "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6650", "produce", "-m", "hello", "public/default/test"]
+  # Do not restart containers after they exit
+  restartPolicy: Never
+{{- end }}

@@ -1,0 +1,233 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.zookeeper.component }}
+    cluster: {{ template "pulsar.fullname" . }}
+spec:
+  serviceName: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}"
+  replicas: {{ .Values.zookeeper.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "pulsar.name" . }}
+      release: {{ .Release.Name }}
+      component: {{ .Values.zookeeper.component }}
+  updateStrategy:
+{{ toYaml .Values.zookeeper.updateStrategy | indent 4 }}
+  podManagementPolicy: {{ .Values.zookeeper.podManagementPolicy }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "pulsar.name" . }}
+        release: {{ .Release.Name }}
+        component: {{ .Values.zookeeper.component }}
+        cluster: {{ template "pulsar.fullname" . }}
+      annotations:
+      {{- if .Values.restartOnConfigMapChange.enabled }}
+        checksum/config: {{ include (print $.Template.BasePath "/zookeeper/zookeeper-configmap.yaml") . | sha256sum }}
+      {{- end }}
+{{ toYaml .Values.zookeeper.annotations | indent 8 }}
+    spec:
+      {{- if .Values.priorityClass.enabled }}
+      priorityClassName: pulsar-priority
+      {{- end }}
+    {{- if and (.Values.nodeSelector) (not .Values.zookeeper.nodeSelector) }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.zookeeper.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.zookeeper.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.zookeeper.tolerations }}
+      tolerations:
+{{ toYaml .Values.zookeeper.tolerations | indent 8 }}
+    {{- end }}
+      affinity:
+        {{- if .Values.zookeeper.nodeAffinity }}
+        nodeAffinity:
+{{ toYaml .Values.zookeeper.nodeAffinity | indent 10 }}
+        {{- end }}
+        {{- if .Values.enableAntiAffinity }}
+        podAntiAffinity:
+        {{- if .Values.zookeeper.podAntiAffinity }}
+{{ toYaml .Values.zookeeper.podAntiAffinity | indent 10 }}
+        {{- else }}
+          {{- if .Values.antiAffinity.host.enabled }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: "app"
+                operator: In
+                values:
+                - "{{ template "pulsar.name" . }}"
+              - key: "release"
+                operator: In
+                values:
+                - {{ .Release.Name }}
+              - key: "component"
+                operator: In
+                values:
+                - {{ .Values.zookeeper.component }}
+            topologyKey: "kubernetes.io/hostname"
+          {{- end }}
+          {{- if .Values.antiAffinity.zone.enabled }}
+          preferredDuringSchedulingIgnoredDuringExecution: 
+          - weight: 100  
+            podAffinityTerm:
+              topologyKey: failure-domain.beta.kubernetes.io/zone
+              labelSelector:
+                matchExpressions:
+                - key: "app"
+                  operator: In
+                  values:
+                  - "{{ template "pulsar.name" . }}"
+                - key: "release"
+                  operator: In
+                  values:
+                  - {{ .Release.Name }}
+                - key: "component"
+                  operator: In
+                  values:
+                  - {{ .Values.zookeeper.component }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.zookeeper.gracePeriod }}
+      containers:
+      - name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}"
+        image: "{{ .Values.image.zookeeper.repository }}:{{ .Values.image.zookeeper.tag }}"
+        imagePullPolicy: {{ .Values.image.zookeeper.pullPolicy }}
+      {{- if .Values.zookeeper.resources }}
+        resources:
+{{ toYaml .Values.zookeeper.resources | indent 10 }}
+      {{- end }}
+        command: ["sh", "-c"]
+        args:
+        - >
+          bin/apply-config-from-env.py conf/zookeeper.conf &&
+          {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
+          /pulsar/tools/certconverter.sh &&
+          {{- end }}
+          {{- if .Values.extra.zookeepernp }}
+          /pulsar/zookeeper-config/generate-zookeeper-config-mixed.sh conf/zookeeper.conf &&
+          {{- else }}
+          bin/generate-zookeeper-config.sh conf/zookeeper.conf &&
+          {{- end }}
+          exec bin/pulsar zookeeper
+        ports:
+        - name: client
+          containerPort: 2181
+        - name: server
+          containerPort: 2888
+        - name: leader-election
+          containerPort: 3888
+        env:
+        - name: ZOOKEEPER_SERVERS
+          value:
+            {{- if .Values.extra.zookeepernp }}
+            {{ include "pulsar.zkConnectString" . }}
+            {{- else }}
+            {{ include "pulsar.zkServers" . }}
+            {{- end }}
+        envFrom:
+        - configMapRef:
+            name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}"
+        {{- if .Values.zookeeper.probe.enabled }}
+        readinessProbe:
+          exec:
+            command:
+            - "bin/pulsar-zookeeper-ruok.sh"
+          initialDelaySeconds: {{ .Values.zookeeper.probe.initial }}
+          timeoutSeconds: {{ .Values.zookeeper.probe.period }}
+        livenessProbe:
+          exec:
+            command:
+            - "bin/pulsar-zookeeper-ruok.sh"
+          initialDelaySeconds: {{ .Values.zookeeper.probe.initial }}
+          timeoutSeconds: {{ .Values.zookeeper.probe.period }}
+        {{- end }}
+        volumeMounts:
+        {{- if and .Values.enableTls .Values.tls.zookeeper.enabled}}
+        - name: certs
+          readOnly: true
+          mountPath: /pulsar/certs
+        - name: certconverter
+          mountPath: /pulsar/tools
+        {{- end }}
+        - name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-{{ .Values.zookeeper.volumes.data.name }}"
+          mountPath: /pulsar/data
+        {{- if .Values.extra.zookeepernp }}
+        - name: zookeeper-config
+          mountPath: /pulsar/zookeeper-config
+        {{- end }}
+      volumes:
+      {{- if and .Values.enableTls .Values.tls.zookeeper.enabled}}
+      - name: certs
+        secret:
+          secretName: "{{ .Values.tlsSecretName }}"
+      - name: certconverter
+        configMap: 
+          name: "{{ template "pulsar.fullname" . }}-certconverter-configmap"
+          defaultMode: 0755
+      {{- end }}
+    {{- if not .Values.persistence }}
+      - name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-{{ .Values.zookeeper.volumes.data.name }}"
+        emptyDir: {}
+    {{- end }}
+    {{- if .Values.extra.zookeepernp }}
+      - name: zookeeper-config
+        configMap: 
+          name: "{{ template "pulsar.fullname" . }}-zookeeper-config"
+          defaultMode: 0755
+    {{- end }}
+{{- if .Values.persistence }}
+  volumeClaimTemplates:
+  - metadata:
+      name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-{{ .Values.zookeeper.volumes.data.name }}"
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.zookeeper.volumes.data.size }}
+    {{- if or .Values.zookeeper.volumes.data.existingStorageClassName .Values.default_storage.existingStorageClassName }}
+      {{- if .Values.zookeeper.volumes.data.existingStorageClassName}}
+      {{- if ne .Values.zookeeper.volumes.data.existingStorageClassName "default"}}
+      storageClassName: "{{ .Values.zookeeper.volumes.data.existingStorageClassName }}"
+      {{- end }}
+      {{- else }}
+      {{- if ne .Values.default_storage.existingStorageClassName "default"}}
+      storageClassName: "{{ .Values.default_storage.existingStorageClassName }}"
+      {{- end }}
+      {{- end }}
+    {{- else }}
+      {{- if or .Values.zookeeper.volumes.data.storageClass .Values.default_storage }}
+      storageClassName: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-{{ .Values.zookeeper.volumes.data.name }}"
+      {{- end }}
+    {{- end }}
+{{- end }}

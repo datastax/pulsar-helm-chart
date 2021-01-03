@@ -1,0 +1,56 @@
+{{- if .Values.createCertificates.selfSigned.enabled }}
+# Self signed issuer
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-self-signed-issuer"
+  namespace: "{{ .Release.Namespace }}"
+spec:
+  selfSigned: {}
+---
+# CA certifcate from self-signed issuer
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-ca-certificate"
+  namespace: "{{ .Release.Namespace }}"
+spec:
+  secretName: "{{ template "pulsar.fullname" . }}-ss-ca"
+  commonName: "{{ .Release.Namespace }}.svc.cluster.local"
+  usages:
+    - server auth
+    - client auth
+  isCA: true
+  issuerRef:
+    name: "{{ template "pulsar.fullname" . }}-self-signed-issuer"
+---
+# Issuer using the self-signed CA certficiate
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-ca-issuer"
+spec:
+  ca:
+    secretName: {{ template "pulsar.fullname" . }}-ss-ca
+---
+# Self-signed certificate
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-server-tls"
+  namespace: {{ .Release.Namespace }}
+spec:
+  secretName: {{ .Values.tlsSecretName }}
+  dnsNames:
+  - "{{ template "pulsar.fullname" . }}-broker.{{ .Release.Namespace }}.svc.cluster.local"
+  - "{{ template "pulsar.fullname" . }}-broker.{{ .Release.Namespace }}"
+  - "{{ template "pulsar.fullname" . }}-broker"
+  - "{{ template "pulsar.fullname" . }}-proxy.{{ .Release.Namespace }}.svc.cluster.local"
+  - "{{ template "pulsar.fullname" . }}-proxy.{{ .Release.Namespace }}"
+  - "{{ template "pulsar.fullname" . }}-proxy"
+  {{- if .Values.createCertificates.selfSigned.includeDns }}
+  - "{{ .Values.dnsName}}"
+  {{- end }}
+  issuerRef:
+    name: "{{ template "pulsar.fullname" . }}-ca-issuer"
+{{- end }}

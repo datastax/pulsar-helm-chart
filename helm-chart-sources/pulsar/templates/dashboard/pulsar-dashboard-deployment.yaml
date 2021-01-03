@@ -1,0 +1,134 @@
+{{- if .Values.extra.pulsarDashboard }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarDashboard.component }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.pulsarDashboard.component }}
+    cluster: {{ template "pulsar.fullname" . }}
+spec:
+  replicas: {{ .Values.pulsarDashboard.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      app: {{ template "pulsar.name" . }}
+      release: {{ .Release.Name }}
+      component: {{ .Values.pulsarDashboard.component }} 
+  template:
+    metadata:
+      labels:
+        app: {{ template "pulsar.name" . }}
+        release: {{ .Release.Name }}
+        component: {{ .Values.pulsarDashboard.component }}
+        cluster: {{ template "pulsar.fullname" . }}
+      annotations:
+        checksum/dashboard: {{ include (print $.Template.BasePath "/dashboard/pulsar-dashboard-configmap.yaml") . | sha256sum }}
+        checksum/nginx: {{ include (print $.Template.BasePath "/dashboard/pulsar-dashboard-nginx-configmap.yaml") . | sha256sum }}
+        {{- if .Values.pulsarDashboard.annotations }}
+{{ toYaml .Values.pulsarDashboard.annotations | indent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: "{{ template "pulsar.fullname" . }}-burnell"
+    {{- if .Values.pulsarDashboard.tolerations }}
+      tolerations:
+{{ toYaml .Values.pulsarDashboard.tolerations | indent 8 }}
+    {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.pulsarDashboard.gracePeriod }}
+      containers:
+      - name: nginx 
+        image: nginx 
+        imagePullPolicy: {{ .Values.image.pulsarDashboard.pullPolicy }}
+        ports:
+        - name: "nginx"
+          containerPort: 80
+        {{- if .Values.enableTls }}
+        - name: "nginx-tls"
+          containerPort: 443
+        {{- end }}
+        volumeMounts:
+        - mountPath: /etc/nginx
+          readOnly: true
+          name: nginxconf
+        {{- if .Values.enableTls }}
+        - mountPath: /certs
+          name: certs
+          readOnly: true
+        {{- end }}          
+        livenessProbe:
+          httpGet:
+            path: /ruok
+            port: 80 
+          initialDelaySeconds: {{ .Values.pulsarDashboard.probe.liveness.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.pulsarDashboard.probe.liveness.timeoutSeconds }}
+        readinessProbe:
+          httpGet:
+            path: /ruok
+            port: 80 
+          initialDelaySeconds: {{ .Values.pulsarDashboard.probe.readiness.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.pulsarDashboard.probe.readiness.timeoutSeconds }}
+        resources:
+      - name: "{{ template "pulsar.fullname" . }}-pulsar-dashboard"
+        image: "{{ .Values.image.pulsarDashboard.repository }}:{{ .Values.image.pulsarDashboard.tag }}"
+        imagePullPolicy: {{ .Values.image.pulsarDashboard.pullPolicy }}
+        {{- if .Values.pulsarDashboard.resources }}
+        resources:
+{{ toYaml .Values.pulsarDashboard.resources | indent 10 }}
+        {{- end }}
+        ports:
+        - name: http
+          containerPort: 6454
+        - name: https
+          containerPort: 6455
+        volumeMounts:
+          - name: dashboardconfig
+            mountPath: /root/dashboard/dist/config-override.js
+            subPath: config-override.js
+          {{- if .Values.enableTls }}
+          - name: certs
+            readOnly: true
+            mountPath: /pulsar/certs
+          {{- end }}
+          {{- if .Values.enableTokenAuth }}
+          - mountPath: "/pulsar/token-superuser"
+            name: token-superuser
+            readOnly: true
+          {{- end }}
+        env:
+          {{- if .Values.enableTokenAuth }}
+          - name: token_path
+            value: "/pulsar/token-superuser/superuser.jwt"
+          {{- end }}
+          - name: auth_mode
+            value: {{ .Values.pulsarDashboard.authMode }}
+          - name: K8S_NAMESPACE
+            value: {{ .Release.Namespace }}
+          - name: LOG_LEVEL
+            value: {{ .Values.pulsarDashboard.serverLogLevel }}
+      volumes:
+        - name: dashboardconfig
+          configMap:
+            name: {{ template "pulsar.fullname" . }}-{{ .Values.pulsarDashboard.component }}
+            items:
+            - key: config-override.js
+              path: config-override.js
+        - name: nginxconf
+          configMap:
+            name: {{ template "pulsar.fullname" . }}-{{ .Values.pulsarDashboard.component }}-nginx 
+            items: 
+            - key: nginx.conf
+              path: nginx.conf
+        {{- if .Values.enableTls }}
+        - name: certs
+          secret:
+            secretName: "{{ .Values.tlsSecretName }}" 
+        {{- end }}
+        {{- if .Values.enableTokenAuth }}
+        - name: token-superuser
+          secret:
+            secretName: token-superuser
+        {{- end }}
+{{- end }}

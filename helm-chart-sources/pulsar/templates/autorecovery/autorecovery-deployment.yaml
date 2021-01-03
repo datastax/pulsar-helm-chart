@@ -1,0 +1,220 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+{{- if .Values.extra.autoRecovery }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.autoRecovery.component }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.autoRecovery.component }}
+    cluster: {{ template "pulsar.fullname" . }}
+spec:
+  replicas: {{ .Values.autoRecovery.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "pulsar.name" . }}
+      release: {{ .Release.Name }}
+      component: {{ .Values.autoRecovery.component }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "pulsar.name" . }}
+        release: {{ .Release.Name }}
+        component: {{ .Values.autoRecovery.component }}
+        cluster: {{ template "pulsar.fullname" . }}
+      annotations:
+      {{- if .Values.autoRecovery.annotations }}
+{{ toYaml .Values.autoRecovery.annotations | indent 8 }}
+      {{- end }}
+      {{- if .Values.restartOnConfigMapChange.enabled }}
+        checksum/config: {{ include (print $.Template.BasePath "/autorecovery/autorecovery-configmap.yaml") . | sha256sum }}
+      {{- end }}
+    spec:
+      {{- if .Values.priorityClass.enabled }}
+      priorityClassName: pulsar-priority
+      {{- end }}
+    {{- if and (.Values.nodeSelector) (not .Values.autoRecovery.nodeSelector) }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.autoRecovery.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.autoRecovery.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.autoRecovery.tolerations }}
+      tolerations:
+{{ toYaml .Values.autoRecovery.tolerations | indent 8 }}
+    {{- end }}
+      affinity:
+      {{- if .Values.autoRecovery.nodeAffinity }}
+        nodeAffinity:
+{{ toYaml .Values.autoRecovery.nodeAffinity | indent 10 }}
+        {{- end }}
+        {{- if .Values.enableAntiAffinity }}
+        podAntiAffinity:
+        {{- if .Values.autoRecovery.podAntiAffinity }}
+{{ toYaml .Values.autoRecovery.podAntiAffinity | indent 10 }}
+        {{- else }}
+          {{- if .Values.antiAffinity.host.enabled }}
+          {{- if eq .Values.antiAffinity.host.mode "preferred" }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: "app"
+                  operator: In
+                  values:
+                  - "{{ template "pulsar.name" . }}"
+                - key: "release"
+                  operator: In
+                  values:
+                  - {{ .Release.Name }}
+                - key: "component"
+                  operator: In
+                  values:
+                  - {{ .Values.autoRecovery.component }}
+              topologyKey: "kubernetes.io/hostname"
+          {{- else }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: "app"
+                operator: In
+                values:
+                - "{{ template "pulsar.name" . }}"
+              - key: "release"
+                operator: In
+                values:
+                - {{ .Release.Name }}
+              - key: "component"
+                operator: In
+                values:
+                - {{ .Values.autoRecovery.component }}
+            topologyKey: "kubernetes.io/hostname"
+          {{- end }}
+          {{- end }}
+          {{- if .Values.antiAffinity.zone.enabled }}
+          preferredDuringSchedulingIgnoredDuringExecution: 
+          - weight: 100  
+            podAffinityTerm:
+              topologyKey: failure-domain.beta.kubernetes.io/zone
+              labelSelector:
+                matchExpressions:
+                - key: "app"
+                  operator: In
+                  values:
+                  - "{{ template "pulsar.name" . }}"
+                - key: "release"
+                  operator: In
+                  values:
+                  - {{ .Release.Name }}
+                - key: "component"
+                  operator: In
+                  values:
+                  - {{ .Values.autoRecovery.component }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.autoRecovery.gracePeriod }}
+      {{- if .Values.autoRecovery.enableProvisionContainer }}
+      serviceAccountName: "{{ template "pulsar.fullname" . }}-burnell"
+      {{- end }}
+      initContainers:
+      # This init container will wait for zookeeper to be ready before
+      # deploying the bookies
+      - name: wait-zookeeper-ready
+        image: "{{ .Values.image.bookkeeper.repository }}:{{ .Values.image.bookkeeper.tag }}"
+        imagePullPolicy: {{ .Values.image.bookkeeper.pullPolicy }}
+        command: ["sh", "-c"]
+        args:
+          - >-
+            until bin/pulsar zookeeper-shell -server {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }} ls /admin/clusters | grep "^\[.*{{ template "pulsar.fullname" . }}.*\]"; do
+              sleep 3;
+            done;
+      volumes:
+      {{- if and .Values.enableTls .Values.tls.zookeeper.enabled}}
+      - name: certs
+        secret:
+          secretName: "{{ .Values.tlsSecretName }}"
+      - name: certconverter
+        configMap: 
+          name: "{{ template "pulsar.fullname" . }}-certconverter-configmap"
+          defaultMode: 0755
+      {{- end }}
+      
+      initContainers:
+      {{- if .Values.autoRecovery.enableProvisionContainer }}
+      - name: provision-tls-jwt
+        image: "{{ .Values.image.burnell.repository }}:{{ .Values.image.burnell.tag }}"
+        imagePullPolicy: {{ .Values.image.burnell.pullPolicy }}
+      {{- if .Values.proxy.burnellResources }}
+        resources:
+{{ toYaml .Values.proxy.burnellResources | indent 10 }}
+      {{- end }}
+        ports:
+        volumeMounts:
+        env:
+          - name: ClusterName
+            value: "{{ template "pulsar.fullname" . }}"
+          - name: SuperRoles
+            value: {{ .Values.superUserRoles }}
+          - name: ProcessMode
+            value: "init"
+          - name: PulsarNamespace
+            value: {{ .Release.Namespace }}
+          - name: PrivateKeySecretName
+            value: {{ .Values.tokenPrivateKeyFile }}
+          - name: PublicKeySecretName
+            value: {{ .Values.tokenPublicKeyFile }}
+      {{- end }}
+      containers:
+      - name: "{{ template "pulsar.fullname" . }}-{{ .Values.autoRecovery.component }}"
+        image: "{{ .Values.image.bookkeeper.repository }}:{{ .Values.image.bookkeeper.tag }}"
+        imagePullPolicy: {{ .Values.image.bookkeeper.pullPolicy }}
+      {{- if .Values.autoRecovery.resources }}
+        resources:
+{{ toYaml .Values.autoRecovery.resources | indent 10 }}
+      {{- end }}
+        command: ["sh", "-c"]
+        args:
+        - >
+          bin/apply-config-from-env.py conf/bookkeeper.conf &&
+          {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
+          /pulsar/tools/certconverter.sh &&
+          {{- end }}
+          exec bin/bookkeeper autorecovery
+        {{- if and .Values.enableTls .Values.tls.zookeeper.enabled}}
+        volumeMounts:
+        - name: certs
+          readOnly: true
+          mountPath: /pulsar/certs
+        - name: certconverter
+          mountPath: /pulsar/tools
+        {{- end }}
+        envFrom:
+        - configMapRef:
+            name: "{{ template "pulsar.fullname" . }}-{{ .Values.autoRecovery.component }}"
+{{- end }}

@@ -1,0 +1,69 @@
+{{- if .Values.extra.usedns }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.dns.component }}"
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: "{{ template "pulsar.fullname" . }}-{{ .Values.dns.component }}"
+  template:
+    metadata:
+      labels:
+        app: "{{ template "pulsar.fullname" . }}-{{ .Values.dns.component }}"
+    spec:
+      {{- if .Values.priorityClass.enabled }}
+      priorityClassName: pulsar-priority
+      {{- end }}
+      {{- if and (.Values.nodeSelector) (not .Values.dns.nodeSelector) }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.dns.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.dns.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.dns.nodeAffinity }}
+      affinity:
+        nodeAffinity:
+{{ toYaml .Values.dns.nodeAffinity | indent 10 }}
+      {{- end }}
+      {{- if .Values.dns.tolerations }}
+      tolerations:
+{{ toYaml .Values.dns.tolerations | indent 8 }}
+      {{- end }}
+      serviceAccountName: "{{ template "pulsar.fullname" . }}-{{ .Values.dns.component }}"
+      {{- if .Values.dns.azureVolume }}
+      volumes:
+        - name: azure-config 
+          secret:
+            secretName: azure-config-file 
+      {{- end }}
+      containers:
+      - name: external-dns
+        image: registry.opensource.zalan.do/teapot/external-dns:latest
+        {{- if .Values.dns.azureVolume }}
+        volumeMounts:
+          - mountPath: "/etc/kubernetes/"
+            name: azure-config 
+            readOnly: true
+        {{- end }}
+        args:
+        - --source=service
+        - --source=ingress
+        - --provider={{ .Values.dns.provider }}
+        - --domain-filter={{ .Values.dns.domainFilter }}
+        - --policy=upsert-only # would prevent ExternalDNS from deleting any records, omit to enable full synchronization
+        - --registry=txt
+        - --txt-owner-id=my-identifier
+        {{- if .Values.dns.txtPrefix }}
+        - --txt-prefix={{ .Values.dns.txtPrefix }}
+        {{- end }}
+        {{- if eq .Values.dns.provider "digitalocean" }}
+        env:
+        - name: DO_TOKEN
+          value: "{{ .Values.dns.digitalOceanApiKey}}"
+        {{- end  }}
+{{- end }}

@@ -1,0 +1,61 @@
+{{- if .Values.proxy.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.proxy.component }}
+    cluster: {{ template "pulsar.fullname" . }}
+  annotations:
+    {{- if .Values.enableTls }}
+    ingress.kubernetes.io/protocol: https
+    {{- end }}
+    traefik.ingress.kubernetes.io/rule-type: PathPrefixStrip
+    {{- if .Values.proxy.ingress.annotations }}
+{{ toYaml .Values.proxy.ingress.annotations | indent 4 }}
+    {{- end }}
+spec:
+  rules:
+    - host: {{ .Values.proxy.ingress.host }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}"
+              {{- if .Values.enableTls }}
+              servicePort: 8443
+              {{- else }}
+              servicePort: 8080
+              {{- end }}
+          {{- if .Values.proxy.ingress.enableWebSocket }}
+          - path: /ws
+            backend:
+              serviceName: "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}"
+              {{- if .Values.enableTls }}
+              servicePort: {{ .Values.proxy.ingress.wssPortOnProxy }}
+              {{- else }}
+              servicePort: 8000
+              {{- end }}
+          {{- end }}
+          {{- if .Values.proxy.ingress.enableBurnell }}
+          - path: /br
+            backend:
+              serviceName: "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}"
+              servicePort: 8964
+          {{- end }}
+          {{- if .Values.broker.ingress.enabled }}
+          - path: /broker
+            backend:
+              serviceName: "{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}"
+              {{- if .Values.enableTls }}
+              servicePort: 8443
+              {{- else }}
+              servicePort: 8080
+              {{- end }}
+          {{- end }}
+{{- end }}

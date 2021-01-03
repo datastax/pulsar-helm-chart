@@ -1,0 +1,304 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+{{- if .Values.extra.function }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.function.component }}
+    cluster: {{ template "pulsar.fullname" . }}
+spec:
+  serviceName: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}"
+  replicas: {{ .Values.function.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "pulsar.name" . }}
+      release: {{ .Release.Name }}
+      component: {{ .Values.function.component }}
+  updateStrategy:
+{{ toYaml .Values.function.updateStrategy | indent 4 }}
+  podManagementPolicy: {{ .Values.function.podManagementPolicy }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "pulsar.name" . }}
+        release: {{ .Release.Name }}
+        component: {{ .Values.function.component }}
+        cluster: {{ template "pulsar.fullname" . }}
+      annotations:
+      {{- if .Values.restartOnConfigMapChange.enabled }}
+        checksum/config: {{ include (print $.Template.BasePath "/function/function-configmap.yaml") . | sha256sum }}
+      {{- end }}
+{{ toYaml .Values.function.annotations | indent 8 }}
+    spec:
+      {{- if .Values.priorityClass.enabled }}
+      priorityClassName: pulsar-priority
+      {{- end }}
+      serviceAccountName: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}"
+      {{- if and (.Values.nodeSelector) (not .Values.function.nodeSelector) }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.function.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.function.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.function.tolerations }}
+      tolerations:
+{{ toYaml .Values.function.tolerations | indent 8 }}
+      {{- end }}
+      affinity:
+        {{- if .Values.function.nodeAffinity }}
+        nodeAffinity:
+{{ toYaml .Values.function.nodeAffinity | indent 10 }}
+        {{- end }}
+        {{- if .Values.enableAntiAffinity }}
+        podAntiAffinity:
+        {{- if .Values.function.podAntiAffinity }}
+{{ toYaml .Values.function.podAntiAffinity | indent 10 }}
+        {{- else }}
+          {{- if .Values.antiAffinity.host.enabled }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: "app"
+                operator: In
+                values:
+                - "{{ template "pulsar.name" . }}"
+              - key: "release"
+                operator: In
+                values:
+                - {{ .Release.Name }}
+              - key: "component"
+                operator: In
+                values:
+                - {{ .Values.function.component }}
+            topologyKey: "kubernetes.io/hostname"
+          {{- end }}
+          {{- if .Values.antiAffinity.zone.enabled }}
+          preferredDuringSchedulingIgnoredDuringExecution: 
+          - weight: 100  
+            podAffinityTerm:
+              topologyKey: failure-domain.beta.kubernetes.io/zone
+              labelSelector:
+                matchExpressions:
+                - key: "app"
+                  operator: In
+                  values:
+                  - "{{ template "pulsar.name" . }}"
+                - key: "release"
+                  operator: In
+                  values:
+                  - {{ .Release.Name }}
+                - key: "component"
+                  operator: In
+                  values:
+                  - {{ .Values.function.component }}
+          {{- end }} 
+        {{- end }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.function.gracePeriod }}
+      volumes:
+        - name: config-volume
+          configMap:
+            name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}" 
+        {{- if .Values.enableTokenAuth }}
+        - name: token-superuser
+          secret:
+            secretName: token-superuser
+        - name: token-public-key
+          secret:
+            secretName: token-public-key
+        {{- end }}
+        {{- if .Values.enableTls }}
+        - name: certs
+          secret:
+            secretName: "{{ .Values.tlsSecretName }}"
+         {{- if .Values.tls.zookeeper.enabled}}
+        - name: certconverter
+          configMap: 
+            name: "{{ template "pulsar.fullname" . }}-certconverter-configmap"
+            defaultMode: 0755
+          {{- end }}
+        {{- end }}
+      {{- if not .Values.persistence }}
+        - name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-{{ .Values.function.volumes.data.name }}"
+          emptyDir: {}
+      {{- end }}
+      {{- if .Values.function.initContainer }}
+        - name: extra-data
+          emptyDir: {}
+      {{- end }}
+      {{- if .Values.function.initContainer }}
+      initContainers:
+      - name: add-libs
+        image: "{{ .Values.function.initContainer.repository }}:{{ .Values.function.initContainer.tag }}"
+        imagePullPolicy: "{{ .Values.function.initContainer.pullPolicy }}"
+        {{- if  .Values.function.initContainer.command }}
+        command:
+{{ toYaml .Values.function.initContainer.command | indent 10 }}
+        {{- end }}
+        {{- if  .Values.function.initContainer.args }}
+        args:
+{{ toYaml .Values.function.initContainer.args | indent 10 }}
+        {{- end }}
+        volumeMounts:
+          - name: extra-data
+            mountPath: {{ .Values.function.initContainer.emptyDirPath }}
+      {{- end }}
+      containers:
+      - name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}"
+        image: "{{ .Values.image.function.repository }}:{{ .Values.image.function.tag }}"
+        imagePullPolicy: {{ .Values.image.function.pullPolicy }}
+        {{- if .Values.function.probe.enabled }}
+        readinessProbe:
+          tcpSocket:
+            port: {{ .Values.function.probe.port }}
+          initialDelaySeconds: {{ .Values.function.probe.initial }} 
+          periodSeconds:  {{ .Values.function.probe.period }} 
+        {{- end }}
+        {{- if .Values.function.resources }}
+        resources:
+{{ toYaml .Values.function.resources | indent 10 }}
+        {{- end }}
+        command: ["sh", "-c"]
+        args:
+        - >
+          {{- if .Values.enableTokenAuth }}
+          cat /pulsar/token-superuser/superuser.jwt | tr -d '\n' > /pulsar/token-superuser-stripped.jwt &&
+          {{- end }}
+          {{- if .Values.function.initContainer.mainContainerStartupCmd }}
+          {{ .Values.function.initContainer.mainContainerStartupCmd }} &&
+          {{- end }}
+          bin/apply-config-from-env.py conf/broker.conf &&
+          cp -f funcconf/functions_worker.yml conf/functions_worker.yml &&
+          export PF_workerHostname="${workerHostname}.{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}" &&
+          bin/gen-yml-from-env.py conf/functions_worker.yml &&
+          {{- if .Values.enableTls }}
+          openssl pkcs8 -topk8 -inform PEM -outform PEM -in /pulsar/certs/tls.key -out /pulsar/tls-pk8.key -nocrypt &&
+          {{- end }}
+          {{- if .Values.function.usePython3 }}
+          /pulsar/bin/set_python_version.sh &&
+          {{- end }}
+          {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
+          /pulsar/tools/certconverter.sh &&
+          {{- end }}
+          exec bin/pulsar functions-worker
+        ports:
+        - name: functiontls
+          containerPort: 6751
+        - name: function
+          containerPort: 6750
+        envFrom:
+        - configMapRef:
+            name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-extra"
+        env:
+        - name: workerHostname
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name 
+        - name: PF_workerId 
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        {{- if .Values.function.usePython3 }}
+        - name: SET_PYTHON_3_DEFAULT
+          value: 'true'
+        {{- end }}
+        volumeMounts:
+          {{- if .Values.enableTokenAuth }}
+          - mountPath: "/pulsar/token-superuser"
+            name: token-superuser
+            readOnly: true
+          - mountPath: "/pulsar/token-public-key"
+            name: token-public-key
+            readOnly: true
+          {{- end }}
+          {{- if .Values.enableTls }}
+          - name: certs
+            readOnly: true
+            mountPath: /pulsar/certs
+            {{- if .Values.tls.zookeeper.enabled}}
+          - name: certconverter
+            mountPath: /pulsar/tools
+            {{- end }}
+          {{- end }}
+          - name: config-volume
+            mountPath: /pulsar/funcconf/functions_worker.yml
+            subPath: functions_worker.yml
+          - name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-{{ .Values.function.volumes.data.name }}"
+            mountPath: /pulsar/logs
+          {{- if .Values.function.initContainer }}
+          - name: extra-data
+            mountPath: {{ .Values.function.initContainer.emptyDirPath }}
+          {{- end }}
+{{- if .Values.extra.burnellLogCollector }}
+      - name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-burnell"
+        image: "{{ .Values.image.burnellLogCollector.repository }}:{{ .Values.image.burnellLogCollector.tag }}"
+        imagePullPolicy: {{ .Values.image.burnellLogCollector.pullPolicy }}
+        {{- if .Values.function.burnellLogCollectorResources }}
+        resources:
+{{ toYaml .Values.function.burnellLogCollectorResources | indent 10 }}
+        {{- end }}
+        ports:
+        - name: burnelllog
+          containerPort: 4040
+        env:
+          - name: LogServerPort
+            value: ":4040"
+          - name: FunctionLogPathPrefix
+            value: "/pulsar/log/functions/"
+        volumeMounts:
+          - name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-{{ .Values.function.volumes.data.name }}"
+            mountPath: /pulsar/logs
+            readOnly: true
+{{- end }}
+  {{- if .Values.persistence }}
+  volumeClaimTemplates:
+  - metadata:
+      name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-{{ .Values.function.volumes.data.name }}"
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.function.volumes.data.size }}
+    {{- if or .Values.function.volumes.data.existingStorageClassName .Values.default_storage.existingStorageClassName }}
+      {{- if .Values.function.volumes.data.existingStorageClassName}}
+      {{- if ne .Values.function.volumes.data.existingStorageClassName "default"}}
+      storageClassName: "{{ .Values.function.volumes.data.existingStorageClassName }}"
+      {{- end }}
+      {{- else }}
+      {{- if ne .Values.default_storage.existingStorageClassName "default"}}
+      storageClassName: "{{ .Values.default_storage.existingStorageClassName }}"
+      {{- end }}
+      {{- end }}
+    {{- else }}
+      {{- if or .Values.function.volumes.data.storageClass .Values.default_storage }}
+      storageClassName: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-{{ .Values.function.volumes.data.name }}"
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}

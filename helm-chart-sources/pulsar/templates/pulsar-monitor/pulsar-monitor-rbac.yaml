@@ -1,0 +1,41 @@
+{{- if .Values.extra.pulsarMonitor }}
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarMonitor.component }}"
+rules:
+- apiGroups: [""]
+  resources:
+  - services
+  - configmaps
+  - pods
+  - secrets
+  verbs:
+  - '*'
+- apiGroups:
+  - apps
+  resources:
+  - deployments
+  - statefulsets
+  verbs:
+  - '*'
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarMonitor.component }}"
+  namespace: {{ .Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarMonitor.component }}"
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarMonitor.component }}"
+subjects:
+- kind: ServiceAccount
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarMonitor.component }}"
+  namespace: {{ .Release.Namespace }}
+{{- end }}

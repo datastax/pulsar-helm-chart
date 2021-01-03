@@ -1,0 +1,37 @@
+{{- if .Values.extra.pulsarDashboard }}
+{{- if .Values.pulsarDashboard.ingress.enabled }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarDashboard.component }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.pulsarDashboard.component }}
+    cluster: {{ template "pulsar.fullname" . }}
+  annotations:
+{{ toYaml .Values.pulsarDashboard.ingress.annotations | indent 4 }}
+spec:
+  rules:
+    - host: {{ .Values.pulsarDashboard.ingress.host }}
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarDashboard.component }}"
+              servicePort: 80
+          - path: /ws/
+            backend:
+              serviceName: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarDashboard.component }}"
+              servicePort: 80
+  {{- if and .Values.enableTls .Values.pulsarDashboard.ingress.enableTls}}
+  tls:
+  - hosts:
+    - {{ .Values.pulsarDashboard.ingress.host }}
+    secretName: {{ .Values.tlsSecretName }}
+  {{- end }}
+{{- end }}
+{{- end }}

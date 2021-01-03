@@ -1,0 +1,70 @@
+
+persistence: no
+enableTests: yes
+extra:
+  autoRecovery: no
+  bastion: yes
+  proxy: no
+  pulsarMonitor: no
+
+image:
+  broker:
+    # If using tiered storage, use pulsar-all image for broker
+    repository: datastax/pulsar-all
+
+storageOffload:
+
+  bucket: kesque-helm-chart-ci-test 
+  region: us-east-1
+  maxBlockSizeInBytes: "6400000" 
+  readBufferSizeInBytes: "100000"
+  ## The following are default values for the cluster. They can be changed
+  ## on each namespace.
+  managedLedgerOffloadDeletionLagMs: "1000"
+  managedLedgerOffloadAutoTriggerSizeThresholdBytes: "1000"
+
+  # For AWS S3
+  # ======
+  # You must create an IAM account with access to the bucket and 
+  # generate keys for that account.
+  #
+  driver: aws-s3
+  accessKey: <must be passed from env variable in Helm command line>
+  accessSecret: <must be passed from env variable in Helm command line> # pragma: allowlist secret
+  ## For s3 compatible services, need to specify the endpoint but
+  ## not needed for AWS
+  #serviceEndpoint: http://127.0.0.1:7777 
+
+zookeeper:
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 0.3 
+  configData:
+    PULSAR_MEM: "\"-Xms512m -Xmx512m -Dcom.sun.management.jmxremote -Djute.maxbuffer=10485760 -XX:+ParallelRefProcEnabled -XX:+UnlockExperimentalVMOptions -XX:+AggressiveOpts -XX:+DoEscapeAnalysis -XX:+DisableExplicitGC -XX:+PerfDisableSharedMem -Dzookeeper.forceSync=no\""
+
+bookkeeper:
+  replicaCount: 2
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 0.3 
+  configData:
+    BOOKIE_MEM: "-Xms512m -Xmx512m -XX:MaxDirectMemorySize=512m -XX:+ExitOnOutOfMemoryError"
+    BOOKIE_GC: "\"-XX:+UseG1GC -XX:MaxGCPauseMillis=10\""
+
+
+broker:
+  component: broker
+  replicaCount: 1
+  resources:
+    requests:
+      memory: 1000Mi
+      cpu: 0.3 
+  configData:
+    PULSAR_MEM: "\"-Xms512m -Xmx1000m -XX:MaxDirectMemorySize=1000m -XX:+ExitOnOutOfMemoryError\""
+    managedLedgerMaxEntriesPerLedger: "5000"
+    managedLedgerMinLedgerRolloverTimeMinutes: "1"
+    managedLedgerMaxLedgerRolloverTimeMinutes: "2"
+
+  

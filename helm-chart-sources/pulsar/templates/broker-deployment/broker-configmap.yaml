@@ -1,0 +1,200 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+{{- if .Values.extra.broker }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.broker.component }}
+    cluster: {{ template "pulsar.fullname" . }}
+data:
+  zookeeperServers: 
+    {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
+      {{- if .Values.extra.zookeepernp }}
+    {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2281,{{ template "pulsar.fullname" . }}-{{ .Values.zookeepernp.component }}-ca:2281
+      {{- else }}
+    {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2281
+      {{- end }}
+    {{- else }}
+      {{- if .Values.extra.zookeepernp }}
+    {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2181,{{ template "pulsar.fullname" . }}-{{ .Values.zookeepernp.component }}-ca:2181
+      {{- else }}
+    {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2181
+      {{- end }}
+    {{- end }}
+  configurationStoreServers:
+    {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
+    {{- if .Values.extra.zookeepernp }}
+    {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2281,{{ template "pulsar.fullname" . }}-{{ .Values.zookeepernp.component }}-ca:2281
+    {{- else }}
+    {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2281
+    {{- end }}
+    {{- else }}
+    {{- if .Values.extra.zookeepernp }}
+    {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2181,{{ template "pulsar.fullname" . }}-{{ .Values.zookeepernp.component }}-ca:2181
+    {{- else }}
+    {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2181
+    {{- end }}
+    {{- end }}
+  clusterName: {{ template "pulsar.fullname" . }}
+  {{- if .Values.broker.functionsWorkerEnabled }}
+  functionsWorkerEnabled: "true"
+  PF_pulsarFunctionsCluster: {{ template "pulsar.fullname" . }}
+  # Since function worker connects on localhost, we can always non-TLS ports
+  # when running with the broker
+  PF_pulsarServiceUrl: "pulsar://localhost:6650"
+  PF_pulsarWebServiceUrl: "http://localhost:8080"
+  {{- end }}
+  {{- if .Values.broker.webSocketServiceEnabled }}
+  webSocketServiceEnabled: "true"
+  {{- end }}
+  allowAutoTopicCreationType: "non-partitioned"
+  {{- if .Values.enableTokenAuth }}
+  PF_clientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
+  PF_clientAuthenticationParameters: "file:///pulsar/token-superuser/superuser.jwt"
+  # For client conf so that we can run pulsar-admin health check
+  authParams: "file:///pulsar/token-superuser-stripped.jwt"
+  authPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
+  authorizationEnabled: "true"
+  authenticationEnabled: "true"
+  proxyRoles: "{{ .Values.proxyRoles }}"
+  superUserRoles: "{{ .Values.superUserRoles }}" 
+  tokenPublicKey: "file:///pulsar/token-public-key/{{ .Values.tokenPublicKeyFile }}"
+  brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
+  brokerClientAuthenticationParameters: "file:///pulsar/token-superuser/superuser.jwt"
+  {{- if .Values.broker.extraAuthProvider }}
+  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken,{{ .Values.proxy.extraAuthProvider }}"
+  {{- else }}
+  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
+  {{- end }}
+  {{- end }}
+{{- if .Values.enableTls }}
+  tlsEnabled: "true"
+  tlsCertificateFilePath: /pulsar/certs/tls.crt
+  tlsKeyFilePath: /pulsar/tls-pk8.key
+  {{- if .Values.secrets }}
+  tlsTrustCertsFilePath: /pulsar/certs/ca.crt
+  {{- else }}
+  tlsTrustCertsFilePath: "{{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}"
+  {{- end }}
+  tlsProtocols: "TLSv1.2,TLSv1.1"
+  brokerServicePortTls: "6651"
+  brokerClientTlsEnabled: "true"
+  webServicePortTls: "8443"
+  {{- if .Values.secrets }}
+  brokerClientTrustCertsFilePath: /pulsar/certs/ca.crt
+  {{- else }}
+  brokerClientTrustCertsFilePath: "{{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}"
+  {{- end }}
+  {{- if .Values.tls.bookkeeper.enabled}}
+  bookkeeperTLSClientAuthentication: "true"
+  bookkeeperTLSKeyFileType: "PEM"
+  bookkeeperTLSKeyFilePath: "/pulsar/tls-pk8.key"
+  bookkeeperTLSCertificateFilePath: "/pulsar/certs/tls.crt"
+  {{- if .Values.secrets }}
+  bookkeeperTLSTrustCertsFilePath: /pulsar/certs/ca.crt
+  {{- else }}
+  bookkeeperTLSTrustCertsFilePath: "{{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}"
+  {{- end }}
+  bookkeeperTLSTrustCertTypes: "PEM"
+  PULSAR_PREFIX_bookkeeperTLSClientAuthentication: "true"
+  PULSAR_PREFIX_bookkeeperTLSKeyFileType: "PEM"
+  PULSAR_PREFIX_bookkeeperTLSKeyFilePath: "/pulsar/tls-pk8.key"
+  PULSAR_PREFIX_bookkeeperTLSCertificateFilePath: "/pulsar/certs/tls.crt"
+  PULSAR_PREFIX_bookkeeperTLSTrustCertTypes: "PEM"
+  {{- if .Values.secrets }}
+  PULSAR_PREFIX_bookkeeperTLSTrustCertsFilePath: /pulsar/certs/ca.crt
+  {{- else }}
+  PULSAR_PREFIX_bookkeeperTLSTrustCertsFilePath: "{{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}"
+  {{- end }}
+  # See this BookKeeper PR for why this is necessary: https://github.com/apache/bookkeeper/pull/2300
+  bookkeeperUseV2WireProtocol: "false"
+  {{- end }}
+{{- end }}
+{{- if .Values.storageOffload.driver }}
+{{- if eq .Values.storageOffload.driver "aws-s3" }}
+  managedLedgerOffloadDriver: "{{ .Values.storageOffload.driver }}" 
+  s3ManagedLedgerOffloadBucket: "{{ .Values.storageOffload.bucket }}" 
+  s3ManagedLedgerOffloadRegion: "{{ .Values.storageOffload.region }}" 
+  {{- if .Values.extra.tardigrade}}
+  s3ManagedLedgerOffloadServiceEndpoint: "http://{{ .Release.Name }}-tardigrade-gateway-svc:{{ .Values.tardigrade.service.port }}"
+  AWS_ACCESS_KEY_ID: "{{ .Values.tardigrade.accessKey }}" 
+  AWS_SECRET_ACCESS_KEY: "{{ .Values.tardigrade.secretKey }}" 
+  {{- else }}
+  AWS_ACCESS_KEY_ID: "{{ .Values.storageOffload.accessKey }}" 
+  AWS_SECRET_ACCESS_KEY: "{{ .Values.storageOffload.accessSecret }}" # pragma: allowlist secret
+  {{- if .Values.storageOffload.serviceEndpoint}}
+  s3ManagedLedgerOffloadServiceEndpoint: "{{ .Values.storageOffload.serviceEndpoint }}"
+  {{- end }}
+  {{- end }}
+  {{- if .Values.storageOffload.managedLedgerOffloadAutoTriggerSizeThresholdBytes }}
+  # Pre 2.6.0 value
+  managedLedgerOffloadAutoTriggerSizeThresholdBytes: "{{ .Values.storageOffload.managedLedgerOffloadAutoTriggerSizeThresholdBytes }}" 
+  # Post 2.6.0 value
+  PULSAR_PREFIX_managedLedgerOffloadThresholdInBytes: "{{ .Values.storageOffload.managedLedgerOffloadAutoTriggerSizeThresholdBytes }}" 
+  {{- end }} 
+  {{- if .Values.storageOffload.managedLedgerOffloadDeletionLagMs }}
+  # Pre 2.6.0 value
+  managedLedgerOffloadDeletionLagMs: "{{ .Values.storageOffload.managedLedgerOffloadDeletionLagMs }}"
+  # Post 2.6.0 value
+  PULSAR_PREFIX_managedLedgerOffloadDeletionLagInMillis: "{{ .Values.storageOffload.managedLedgerOffloadDeletionLagMs }}" 
+  {{- end }}
+  {{- if .Values.storageOffload.maxBlockSizeInBytes }}
+  s3ManagedLedgerOffloadMaxBlockSizeInBytes: "{{ .Values.storageOffload.maxBlockSizeInBytes }}" 
+  {{- end }}
+  {{- if .Values.storageOffload.readBufferSizeInBytes }}
+  s3ManagedLedgerOffloadReadBufferSizeInBytes: "{{ .Values.storageOffload.readBufferSizeInBytes }}" 
+  {{- end }}
+{{- end }}
+{{- if eq .Values.storageOffload.driver "google-cloud-storage" }}
+  managedLedgerOffloadDriver: "{{ .Values.storageOffload.driver }}" 
+  gcsManagedLedgerOffloadBucket: "{{ .Values.storageOffload.bucket }}"
+  gcsManagedLedgerOffloadRegion: "{{ .Values.storageOffload.region }}"
+  gcsManagedLedgerOffloadServiceAccountKeyFile: "/pulsar/gcp-service-account/{{ .Values.storageOffload.gcsServiceAccountJsonFile }}"
+  {{- if .Values.storageOffload.managedLedgerOffloadAutoTriggerSizeThresholdBytes }}
+  # Pre 2.6.0 value
+  managedLedgerOffloadAutoTriggerSizeThresholdBytes: "{{ .Values.storageOffload.managedLedgerOffloadAutoTriggerSizeThresholdBytes }}" 
+  # Post 2.6.0 value
+  PULSAR_PREFIX_managedLedgerOffloadThresholdInBytes: "{{ .Values.storageOffload.managedLedgerOffloadAutoTriggerSizeThresholdBytes }}" 
+  {{- end }} 
+  {{- if .Values.storageOffload.managedLedgerOffloadDeletionLagMs }}
+  # Pre 2.6.0 value
+  managedLedgerOffloadDeletionLagMs: "{{ .Values.storageOffload.managedLedgerOffloadDeletionLagMs }}"
+  # Post 2.6.0 value
+  PULSAR_PREFIX_managedLedgerOffloadDeletionLagInMillis: "{{ .Values.storageOffload.managedLedgerOffloadDeletionLagMs }}" 
+  {{- end }}
+  {{- if .Values.storageOffload.maxBlockSizeInBytes }}
+  gcsManagedLedgerOffloadMaxBlockSizeInBytes: "{{ .Values.storageOffload.maxBlockSizeInBytes }}" 
+  {{- end }}
+  {{- if .Values.storageOffload.readBufferSizeInBytes }}
+  gcsManagedLedgerOffloadReadBufferSizeInBytes: "{{ .Values.storageOffload.readBufferSizeInBytes }}" 
+  {{- end }}
+{{- end }}
+{{- end }}
+{{ toYaml .Values.broker.configData | indent 2 }}
+  # Workaround for double-quoted values in old values files
+  PULSAR_MEM: {{ .Values.broker.configData.PULSAR_MEM }}
+  PULSAR_GC: {{ .Values.broker.configData.PULSAR_GC }}
+{{- end }}

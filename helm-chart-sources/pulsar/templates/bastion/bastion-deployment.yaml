@@ -1,0 +1,192 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+{{- if .Values.extra.bastion }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.bastion.component }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.bastion.component }}
+    cluster: {{ template "pulsar.fullname" . }}
+spec:
+  replicas: {{ .Values.bastion.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "pulsar.name" . }}
+      release: {{ .Release.Name }}
+      component: {{ .Values.bastion.component }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "pulsar.name" . }}
+        release: {{ .Release.Name }}
+        component: {{ .Values.bastion.component }}
+        cluster: {{ template "pulsar.fullname" . }}
+      annotations:
+      {{- if .Values.restartOnConfigMapChange.enabled }}
+        checksum/config: {{ include (print $.Template.BasePath "/bastion/bastion-configmap.yaml") . | sha256sum }}
+      {{- end }}
+      {{- if .Values.bastion.annotations }}
+{{ toYaml .Values.bastion.annotations | indent 8 }}
+      {{- end }}
+    spec:
+      {{- if .Values.priorityClass.enabled }}
+      priorityClassName: pulsar-priority
+      {{- end }}
+    {{- if and (.Values.nodeSelector) (not .Values.bastion.nodeSelector) }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.bastion.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.bastion.nodeSelector | indent 8 }}
+    {{- end }}
+      {{- if .Values.bastion.nodeAffinity }}
+      affinity:
+        nodeAffinity:
+{{ toYaml .Values.bastion.nodeAffinity | indent 10 }}
+      {{- end }}
+      {{- if .Values.bastion.tolerations }}
+      tolerations:
+{{ toYaml .Values.bastion.tolerations | indent 8 }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.bastion.gracePeriod }}
+      volumes:
+        {{- if .Values.enableTokenAuth }}
+        - name: token-private-key
+          secret:
+            secretName: token-private-key
+        - name: token-public-key
+          secret:
+            secretName: token-public-key
+        - name: token-admin
+          secret:
+            secretName: token-admin
+        - name: token-superuser
+          secret:
+            secretName: token-superuser
+        {{- end }}
+        {{- if .Values.enableTls }}
+        - name: certs
+          secret:
+            secretName: "{{ .Values.tlsSecretName }}" 
+        {{- end }}
+      containers:
+{{- if .Values.extra.pulsarHealer }}
+      - name: "{{ template "pulsar.fullname" . }}-burnell" 
+        image: "{{ .Values.image.burnell.repository }}:{{ .Values.image.burnell.tag }}"
+        imagePullPolicy: {{ .Values.image.burnell.pullPolicy }}
+      {{- if .Values.proxy.burnellResources }}
+        resources:
+{{ toYaml .Values.proxy.burnellResources | indent 10 }}
+      {{- end }}
+        ports:
+        - name: burnell
+          containerPort: 8964
+        volumeMounts:
+          {{- if .Values.enableTls }}
+          - name: certs
+            readOnly: true
+            mountPath: /pulsar/certs
+          {{- end }}
+        env:
+          - name: PORT
+            value: "8964"
+          - name: ClusterName
+            value: "{{ template "pulsar.fullname" . }}"
+          - name: SuperRoles
+            value: {{ .Values.superUserRoles }}
+          - name: ProcessMode
+            value: "healer"
+          - name: PulsarNamespace
+            value: {{ .Release.Namespace }}
+          - name: LogLevel
+            value: {{ .Values.burnell.logLevel | default "info" }}
+          - name: PrivateKeySecretName
+            value: {{ .Values.tokenPrivateKeyFile }}
+          - name: PublicKeySecretName
+            value: {{ .Values.tokenPublicKeyFile }}
+{{- end }}
+      - name: "{{ template "pulsar.fullname" . }}-{{ .Values.bastion.component }}"
+        image: "{{ .Values.image.bastion.repository }}:{{ .Values.image.bastion.tag }}"
+        imagePullPolicy: {{ .Values.image.bastion.pullPolicy }}
+      {{- if .Values.bastion.resources }}
+        resources:
+{{ toYaml .Values.bastion.resources | indent 10 }}
+      {{- end }}
+        command: ["sh", "-c"]
+        volumeMounts:
+          {{- if .Values.enableTokenAuth }}
+          - mountPath: "/pulsar/token-private-key"
+            name: token-private-key
+            readOnly: true
+          - mountPath: "/pulsar/token-public-key"
+            name: token-public-key
+            readOnly: true
+          - mountPath: "/pulsar/token-admin"
+            name: token-admin
+            readOnly: true
+          - mountPath: "/pulsar/token-superuser"
+            name: token-superuser
+            readOnly: true
+          {{- end }}
+          {{- if .Values.enableTls }}
+          - name: certs
+            readOnly: true
+            mountPath: /pulsar/certs
+            {{- end }}
+        args:
+        - >
+          {{- if .Values.enableTokenAuth }}
+          cat /pulsar/token-superuser/superuser.jwt | tr -d '\n' > /pulsar/token-superuser-stripped.jwt &&
+          {{- end }}
+          {{- if .Values.bastion.installDebugTools }}
+          apt-get update &&
+          apt-get install vim tcpdump -y &&
+          echo "PATH=\$PATH:/pulsar/bin" >> /root/.bashrc &&
+          {{- end }}
+          bin/apply-config-from-env.py conf/client.conf &&
+          exec /bin/bash -c "trap : TERM INT; sleep infinity & wait"
+        envFrom:
+        - configMapRef:
+            name: "{{ template "pulsar.fullname" . }}-{{ .Values.bastion.component }}"
+        env:
+        # If proxy is deployed, use that for web service URL to 
+        # properly forward command to broker or function worker
+        {{- if .Values.extra.proxy }}
+        {{- if .Values.enableTls }}
+        - name: webServiceUrl
+          value: https://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8443/
+        {{- else }}
+        - name: webServiceUrl
+          value: http://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8080/
+        {{- end }}
+        {{- else }}
+        - name: webServiceUrl
+          value: http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080/
+        {{- end }}
+        - name: brokerServiceUrl
+          value: pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6650/
+{{- end }}

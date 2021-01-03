@@ -1,0 +1,342 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied.  See the License for the
+# specific language governing permissions and limitations
+# under the License.
+#
+
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.bookkeeper.component }}
+    cluster: {{ template "pulsar.fullname" . }}
+spec:
+  serviceName: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}"
+  replicas: {{ .Values.bookkeeper.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "pulsar.name" . }}
+      release: {{ .Release.Name }}
+      component: {{ .Values.bookkeeper.component }}
+  updateStrategy:
+{{ toYaml .Values.bookkeeper.updateStrategy | indent 4 }}
+  podManagementPolicy: {{ .Values.bookkeeper.podManagementPolicy }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "pulsar.name" . }}
+        release: {{ .Release.Name }}
+        component: {{ .Values.bookkeeper.component }}
+        cluster: {{ template "pulsar.fullname" . }}
+      annotations:
+{{ toYaml .Values.bookkeeper.annotations | indent 8 }}
+      {{- if .Values.restartOnConfigMapChange.enabled }}
+        checksum/config: {{ include (print $.Template.BasePath "/bookkeeper/bookkeeper-configmap.yaml") . | sha256sum }}
+      {{- end }}
+    spec:
+      {{- if .Values.priorityClass.enabled }}
+      priorityClassName: pulsar-priority
+      {{- end }}
+    {{- if and (.Values.nodeSelector) (not .Values.bookkeeper.nodeSelector) }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.bookkeeper.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.bookkeeper.nodeSelector | indent 8 }}
+    {{- end }}
+    {{- if .Values.bookkeeper.tolerations }}
+      tolerations:
+{{ toYaml .Values.bookkeeper.tolerations | indent 8 }}
+    {{- end }}
+      affinity:
+        {{- if .Values.bookkeeper.nodeAffinity }}
+        nodeAffinity:
+{{ toYaml .Values.bookkeeper.nodeAffinity | indent 10 }}
+        {{- end }}
+        {{- if .Values.enableAntiAffinity }}
+        podAntiAffinity:
+        {{- if .Values.bookkeeper.podAntiAffinity }}
+{{ toYaml .Values.bookkeeper.podAntiAffinity | indent 10 }}
+        {{- else }}       
+          {{- if .Values.antiAffinity.host.enabled }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: "app"
+                operator: In
+                values:
+                - "{{ template "pulsar.name" . }}"
+              - key: "release"
+                operator: In
+                values:
+                - {{ .Release.Name }}
+              - key: "component"
+                operator: In
+                values:
+                - {{ .Values.bookkeeper.component }}
+            topologyKey: "kubernetes.io/hostname"
+          {{- end }}
+          {{- if .Values.antiAffinity.zone.enabled }}
+          preferredDuringSchedulingIgnoredDuringExecution: 
+          - weight: 100  
+            podAffinityTerm:
+              topologyKey: failure-domain.beta.kubernetes.io/zone
+              labelSelector:
+                matchExpressions:
+                - key: "app"
+                  operator: In
+                  values:
+                  - "{{ template "pulsar.name" . }}"
+                - key: "release"
+                  operator: In
+                  values:
+                  - {{ .Release.Name }}
+                - key: "component"
+                  operator: In
+                  values:
+                  - {{ .Values.bookkeeper.component }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.bookkeeper.gracePeriod }}
+      initContainers:
+      # This init container will wait for zookeeper to be ready before
+      # deploying the bookies
+      - name: wait-zookeeper-ready
+        image: "{{ .Values.image.bookkeeper.repository }}:{{ .Values.image.bookkeeper.tag }}"
+        imagePullPolicy: {{ .Values.image.bookkeeper.pullPolicy }}
+        command: ["sh", "-c"]
+        args:
+          - >-
+            until bin/pulsar zookeeper-shell -server {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }} ls /admin/clusters | grep "^\[.*{{ template "pulsar.fullname" . }}.*\]"; do
+              sleep 3;
+            done;
+      # This initContainer will make sure that the bookkeeper
+      # metadata is in zookeeper
+      - name: pulsar-bookkeeper-metaformat
+        image: "{{ .Values.image.bookkeeper.repository }}:{{ .Values.image.bookkeeper.tag }}"
+        imagePullPolicy: {{ .Values.image.bookkeeper.pullPolicy }}
+        command: ["sh", "-c"]
+        args:
+        - >
+          bin/apply-config-from-env.py conf/bookkeeper.conf &&
+          bin/apply-config-from-env.py conf/bkenv.sh &&
+          bin/bookkeeper shell metaformat --nonInteractive || true;
+        envFrom:
+        - configMapRef:
+            name: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}"
+      containers:
+      - name: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}"
+        image: "{{ .Values.image.bookkeeper.repository }}:{{ .Values.image.bookkeeper.tag }}"
+        imagePullPolicy: {{ .Values.image.bookkeeper.pullPolicy }}
+        {{- if .Values.bookkeeper.probe.enabled }}
+        readinessProbe:
+          httpGet:
+            path: /api/v1/bookie/is_ready
+            port: 8000
+          initialDelaySeconds: {{ .Values.bookkeeper.probe.initial }} 
+          periodSeconds:  {{ .Values.bookkeeper.probe.period }} 
+        livenessProbe:
+          httpGet:
+            path: /api/v1/bookie/is_ready
+            port: 8000
+          initialDelaySeconds: {{ .Values.bookkeeper.probe.initial }} 
+          periodSeconds:  {{ .Values.bookkeeper.probe.period }} 
+        {{- end }}
+      {{- if .Values.bookkeeper.resources }}
+        resources:
+{{ toYaml .Values.bookkeeper.resources | indent 10 }}
+      {{- end }}
+        command: ["sh", "-c"]
+        args:
+        - >
+          bin/apply-config-from-env.py conf/bookkeeper.conf &&
+          bin/apply-config-from-env.py conf/bkenv.sh &&
+          {{- if and .Values.enableTls .Values.tls.bookkeeper.enabled }}
+          openssl pkcs8 -topk8 -inform PEM -outform PEM -in /pulsar/certs/tls.key -out /pulsar/tls-pk8.key -nocrypt &&
+          {{- end }}
+          {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
+          /pulsar/tools/certconverter.sh &&
+          {{- end }}
+          {{- if .Values.function.enableStateStorage }}
+          {{- if not (or .Values.extra.stateStorage .Values.function.stateStorageUrlOverride) }}
+          echo 'dlog.bkcEnsembleSize={{ .Values.stateStorage.ensemble }}' >> conf/bookkeeper.conf &&
+          echo 'dlog.bkcWriteQuorumSize={{ .Values.stateStorage.write }}'  >> conf/bookkeeper.conf &&
+          echo 'dlog.bkcAckQuorumSize={{ .Values.stateStorage.ack }}' >> conf/bookkeeper.conf &&
+          {{- end }}
+          {{- end }}
+          exec bin/pulsar bookie
+        ports:
+        - name: client
+          containerPort: 3181
+        envFrom:
+        - configMapRef:
+            name: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}"
+        volumeMounts:
+        {{- if .Values.enableTls}}
+        - name: certs
+          readOnly: true
+          mountPath: /pulsar/certs
+          {{- if .Values.tls.zookeeper.enabled}}
+        - name: certconverter
+          mountPath: /pulsar/tools
+          {{- end }}
+        {{- end }}
+        {{- if and .Values.bookkeeper.volumes.oneDisk}}
+        - name: "{{ .Values.bookkeeper.pvcPrefix}}{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-{{ .Values.bookkeeper.volumes.oneDisk.name }}"
+          mountPath: /pulsar/data
+        {{- else }}
+        - name: "{{ .Values.bookkeeper.pvcPrefix}}{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-{{ .Values.bookkeeper.volumes.journal.name }}"
+          mountPath: /pulsar/data/bookkeeper/journal
+        {{- if and .Values.bookkeeper.volumes.ranges .Values.function.enableStateStorage}}
+        {{- if not (or .Values.extra.stateStorage .Values.function.stateStorageUrlOverride) }}
+        - name: "{{ .Values.bookkeeper.pvcPrefix}}{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-{{ .Values.bookkeeper.volumes.ranges.name }}"
+          mountPath: /pulsar/data/bookkeeper/ranges
+        {{- end }}
+        {{- end }}
+        - name: "{{ .Values.bookkeeper.pvcPrefix}}{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-{{ .Values.bookkeeper.volumes.ledgers.name }}"
+          mountPath: /pulsar/data/bookkeeper/ledgers
+        {{- end }}
+      volumes:
+      {{- if .Values.enableTls }}
+      - name: certs
+        secret:
+          secretName: "{{ .Values.tlsSecretName }}"
+        {{- if .Values.tls.zookeeper.enabled}}
+      - name: certconverter
+        configMap: 
+          name: "{{ template "pulsar.fullname" . }}-certconverter-configmap"
+          defaultMode: 0755
+        {{- end }}
+      {{- end }}
+      {{- if not .Values.persistence }}
+      - name: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-{{ .Values.bookkeeper.volumes.journal.name }}"
+        emptyDir: {}
+      {{- if and .Values.bookkeeper.volumes.ranges .Values.function.enableStateStorage}}
+      {{- if not (or .Values.extra.stateStorage .Values.function.stateStorageUrlOverride) }}
+      - name: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-{{ .Values.bookkeeper.volumes.ranges.name }}"
+        emptyDir: {}
+      {{- end }}
+      {{- end }}
+      - name: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-{{ .Values.bookkeeper.volumes.ledgers.name }}"
+        emptyDir: {}
+    {{- end }}
+{{- if .Values.persistence }}
+  volumeClaimTemplates:
+  {{- if and .Values.bookkeeper.volumes.oneDisk }}
+  - metadata:
+      name: "{{ .Values.bookkeeper.pvcPrefix}}{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-{{ .Values.bookkeeper.volumes.oneDisk.name }}"
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.bookkeeper.volumes.oneDisk.size }}
+    {{- if or .Values.bookkeeper.volumes.oneDisk.existingStorageClassName .Values.default_storage.existingStorageClassName }}
+      {{- if .Values.bookkeeper.volumes.oneDisk.existingStorageClassName}}
+      {{- if ne .Values.bookkeeper.volumes.oneDisk.existingStorageClassName "default"}}
+      storageClassName: "{{ .Values.bookkeeper.volumes.oneDisk.existingStorageClassName }}"
+      {{- end }}
+      {{- else }}
+      {{- if ne .Values.default_storage.existingStorageClassName "default"}}
+      storageClassName: "{{ .Values.default_storage.existingStorageClassName }}"
+      {{- end }}
+      {{- end }}
+    {{- else }}
+      {{- if or .Values.bookkeeper.volumes.oneDisk.storageClass .Values.default_storage }}
+      storageClassName: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-{{ .Values.bookkeeper.volumes.oneDisk.name }}"
+      {{- end }}
+    {{- end }}
+  {{- else }}
+  - metadata:
+      name: "{{ .Values.bookkeeper.pvcPrefix}}{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-{{ .Values.bookkeeper.volumes.journal.name }}"
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.bookkeeper.volumes.journal.size }}
+    {{- if or .Values.bookkeeper.volumes.journal.existingStorageClassName .Values.default_storage.existingStorageClassName }}
+      {{- if .Values.bookkeeper.volumes.journal.existingStorageClassName}}
+      {{- if ne .Values.bookkeeper.volumes.journal.existingStorageClassName "default"}}
+      storageClassName: "{{ .Values.bookkeeper.volumes.journal.existingStorageClassName }}"
+      {{- end }}
+      {{- else }}
+      {{- if ne .Values.default_storage.existingStorageClassName "default"}}
+      storageClassName: "{{ .Values.default_storage.existingStorageClassName }}"
+      {{- end }}
+      {{- end }}
+    {{- else }}
+      {{- if or .Values.bookkeeper.volumes.journal.storageClass .Values.default_storage }}
+      storageClassName: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-{{ .Values.bookkeeper.volumes.journal.name }}"
+      {{- end }}
+    {{- end }}
+  {{- if and .Values.bookkeeper.volumes.ranges .Values.function.enableStateStorage}}
+  {{- if not (or .Values.extra.stateStorage .Values.function.stateStorageUrlOverride) }}
+  - metadata:
+      name: "{{ .Values.bookkeeper.pvcPrefix}}{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-{{ .Values.bookkeeper.volumes.ranges.name }}"
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.bookkeeper.volumes.ranges.size }}
+    {{- if or .Values.bookkeeper.volumes.ranges.existingStorageClassName .Values.default_storage.existingStorageClassName }}
+      {{- if .Values.bookkeeper.volumes.ranges.existingStorageClassName}}
+      {{- if ne .Values.bookkeeper.volumes.ranges.existingStorageClassName "default"}}
+      storageClassName: "{{ .Values.bookkeeper.volumes.ranges.existingStorageClassName }}"
+      {{- end }}
+      {{- else }}
+      {{- if ne .Values.default_storage.existingStorageClassName "default"}}
+      storageClassName: "{{ .Values.default_storage.existingStorageClassName }}"
+      {{- end }}
+      {{- end }}
+    {{- else }}
+      {{- if or .Values.bookkeeper.volumes.ranges.storageClass .Values.default_storage }}
+      storageClassName: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-{{ .Values.bookkeeper.volumes.ranges.name }}"
+      {{- end }}
+    {{- end }}
+  {{- end }}
+  {{- end }}
+  - metadata:
+      name: "{{ .Values.bookkeeper.pvcPrefix}}{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-{{ .Values.bookkeeper.volumes.ledgers.name }}"
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: {{ .Values.bookkeeper.volumes.ledgers.size }}
+    {{- if or .Values.bookkeeper.volumes.ledgers.existingStorageClassName .Values.default_storage.existingStorageClassName }}
+      {{- if .Values.bookkeeper.volumes.ledgers.existingStorageClassName}}
+      {{- if ne .Values.bookkeeper.volumes.ledgers.existingStorageClassName "default"}}
+      storageClassName: "{{ .Values.bookkeeper.volumes.ledgers.existingStorageClassName }}"
+      {{- end }}
+      {{- else }}
+      {{- if ne .Values.default_storage.existingStorageClassName "default"}}
+      storageClassName: "{{ .Values.default_storage.existingStorageClassName }}"
+      {{- end }}
+      {{- end }}
+    {{- else }}
+      {{- if or .Values.bookkeeper.volumes.ledgers.storageClass .Values.default_storage }}
+      storageClassName: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-{{ .Values.bookkeeper.volumes.ledgers.name }}"
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}

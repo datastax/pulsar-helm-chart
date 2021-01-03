@@ -1,0 +1,83 @@
+{{- if .Values.extra.pulsarDashboard }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarDashboard.component }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.pulsarDashboard.component }}
+    cluster: {{ template "pulsar.fullname" . }}
+data:
+  config-override.js: |
+    var globalConf = {
+        "template_directory_uri": "",
+        "ajax_url": "",
+        "rest_url": "",
+        "tenant": "{{ .Values.pulsarDashboard.defaultTenant }}",
+        "polling_interval": "10000",
+        "wss_url": "",
+        "disable_billing": "",
+        "home_cluster": "{{ template "pulsar.fullname" . }}",
+        "test": "",
+        "client_token": "",
+        "admin_token": "",
+        "login": "{{ .Values.pulsarDashboard.adminUser }}",
+        "email": "",
+        "client_role": "",
+        "plan": "",
+        "need_to_create_plan": "",
+        "plan_to_create": "",
+        "admin_role": "",
+        "cluster_list": ["{{ template "pulsar.fullname" . }}"],
+        "api_base_url": "{{ .Values.pulsarDashboard.apiBaseUrl }}",
+        "ca_certificate": "",
+        "api_version": "2.6.1",
+        "default_plan": "",
+        "notice_text": "",
+        {{- if index .Values "kube-prometheus-stack" "grafana" "ingress" "enabled"}}
+        "grafana_url": "https://{{ index .Values "kube-prometheus-stack" "grafana" "ingress" "hosts" 0 }}{{ index .Values "kube-prometheus-stack" "grafana" "ingress" "path" }}",
+        {{- else }}
+        "grafana_url": "",
+        {{- end }}
+        "user_role": "administrator",
+        "feature_flags": {
+            "function": true,
+            "sink": true,
+            "source": true,
+            "tenantStats": false
+        },
+        "security": "",
+        "chargebee_site": "",
+        "billing_provider": "",
+        "multi_user_org": "",
+        "private_org": "true",
+        "functions_disabled": "false",
+        {{- if .Values.extra.burnell }}
+        "clients_disabled": "false",
+        {{- else }}
+        "clients_disabled": "false",
+        {{- end }}
+        "running_env": "k8s",
+        "use_token_list": "false",
+        "auth_mode": "{{ .Values.pulsarDashboard.authMode }}",
+        "host_overrides": {
+            {{- if .Values.pulsarDashboard.codeSampleUrl.useDnsName }}
+            "pulsar": "pulsar+ssl://{{ .Values.dnsName }}:6651",
+            "ws": "wss://{{ .Values.dnsName }}:8001",
+            "http": "https://{{ .Values.dnsName }}:8085"
+            {{- else }}
+            "pulsar": "{{ .Values.pulsarDashboard.codeSampleUrl.pulsar }}",
+            "ws": "{{ .Values.pulsarDashboard.codeSampleUrl.websocket }}",
+            "http": "{{ .Values.pulsarDashboard.codeSampleUrl.http }}"
+            {{- end }}
+        }
+    }
+
+
+
+
+{{- end }}

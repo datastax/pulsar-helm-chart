@@ -1,0 +1,50 @@
+{{- if .Values.extra.tardigrade }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-tardigrade-gateway
+  namespace: {{ .Release.Namespace }} 
+  labels:
+    app: {{ .Release.Name }}-tardigrade-gateway
+spec:
+  replicas: 1 
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-tardigrade-gateway
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-tardigrade-gateway
+    spec:
+      volumes:
+      - name: config-props
+        configMap:
+          name: {{ .Release.Name }}-tardigrade
+      - name: config-emptydir
+        emptyDir: {}
+      initContainers:
+      - name: make-config-rw
+        image: busybox
+        command: [ "sh", "-c" ]
+        args: [ "echo 'Copy config' && cp /configmap/config.yaml /config" ]
+        volumeMounts:
+        - name: config-emptydir
+          mountPath:  /config
+        - name: config-props
+          mountPath: /configmap
+      containers:
+      - name: tardigrade-gateway
+        image: {{ .Values.image.tardigrade.repository }}:{{ .Values.image.tardigrade.tag }}
+        args: [ "run", "--config-dir", "/config" ]
+        volumeMounts:
+        - name: config-emptydir
+          mountPath:  /config
+        - name: config-props
+          mountPath: /configmap
+        env:
+        - name: CONF_PATH 
+          value: "/config"
+        ports:
+        - containerPort: 7777
+          protocol: TCP
+{{- end }}

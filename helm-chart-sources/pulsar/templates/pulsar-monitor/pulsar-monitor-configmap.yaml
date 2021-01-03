@@ -1,0 +1,74 @@
+{{- if .Values.extra.pulsarMonitor }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ include "pulsar.fullname" . }}-{{ .Values.pulsarMonitor.component }}-config"
+data:
+  runtime.yml: |-
+    name: {{ template "pulsar.fullname" . }}
+    token: {{ .Values.pulsarMonitor.config.pulsarClientToken }}
+    tokenFilePath: {{ .Values.pulsarMonitor.config.tokenFilePath }} 
+    trustStore: {{ .Values.pulsarMonitor.config.trustStore }}
+    analyticsConfig:
+      apiKey: {{ .Values.pulsarMonitor.config.analyticsApiKey }}
+      ingestionURL: {{ .Values.pulsarMonitor.config.analyticsUrl }}
+      insightsWriteKey: {{ .Values.pulsarMonitor.config.insightsWriteKey }}
+      insightsAccountId: "{{ .Values.pulsarMonitor.config.insightsAccountId }}"
+    prometheusConfig:
+      port: ":{{ .Values.pulsarMonitor.port }}"
+      exposeMetrics: {{ .Values.pulsarMonitor.prometheus.enabled }}
+      prometheusProxyURL: {{ .Values.pulsarMonitor.prometheus.proxyURL }}
+      prometheusProxyAPIKey: {{ .Values.pulsarMonitor.prometheus.proxyAPIKey }}
+    slackConfig:
+      alertUrl: {{ .Values.pulsarMonitor.config.alertUrl }}
+    sitesConfig:
+      sites:
+        {{- toYaml .Values.pulsarMonitor.config.sitesConfig | nindent 8 }}
+    opsGenieConfig:
+      intervalSeconds: 120
+      heartbeatKey: {{ .Values.pulsarMonitor.config.opsGenieHeartbeatKey }}
+      heartbeatUrl: {{ .Values.pulsarMonitor.config.opsGenieHeartbeatUrl }}
+      {{- if .Values.pulsarMonitor.config.opsGenieAlertKey }}
+      alertKey: {{ .Values.pulsarMonitor.config.opsGenieAlertKey }}
+      {{- end }}
+    k8sConfig:
+      enabled: {{ .Values.pulsarMonitor.config.k8sInClusterMonitorEnabled | default false }}
+      pulsarNamespace: {{ .Release.Namespace }}
+    brokersConfig:
+      {{- if .Values.pulsarMonitor.config.broker }}
+      intervalSeconds: {{ .Values.pulsarMonitor.config.broker.intervalSeconds | default 45 }}
+      inclusterRestURL: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080"
+      alertPolicy:
+        Ceiling: {{ .Values.pulsarMonitor.config.broker.alertCeiling | default 5 }}
+        MovingWindowSeconds: {{ .Values.pulsarMonitor.config.broker.alertWindowSeconds | default 600 }}
+        CeilingInMovingWindow: 8
+      {{- end }}
+    pulsarAdminRestConfig:
+      {{- if .Values.pulsarMonitor.config.adminRest }}
+      intervalSeconds: {{ .Values.pulsarMonitor.config.adminRest.intervalSeconds | default 120 }} 
+      clusters:
+        - name: {{ template "pulsar.fullname" . }}
+          url: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080" 
+          alertPolicy:
+            Ceiling: {{ .Values.pulsarMonitor.config.adminRest.alertCeiling | default 5 }} 
+            MovingWindowSeconds: 600
+            CeilingInMovingWindow: 8
+      {{- end }}
+    pulsarTopicConfig:
+      {{- if .Values.pulsarMonitor.config.latencyTest }}
+      - latencyBudgetMs: {{ .Values.pulsarMonitor.config.latencyTest.budgetMs | default 60 }}
+        name: "pubsub-latency-incluster-{{ template "pulsar.fullname" . }}"
+        intervalSeconds: {{ .Values.pulsarMonitor.config.latencyTest.intervalSeconds | default 60 }}
+        pulsarUrl: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6650"
+        topicName: {{ .Values.pulsarMonitor.config.latencyTest.intervalSeconds | default "persistent://public/default/pubsub-latency-test" }}
+        payloadSizes: [15B]
+        numberOfMessages: 1
+        alertPolicy:
+          Ceiling: {{ .Values.pulsarMonitor.config.latencyTest.alertCeiling | default 4 }}
+          MovingWindowSeconds: 360
+          CeilingInMovingWindow: 6
+      {{- end }}
+
+    websocketConfig:
+      {{- toYaml .Values.pulsarMonitor.config.pulsarWebSocketConfigs | nindent 8 }}
+{{- end }}

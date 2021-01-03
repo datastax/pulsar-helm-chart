@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-health"
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: "health-check"
+    cluster: {{ template "pulsar.fullname" . }}
+data:
+  proxy_health_check.sh: |
+    #!/bin/bash 
+    {{- if .Values.enableTokenAuth }}
+    curl -s --connect-timeout 2 --fail -H "Authorization: Bearer $(cat /pulsar/token-superuser/superuser.jwt | tr -d '\r')" http://localhost:8080/metrics/ > /dev/null
+    {{- else }}
+    curl -s --connect-timeout 2 --fail http://localhost:8080/metrics/ > /dev/null
+    {{- end }}
+
+  broker_health_check.sh: |
+    #!/bin/bash
+    {{- if .Values.enableTokenAuth }}
+    curl -s --connect-timeout 2 --fail -H "Authorization: Bearer $(cat /pulsar/token-superuser/superuser.jwt | tr -d '\r')" http://localhost:8080/admin/v2/brokers/health
+    {{- else }}
+    curl -s --connect-timeout 2 --fail http://localhost:8080/admin/v2/brokers/health
+    {{- end }}

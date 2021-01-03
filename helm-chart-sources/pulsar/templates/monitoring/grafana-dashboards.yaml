@@ -1,0 +1,192 @@
+{{- if .Values.grafanaDashboards.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "grafana-bookkeeper-dashboard"
+  {{- if .Values.grafanaDashboards.namespaceOverride }}
+  namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
+  {{- end }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: "grafana-bookkeeper-dashboard"
+    cluster: {{ template "pulsar.fullname" . }}
+    grafana_dashboard: bookkeeper
+data:
+  bookkeeper.json: |-
+{{ .Files.Get "grafana-dashboards/bookkeeper.json" | indent 4}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "grafana-jvm-dashboard"
+  {{- if .Values.grafanaDashboards.namespaceOverride }}
+  namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
+  {{- end }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: "grafana-jvm-dashboard"
+    cluster: {{ template "pulsar.fullname" . }}
+    grafana_dashboard: jvm
+data:
+  jvm.json: |-
+{{ .Files.Get "grafana-dashboards/jvm.json" | indent 4}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "grafana-messaging-dashboard"
+  {{- if .Values.grafanaDashboards.namespaceOverride }}
+  namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
+  {{- end }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: "grafana-messaging-dashboard"
+    cluster: {{ template "pulsar.fullname" . }}
+    grafana_dashboard: messaging
+data:
+  messaging.json: |-
+{{ .Files.Get "grafana-dashboards/messaging.json" | indent 4}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "grafana-namespace-dashboard"
+  {{- if .Values.grafanaDashboards.namespaceOverride }}
+  namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
+  {{- end }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: "grafana-namespace-dashboard"
+    cluster: {{ template "pulsar.fullname" . }}
+    grafana_dashboard: namespace
+data:
+  namespace.json: |-
+{{ .Files.Get "grafana-dashboards/namespace.json" | indent 4}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "grafana-node-dashboard"
+  {{- if .Values.grafanaDashboards.namespaceOverride }}
+  namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
+  {{- end }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: "grafana-node-dashboard"
+    cluster: {{ template "pulsar.fullname" . }}
+    grafana_dashboard: node
+data:
+  node.json: |-
+{{ .Files.Get "grafana-dashboards/node.json" | indent 4}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "grafana-overview-dashboard"
+  {{- if .Values.grafanaDashboards.namespaceOverride }}
+  namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
+  {{- end }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: "grafana-overview-dashboard"
+    cluster: {{ template "pulsar.fullname" . }}
+    grafana_dashboard: overview
+data:
+  overview.json: |-
+{{ .Files.Get "grafana-dashboards/overview.json" | indent 4}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "grafana-proxy-dashboard"
+  {{- if .Values.grafanaDashboards.namespaceOverride }}
+  namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
+  {{- end }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: "grafana-proxy-dashboard"
+    cluster: {{ template "pulsar.fullname" . }}
+    grafana_dashboard: proxy
+data:
+  proxyx.json: |-
+{{ .Files.Get "grafana-dashboards/proxy.json" | indent 4}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "grafana-pulsarmonitor-dashboard"
+  {{- if .Values.grafanaDashboards.namespaceOverride }}
+  namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
+  {{- end }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: "grafana-pulsarmonitor-dashboard"
+    cluster: {{ template "pulsar.fullname" . }}
+    grafana_dashboard: pulsarmonitor
+data:
+  pulsarmonitor.json: |-
+{{ .Files.Get "grafana-dashboards/pulsarmonitor.json" | indent 4}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "grafana-topic-dashboard"
+  {{- if .Values.grafanaDashboards.namespaceOverride }}
+  namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
+  {{- end }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: "grafana-topic-dashboard"
+    cluster: {{ template "pulsar.fullname" . }}
+    grafana_dashboard: topic
+data:
+  topic.json: |-
+{{ .Files.Get "grafana-dashboards/topic.json" | indent 4}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "grafana-zookeeper-dashboard"
+  {{- if .Values.grafanaDashboards.namespaceOverride }}
+  namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
+  {{- end }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: "grafana-zookeeper-dashboard"
+    cluster: {{ template "pulsar.fullname" . }}
+    grafana_dashboard: zookeeper
+data:
+  zookeeper.json: |-
+{{ .Files.Get "grafana-dashboards/zookeeper.json" | indent 4}}
+---
+{{- end }}

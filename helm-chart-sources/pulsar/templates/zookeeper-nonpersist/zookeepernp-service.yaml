@@ -1,0 +1,61 @@
+{{- if .Values.extra.zookeepernp }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeepernp.component }}"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.zookeepernp.component }}
+    cluster: {{ template "pulsar.fullname" . }}
+  annotations:
+    publishNotReadyAddresses: "true"
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
+    {{- if .Values.zookeepernp.service.annotations }}
+{{ toYaml .Values.zookeepernp.service.annotations | indent 4 }}
+    {{- end }}
+spec:
+  ports:
+  {{- if and .Values.tlsEnabled .Values.tls.zookeeper.enabled }}
+    - name: client-tls
+      port: 2281
+  {{- end }}
+{{ toYaml .Values.zookeepernp.service.ports | indent 2 }}
+  clusterIP: None
+  selector:
+    app: {{ template "pulsar.name" . }}
+    release: {{ .Release.Name }}
+    component: {{ .Values.zookeepernp.component }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeepernp.component }}-ca"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: {{ .Values.zookeepernp.component }}
+    cluster: {{ template "pulsar.fullname" . }}
+  annotations:
+    {{- if .Values.zookeepernp.service.annotations }}
+{{ toYaml .Values.zookeepernp.service.annotations | indent 4 }}
+    {{- end }}
+spec:
+  ports:
+  {{- if and .Values.tlsEnabled .Values.tls.zookeeper.enabled }}
+    - name: client-tls
+      port: 2281
+  {{- end }}
+{{ toYaml .Values.zookeepernp.service.ports | indent 2 }}
+  selector:
+    app: {{ template "pulsar.name" . }}
+    release: {{ .Release.Name }}
+    component: {{ .Values.zookeepernp.component }}
+{{- end }}
