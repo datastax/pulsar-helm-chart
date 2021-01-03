@@ -1,5 +1,5 @@
 [![GitHub](https://avatars1.githubusercontent.com/u/9919?s=30&v=4)](https://github.com/datastax/pulsar-helm-chart) 
-[![CircleCI](https://circleci.com/gh/datastax/pulsar-helm-chart/tree/master.svg?style=svg)](https://circleci.com/gh/datastax/pulsar-helm-chart/tree/master)
+[![CircleCI](https://circleci.com/gh/datastax/pulsar-helm-chart.svg?style=svg)](https://circleci.com/gh/datastax/pulsar-helm-chart)
 [![LICENSE](https://img.shields.io/hexpm/l/pulsar.svg)](https://github.com/datastax/pulsar-helm-chart/blob/master/LICENSE)
 
 # Helm Chart for an Apache Pulsar Cluster
