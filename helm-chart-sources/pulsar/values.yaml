@@ -285,32 +285,32 @@ image:
     # If not using tiered storage, you can use the smaller pulsar image for the broker
     repository: datastax/pulsar-all
     pullPolicy: IfNotPresent
-    tag: 2.6.1
+    tag: 2.6.2
   brokerSts:
     # If not using tiered storage, you can use the smaller pulsar image for the broker
     repository: datastax/pulsar-all
     pullPolicy: IfNotPresent
-    tag: 2.6.1
+    tag: 2.6.2
   function:
     repository: datastax/pulsar-all
     pullPolicy: IfNotPresent
-    tag: 2.6.1
+    tag: 2.6.2
   zookeeper:
     repository: datastax/pulsar
     pullPolicy: IfNotPresent
-    tag: 2.6.1
+    tag: 2.6.2
   bookkeeper:
     repository: datastax/pulsar
     pullPolicy: IfNotPresent
-    tag: 2.6.1
+    tag: 2.6.2
   proxy:
     repository: datastax/pulsar
     pullPolicy: IfNotPresent
-    tag: 2.6.1
+    tag: 2.6.2
   bastion:
     repository: datastax/pulsar
     pullPolicy: IfNotPresent
-    tag: 2.6.1
+    tag: 2.6.2
   pulsarBeam:
     repository: datastax/pulsar-beam
     pullPolicy: IfNotPresent
@@ -318,14 +318,14 @@ image:
   burnell:
     repository: datastatx/burnell
     pullPolicy: Always
-    tag: 1.2.54
+    tag: 0.0.2
   burnellLogCollector:
-    repository: datastax/burnell-logcollector
+    repository: datastax/burnell
     pullPolicy: IfNotPresent
-    tag: 0.2.99
+    tag: logcollector_latest
   pulsarSQL:
     repository: datastax/pulsar-all
-    tag: 2.4.2
+    tag: 2.6.2
     pullPolicy: IfNotPresent
   tardigrade:
     repository: storjlabs/gateway
@@ -334,7 +334,7 @@ image:
   pulsarMonitor:
     repository: datastax/pulsar-monitor
     pullPolicy: IfNotPresent
-    tag: 1.2.91
+    tag: latest 
   pulsarDashboard:
     repository: datastax/pulsar-dashboard
     pullPolicy: IfNotPresent
