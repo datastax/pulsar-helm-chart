@@ -15,18 +15,18 @@
 #  
 # 
 
-{{- if .Values.extra.pulsarDashboard }}
+{{- if .Values.extra.pulsarAdminConsole }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarDashboard.component }}"
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}"
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "pulsar.name" . }}
     chart: {{ template "pulsar.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    component: {{ .Values.pulsarDashboard.component }}
+    component: {{ .Values.pulsarAdminConsole.component }}
     cluster: {{ template "pulsar.fullname" . }}
 data:
   config-override.js: |
@@ -34,7 +34,7 @@ data:
         "template_directory_uri": "",
         "ajax_url": "",
         "rest_url": "",
-        "tenant": "{{ .Values.pulsarDashboard.defaultTenant }}",
+        "tenant": "{{ .Values.pulsarAdminConsole.defaultTenant }}",
         "polling_interval": "10000",
         "wss_url": "",
         "disable_billing": "",
@@ -42,7 +42,7 @@ data:
         "test": "",
         "client_token": "",
         "admin_token": "",
-        "login": "{{ .Values.pulsarDashboard.adminUser }}",
+        "login": "{{ .Values.pulsarAdminConsole.adminUser }}",
         "email": "",
         "client_role": "",
         "plan": "",
@@ -50,7 +50,7 @@ data:
         "plan_to_create": "",
         "admin_role": "",
         "cluster_list": ["{{ template "pulsar.fullname" . }}"],
-        "api_base_url": "{{ .Values.pulsarDashboard.apiBaseUrl }}",
+        "api_base_url": "{{ .Values.pulsarAdminConsole.apiBaseUrl }}",
         "ca_certificate": "",
         "api_version": "2.6.1",
         "default_plan": "",
@@ -80,16 +80,16 @@ data:
         {{- end }}
         "running_env": "k8s",
         "use_token_list": "false",
-        "auth_mode": "{{ .Values.pulsarDashboard.authMode }}",
+        "auth_mode": "{{ .Values.pulsarAdminConsole.authMode }}",
         "host_overrides": {
-            {{- if .Values.pulsarDashboard.codeSampleUrl.useDnsName }}
+            {{- if .Values.pulsarAdminConsole.codeSampleUrl.useDnsName }}
             "pulsar": "pulsar+ssl://{{ .Values.dnsName }}:6651",
             "ws": "wss://{{ .Values.dnsName }}:8001",
             "http": "https://{{ .Values.dnsName }}:8085"
             {{- else }}
-            "pulsar": "{{ .Values.pulsarDashboard.codeSampleUrl.pulsar }}",
-            "ws": "{{ .Values.pulsarDashboard.codeSampleUrl.websocket }}",
-            "http": "{{ .Values.pulsarDashboard.codeSampleUrl.http }}"
+            "pulsar": "{{ .Values.pulsarAdminConsole.codeSampleUrl.pulsar }}",
+            "ws": "{{ .Values.pulsarAdminConsole.codeSampleUrl.websocket }}",
+            "http": "{{ .Values.pulsarAdminConsole.codeSampleUrl.http }}"
             {{- end }}
         }
     }

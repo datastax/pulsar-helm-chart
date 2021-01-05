@@ -1,0 +1,91 @@
+# 
+#  Copyright 2021 DataStax, Inc. 
+#  
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#  
+#      http://www.apache.org/licenses/LICENSE-2.0
+#  
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#  
+# 
+
+{{- if .Values.extra.pulsarHeartbeat }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "{{ include "pulsar.fullname" . }}-{{ .Values.pulsarHeartbeat.component }}-config"
+data:
+  runtime.yml: |-
+    name: {{ template "pulsar.fullname" . }}
+    token: {{ .Values.pulsarHeartbeat.config.pulsarClientToken }}
+    tokenFilePath: {{ .Values.pulsarHeartbeat.config.tokenFilePath }} 
+    trustStore: {{ .Values.pulsarHeartbeat.config.trustStore }}
+    analyticsConfig:
+      apiKey: {{ .Values.pulsarHeartbeat.config.analyticsApiKey }}
+      ingestionURL: {{ .Values.pulsarHeartbeat.config.analyticsUrl }}
+      insightsWriteKey: {{ .Values.pulsarHeartbeat.config.insightsWriteKey }}
+      insightsAccountId: "{{ .Values.pulsarHeartbeat.config.insightsAccountId }}"
+    prometheusConfig:
+      port: ":{{ .Values.pulsarHeartbeat.port }}"
+      exposeMetrics: {{ .Values.pulsarHeartbeat.prometheus.enabled }}
+      prometheusProxyURL: {{ .Values.pulsarHeartbeat.prometheus.proxyURL }}
+      prometheusProxyAPIKey: {{ .Values.pulsarHeartbeat.prometheus.proxyAPIKey }}
+    slackConfig:
+      alertUrl: {{ .Values.pulsarHeartbeat.config.alertUrl }}
+    sitesConfig:
+      sites:
+        {{- toYaml .Values.pulsarHeartbeat.config.sitesConfig | nindent 8 }}
+    opsGenieConfig:
+      intervalSeconds: 120
+      heartbeatKey: {{ .Values.pulsarHeartbeat.config.opsGenieHeartbeatKey }}
+      heartbeatUrl: {{ .Values.pulsarHeartbeat.config.opsGenieHeartbeatUrl }}
+      {{- if .Values.pulsarHeartbeat.config.opsGenieAlertKey }}
+      alertKey: {{ .Values.pulsarHeartbeat.config.opsGenieAlertKey }}
+      {{- end }}
+    k8sConfig:
+      enabled: {{ .Values.pulsarHeartbeat.config.k8sInClusterMonitorEnabled | default false }}
+      pulsarNamespace: {{ .Release.Namespace }}
+    brokersConfig:
+      {{- if .Values.pulsarHeartbeat.config.broker }}
+      intervalSeconds: {{ .Values.pulsarHeartbeat.config.broker.intervalSeconds | default 45 }}
+      inclusterRestURL: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080"
+      alertPolicy:
+        Ceiling: {{ .Values.pulsarHeartbeat.config.broker.alertCeiling | default 5 }}
+        MovingWindowSeconds: {{ .Values.pulsarHeartbeat.config.broker.alertWindowSeconds | default 600 }}
+        CeilingInMovingWindow: 8
+      {{- end }}
+    pulsarAdminRestConfig:
+      {{- if .Values.pulsarHeartbeat.config.adminRest }}
+      intervalSeconds: {{ .Values.pulsarHeartbeat.config.adminRest.intervalSeconds | default 120 }} 
+      clusters:
+        - name: {{ template "pulsar.fullname" . }}
+          url: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080" 
+          alertPolicy:
+            Ceiling: {{ .Values.pulsarHeartbeat.config.adminRest.alertCeiling | default 5 }} 
+            MovingWindowSeconds: 600
+            CeilingInMovingWindow: 8
+      {{- end }}
+    pulsarTopicConfig:
+      {{- if .Values.pulsarHeartbeat.config.latencyTest }}
+      - latencyBudgetMs: {{ .Values.pulsarHeartbeat.config.latencyTest.budgetMs | default 60 }}
+        name: "pubsub-latency-incluster-{{ template "pulsar.fullname" . }}"
+        intervalSeconds: {{ .Values.pulsarHeartbeat.config.latencyTest.intervalSeconds | default 60 }}
+        pulsarUrl: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6650"
+        topicName: {{ .Values.pulsarHeartbeat.config.latencyTest.intervalSeconds | default "persistent://public/default/pubsub-latency-test" }}
+        payloadSizes: [15B]
+        numberOfMessages: 1
+        alertPolicy:
+          Ceiling: {{ .Values.pulsarHeartbeat.config.latencyTest.alertCeiling | default 4 }}
+          MovingWindowSeconds: 360
+          CeilingInMovingWindow: 6
+      {{- end }}
+
+    websocketConfig:
+      {{- toYaml .Values.pulsarHeartbeat.config.pulsarWebSocketConfigs | nindent 8 }}
+{{- end }}

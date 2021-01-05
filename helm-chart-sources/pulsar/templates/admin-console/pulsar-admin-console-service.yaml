@@ -15,21 +15,21 @@
 #  
 # 
 
-{{- if .Values.extra.pulsarDashboard }}
+{{- if .Values.extra.pulsarAdminConsole }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarDashboard.component }}"
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}"
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "pulsar.name" . }}
     chart: {{ template "pulsar.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    component: {{ .Values.pulsarDashboard.component }}
+    component: {{ .Values.pulsarAdminConsole.component }}
     cluster: {{ template "pulsar.fullname" . }}
   annotations:
-{{ toYaml .Values.pulsarDashboard.annotations | indent 4 }}
+{{ toYaml .Values.pulsarAdminConsole.annotations | indent 4 }}
 spec:
   ports:
   - name: http
@@ -40,5 +40,5 @@ spec:
   selector:
     app: {{ template "pulsar.name" . }}
     release: {{ .Release.Name }}
-    component: {{ .Values.pulsarDashboard.component }}
+    component: {{ .Values.pulsarAdminConsole.component }}
 {{- end }}

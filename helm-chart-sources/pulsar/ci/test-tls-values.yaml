@@ -20,7 +20,7 @@ enableTests: yes
 extra:
   autoRecovery: no
   bastion: no
-  pulsarMonitor: no
+  pulsarHeartbeat: no
 enableTls: yes
 tlsSecretName: pulsar-tls
 secrets:

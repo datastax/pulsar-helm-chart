@@ -15,18 +15,18 @@
 #  
 # 
 
-{{- if .Values.extra.pulsarDashboard }}
+{{- if .Values.extra.pulsarAdminConsole }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarDashboard.component }}-nginx"
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}-nginx"
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "pulsar.name" . }}
     chart: {{ template "pulsar.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    component: {{ .Values.pulsarDashboard.component }}-nginx
+    component: {{ .Values.pulsarAdminConsole.component }}-nginx
     cluster: {{ template "pulsar.fullname" . }}
 data: 
   nginx.conf: |

@@ -15,7 +15,7 @@ It includes support for:
 * [Tiered Storage](#tiered-storage) including Tardigarde distributed cloud storage
 * [Pulsar SQL Workers](#pulsar-sql)
 * [Admin Console](#managing-pulsar-using-admin-console) for managing the cluster
-* Pulsar monitor
+* Pulsar heartbeat
 * Burnell for API-based token generation
 * Prometheus/Grafana/Alertmanager stack with default Grafana dashboards and Pulsar-specific alerting rules
 * cert-manager with support for self-signed certificates as well as public certificates using ACME (for example, Let's Encrypt)
@@ -34,6 +34,10 @@ To update to the latest chart:
 ```helm repo update```
 
 Note: This command updates all your Helm charts.
+
+Since there are dependent charts, to update chart dependencies run this command:
+
+```helm dep update```
 
 To list the version of the chart in the local Helm repository:
 
@@ -157,7 +161,7 @@ You can install the Pulsar admin console in your cluster by enabling with this v
 
 ```
 extra:
-  pulsarDashboard: yes
+  pulsarAdminConsole: yes
 ```
 
 It will be automatically configured to connect to the Pulsar cluster.
@@ -169,7 +173,7 @@ By default, the admin console has authentication disabled. You can enabled authe
 To access the Pulsar admin console on your local machine, forward port 3000:
 
 ```
-kubectl port-forward -n pulsar $(kubectl get pods -n pulsar -l component=pulsarDashboard -o jsonpath='{.items[0].metadata.name}') 3000:3000
+kubectl port-forward -n pulsar $(kubectl get pods -n pulsar -l component=pulsarAdminConsole -o jsonpath='{.items[0].metadata.name}') 3000:3000
 ```
 
 ### Accessing Admin Console from cloud provider
@@ -179,7 +183,7 @@ To access Pulsar admin console from a cloud provider, the chart supports [Kubern
 Set these values to configure the Ingress for the admin console:
 
 ```
-pulsarDashboard:
+pulsarAdminConsole:
   ingress:
     enabled: yes
     host: pulsar-ui.example.com
@@ -240,7 +244,7 @@ Splits: 19 total, 19 done (100.00%)
 0:01 [0 rows, 0B] [0 rows/s, 0B/s]
 ```
 
-## Pulsar monitor and Burnell
+## Pulsar heartbeat and Burnell
 
 TODO
 

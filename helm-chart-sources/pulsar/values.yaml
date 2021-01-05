@@ -269,10 +269,10 @@ extra:
   # Tardigrade for decentralized blob storage
   # This runs the S3 gateway that connects to Tardigrade
   tardigrade: no
-  # Pulsar Monitor
-  pulsarMonitor: no
-  # Pulsar Dashboard
-  pulsarDashboard: no
+  # Pulsar Heartbeat
+  pulsarHeartbeat: no
+  # Pulsar Admin console
+  pulsarAdminConsole: no
 
   
 ## Which images to use
@@ -331,12 +331,12 @@ image:
     repository: storjlabs/gateway
     pullPolicy: IfNotPresent
     tag: latest
-  pulsarMonitor:
-    repository: datastax/pulsar-monitor
+  pulsarHeartbeat:
+    repository: datastax/pulsar-heartbeat
     pullPolicy: IfNotPresent
     tag: latest 
-  pulsarDashboard:
-    repository: datastax/pulsar-dashboard
+  pulsarAdminConsole:
+    repository: datastax/pulsar-admin-console
     pullPolicy: IfNotPresent
     tag: latest
 
@@ -1329,11 +1329,11 @@ autoRecovery:
     PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info"
 
 
-## Pulsar Extra: Pulsar Dashboard
-## templates/dashboard-deployment.yaml
+## Pulsar Extra: Pulsar Admin console
+## templates/admin-console/pulsar-admin-console-deployment.yaml
 ##
-pulsarDashboard:
-  component: dashboard
+pulsarAdminConsole:
+  component: adminconsole
   defaultTenant: public
   adminUser: admin
   # authMode: none or k8s
@@ -1494,8 +1494,8 @@ pulsarBeam:
   #         values:
   #         - pulsar
   
-pulsarMonitor:
-  component: pulsarmonitor
+pulsarHeartbeat:
+  component: pulsarheartbeat
   port: "8089"
   annotations:
     prometheus.io/scrape: "true"

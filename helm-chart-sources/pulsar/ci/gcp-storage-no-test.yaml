@@ -20,7 +20,7 @@ enableTests: yes
 extra:
   autoRecovery: no
   bastion: yes
-  pulsarMonitor: no
+  pulsarHeartbeat: no
 
 image:
   broker:
