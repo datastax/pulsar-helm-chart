@@ -20,7 +20,7 @@ enableTests: yes
 extra:
   autoRecovery: no
   bastion: yes
-  pulsarMonitor: yes
+  pulsarHeartbeat: yes
   burnell: yes
   pulsarHealer: yes
 
@@ -30,7 +30,7 @@ autoRecovery:
 image:
   broker:
     repository: datastax/pulsar
-  pulsarMonitor:
+  pulsarHeartbeat:
     repository: datastax/pulsar-heartbeat
     pullPolicy: IfNotPresent
     tag: latest
@@ -94,8 +94,8 @@ proxy:
 burnell:
   federatedPromUrl:
 
-pulsarMonitor:
-  component: pulsarmonitor
+pulsarHeartbeat:
+  component: pulsarheartbeat
   port: "8089"
   annotations:
     prometheus.io/scrape: "true"

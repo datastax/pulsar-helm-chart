@@ -21,7 +21,7 @@ extra:
   autoRecovery: no
   bastion: yes
   proxy: no
-  pulsarMonitor: no
+  pulsarHeartbeat: no
 
 image:
   broker:

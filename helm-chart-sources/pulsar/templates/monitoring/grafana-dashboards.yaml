@@ -152,7 +152,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "grafana-pulsarmonitor-dashboard"
+  name: "grafana-pulsarheartbeat-dashboard"
   {{- if .Values.grafanaDashboards.namespaceOverride }}
   namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
   {{- end }}
@@ -161,12 +161,12 @@ metadata:
     chart: {{ template "pulsar.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    component: "grafana-pulsarmonitor-dashboard"
+    component: "grafana-pulsarheartbeat-dashboard"
     cluster: {{ template "pulsar.fullname" . }}
-    grafana_dashboard: pulsarmonitor
+    grafana_dashboard: pulsarheartbeat
 data:
-  pulsarmonitor.json: |-
-{{ .Files.Get "grafana-dashboards/pulsarmonitor.json" | indent 4}}
+  pulsarheartbeat.json: |-
+{{ .Files.Get "grafana-dashboards/pulsarheartbeat.json" | indent 4}}
 ---
 apiVersion: v1
 kind: ConfigMap

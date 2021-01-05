@@ -15,7 +15,7 @@ It includes support for:
 * [Tiered Storage](#tiered-storage) including Tardigarde distributed cloud storage
 * [Pulsar SQL Workers](#pulsar-sql)
 * [Admin Console](#managing-pulsar-using-admin-console) for managing the cluster
-* Pulsar monitor
+* Pulsar heartbeat
 * Burnell for API-based token generation
 * Prometheus/Grafana/Alertmanager stack with default Grafana dashboards and Pulsar-specific alerting rules
 * cert-manager with support for self-signed certificates as well as public certificates using ACME (for example, Let's Encrypt)
@@ -240,7 +240,7 @@ Splits: 19 total, 19 done (100.00%)
 0:01 [0 rows, 0B] [0 rows/s, 0B/s]
 ```
 
-## Pulsar monitor and Burnell
+## Pulsar heartbeat and Burnell
 
 TODO
 
