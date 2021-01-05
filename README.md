@@ -157,7 +157,7 @@ You can install the Pulsar admin console in your cluster by enabling with this v
 
 ```
 extra:
-  pulsarDashboard: yes
+  pulsarAdminConsole: yes
 ```
 
 It will be automatically configured to connect to the Pulsar cluster.
@@ -169,7 +169,7 @@ By default, the admin console has authentication disabled. You can enabled authe
 To access the Pulsar admin console on your local machine, forward port 3000:
 
 ```
-kubectl port-forward -n pulsar $(kubectl get pods -n pulsar -l component=pulsarDashboard -o jsonpath='{.items[0].metadata.name}') 3000:3000
+kubectl port-forward -n pulsar $(kubectl get pods -n pulsar -l component=pulsarAdminConsole -o jsonpath='{.items[0].metadata.name}') 3000:3000
 ```
 
 ### Accessing Admin Console from cloud provider
@@ -179,7 +179,7 @@ To access Pulsar admin console from a cloud provider, the chart supports [Kubern
 Set these values to configure the Ingress for the admin console:
 
 ```
-pulsarDashboard:
+pulsarAdminConsole:
   ingress:
     enabled: yes
     host: pulsar-ui.example.com

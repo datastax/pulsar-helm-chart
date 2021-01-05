@@ -31,7 +31,7 @@ image:
   broker:
     repository: datastax/pulsar
   pulsarMonitor:
-    repository: datastax/pulsar-monitor
+    repository: datastax/pulsar-heartbeat
     pullPolicy: IfNotPresent
     tag: latest
   burnell:

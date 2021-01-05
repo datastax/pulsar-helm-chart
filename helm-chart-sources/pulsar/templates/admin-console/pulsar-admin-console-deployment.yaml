@@ -15,50 +15,50 @@
 #  
 # 
 
-{{- if .Values.extra.pulsarDashboard }}
+{{- if .Values.extra.pulsarAdminConsole }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarDashboard.component }}"
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}"
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "pulsar.name" . }}
     chart: {{ template "pulsar.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    component: {{ .Values.pulsarDashboard.component }}
+    component: {{ .Values.pulsarAdminConsole.component }}
     cluster: {{ template "pulsar.fullname" . }}
 spec:
-  replicas: {{ .Values.pulsarDashboard.replicaCount | default 1 }}
+  replicas: {{ .Values.pulsarAdminConsole.replicaCount | default 1 }}
   selector:
     matchLabels:
       app: {{ template "pulsar.name" . }}
       release: {{ .Release.Name }}
-      component: {{ .Values.pulsarDashboard.component }} 
+      component: {{ .Values.pulsarAdminConsole.component }} 
   template:
     metadata:
       labels:
         app: {{ template "pulsar.name" . }}
         release: {{ .Release.Name }}
-        component: {{ .Values.pulsarDashboard.component }}
+        component: {{ .Values.pulsarAdminConsole.component }}
         cluster: {{ template "pulsar.fullname" . }}
       annotations:
-        checksum/dashboard: {{ include (print $.Template.BasePath "/dashboard/pulsar-dashboard-configmap.yaml") . | sha256sum }}
-        checksum/nginx: {{ include (print $.Template.BasePath "/dashboard/pulsar-dashboard-nginx-configmap.yaml") . | sha256sum }}
-        {{- if .Values.pulsarDashboard.annotations }}
-{{ toYaml .Values.pulsarDashboard.annotations | indent 8 }}
+        checksum/dashboard: {{ include (print $.Template.BasePath "/admin-console/pulsar-admin-console-configmap.yaml") . | sha256sum }}
+        checksum/nginx: {{ include (print $.Template.BasePath "/admin-console/pulsar-admin-console-nginx-configmap.yaml") . | sha256sum }}
+        {{- if .Values.pulsarAdminConsole.annotations }}
+{{ toYaml .Values.pulsarAdminConsole.annotations | indent 8 }}
         {{- end }}
     spec:
       serviceAccountName: "{{ template "pulsar.fullname" . }}-burnell"
-    {{- if .Values.pulsarDashboard.tolerations }}
+    {{- if .Values.pulsarAdminConsole.tolerations }}
       tolerations:
-{{ toYaml .Values.pulsarDashboard.tolerations | indent 8 }}
+{{ toYaml .Values.pulsarAdminConsole.tolerations | indent 8 }}
     {{- end }}
-      terminationGracePeriodSeconds: {{ .Values.pulsarDashboard.gracePeriod }}
+      terminationGracePeriodSeconds: {{ .Values.pulsarAdminConsole.gracePeriod }}
       containers:
       - name: nginx 
         image: nginx 
-        imagePullPolicy: {{ .Values.image.pulsarDashboard.pullPolicy }}
+        imagePullPolicy: {{ .Values.image.pulsarAdminConsole.pullPolicy }}
         ports:
         - name: "nginx"
           containerPort: 80
@@ -79,21 +79,21 @@ spec:
           httpGet:
             path: /ruok
             port: 80 
-          initialDelaySeconds: {{ .Values.pulsarDashboard.probe.liveness.initialDelaySeconds }}
-          timeoutSeconds: {{ .Values.pulsarDashboard.probe.liveness.timeoutSeconds }}
+          initialDelaySeconds: {{ .Values.pulsarAdminConsole.probe.liveness.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.pulsarAdminConsole.probe.liveness.timeoutSeconds }}
         readinessProbe:
           httpGet:
             path: /ruok
             port: 80 
-          initialDelaySeconds: {{ .Values.pulsarDashboard.probe.readiness.initialDelaySeconds }}
-          timeoutSeconds: {{ .Values.pulsarDashboard.probe.readiness.timeoutSeconds }}
+          initialDelaySeconds: {{ .Values.pulsarAdminConsole.probe.readiness.initialDelaySeconds }}
+          timeoutSeconds: {{ .Values.pulsarAdminConsole.probe.readiness.timeoutSeconds }}
         resources:
-      - name: "{{ template "pulsar.fullname" . }}-pulsar-dashboard"
-        image: "{{ .Values.image.pulsarDashboard.repository }}:{{ .Values.image.pulsarDashboard.tag }}"
-        imagePullPolicy: {{ .Values.image.pulsarDashboard.pullPolicy }}
-        {{- if .Values.pulsarDashboard.resources }}
+      - name: "{{ template "pulsar.fullname" . }}-pulsar-admin-console"
+        image: "{{ .Values.image.pulsarAdminConsole.repository }}:{{ .Values.image.pulsarAdminConsole.tag }}"
+        imagePullPolicy: {{ .Values.image.pulsarAdminConsole.pullPolicy }}
+        {{- if .Values.pulsarAdminConsole.resources }}
         resources:
-{{ toYaml .Values.pulsarDashboard.resources | indent 10 }}
+{{ toYaml .Values.pulsarAdminConsole.resources | indent 10 }}
         {{- end }}
         ports:
         - name: http
@@ -120,21 +120,21 @@ spec:
             value: "/pulsar/token-superuser/superuser.jwt"
           {{- end }}
           - name: auth_mode
-            value: {{ .Values.pulsarDashboard.authMode }}
+            value: {{ .Values.pulsarAdminConsole.authMode }}
           - name: K8S_NAMESPACE
             value: {{ .Release.Namespace }}
           - name: LOG_LEVEL
-            value: {{ .Values.pulsarDashboard.serverLogLevel }}
+            value: {{ .Values.pulsarAdminConsole.serverLogLevel }}
       volumes:
         - name: dashboardconfig
           configMap:
-            name: {{ template "pulsar.fullname" . }}-{{ .Values.pulsarDashboard.component }}
+            name: {{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}
             items:
             - key: config-override.js
               path: config-override.js
         - name: nginxconf
           configMap:
-            name: {{ template "pulsar.fullname" . }}-{{ .Values.pulsarDashboard.component }}-nginx 
+            name: {{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}-nginx 
             items: 
             - key: nginx.conf
               path: nginx.conf
