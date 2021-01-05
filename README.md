@@ -35,6 +35,10 @@ To update to the latest chart:
 
 Note: This command updates all your Helm charts.
 
+Since there are dependent charts, to update chart dependencies run this command:
+
+```helm dep update```
+
 To list the version of the chart in the local Helm repository:
 
 ```helm search repo datastax/pulsar```
