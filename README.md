@@ -26,7 +26,7 @@ Please refer to Helm's [documentation](https://helm.sh/docs/) to get started.
 
 ## Quick start
 
-With Helm installed with access to a Kuberentes cluster (ex minikube):
+With Helm installed with access to a Kubernetes cluster (ex minikube):
 
 ```
 helm repo add datastax-pulsar https://datastax.github.io/pulsar-helm-chart
@@ -36,9 +36,21 @@ helm install pulsar -f dev-values.yaml datastax-pulsar/pulsar
 
 Once all the pods are running (takes 5 to 10 minutes), you can access the admin console by forwarding to localhost: 
 
-```kubectl port-forward $(kubectl get pods -l component=adminconsole -o jsonpath='{.items[0].metadata.name}') 8080:80```
+```kubectl port-forward $(kubectl get pods -l component=adminconsole -o jsonpath='{.items[0].metadata.name}') 8888:80```
 
 Then open a browser to http://localhost:8080. In the admin console you can test your Pulsar setup using the built-in clients (Test Clients in the left-hand menu).
+
+If you also forward the Grafana port, like this:
+
+```kubectl port-forward $(kubectl get pods -l app.kubernetes.io/name=grafana -o jsonpath='{.items[0].metadata.name}') 3000:3000```
+
+You can view metrics for the Pulsar cluster the Cluster, Monitoring menu item. You will have to log into Grafana. The username is `admin` and the password is in the downloaded file `dev-values.yaml` under the `adminPassword` setting.
+
+To use the Pulsar admin and client tools (ex pulsar-admin, pulsar-client, pulsar-perf), log into the bastion pod:
+
+```kubectl exec $(kubectl get pods -l component=bastion -o jsonpath="{.items[*].metadata.name}") -it -- /bin/bash```
+
+You will find the tools in the `/pulsar/bin` directory.
 
 
 ## Add to local Helm repository 

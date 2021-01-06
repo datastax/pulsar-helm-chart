@@ -149,7 +149,6 @@ proxy:
 
 grafanaDashboards:
   enabled: yes
-  namespaceOverride: ''
 
 pulsarAdminConsole:
   replicaCount: 1
@@ -158,13 +157,11 @@ pulsarAdminConsole:
 
 kube-prometheus-stack:
   enabled: yes
-  namespaceOverride: ''
   prometheusOperator:
     enabled: true
   grafana:
     enabled: true
     adminPassword: e9JYtk83*4#PM8
-    namespaceOverride: ''
     ingress:
       enabled: no
     testFramework:
@@ -172,7 +169,5 @@ kube-prometheus-stack:
   prometheus:
     service:
       type: NodePort
-    prometheusSpec:
-      storageSpec: null
 
   

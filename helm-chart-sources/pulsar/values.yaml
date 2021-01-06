@@ -1584,7 +1584,7 @@ createCertificates:
 
 grafanaDashboards:
   enabled: no
-  namespaceOverride: monitoring
+  # namespaceOverride: monitoring
 
 # Deploy the kube-prometheus-stack which includes:
 # * Prometheus (using Prometheus Operator)
@@ -1611,9 +1611,9 @@ grafanaDashboards:
 
 kube-prometheus-stack:
   enabled: no
-  namespaceOverride: monitoring
+  # namespaceOverride: monitoring
   prometheus-node-exporter:
-    namespaceOverride: monitoring
+    # namespaceOverride: monitoring
   defaultRules:
     create: no
     rules:
@@ -1743,7 +1743,7 @@ kube-prometheus-stack:
 
   grafana:
     enabled: true
-    namespaceOverride: "monitoring"
+    # namespaceOverride: "monitoring"
     defaultDashboardsEnabled: true
     adminUser: admin
     adminPassword: ZhF9sS8B7PQSTR
@@ -1785,14 +1785,13 @@ kube-prometheus-stack:
         - prometheus.example.com
     prometheusSpec:
       retention: 10d
-      storageSpec: 
-        volumeClaimTemplate:
-          spec:
-            storageClassName: default
-            resources:
-              requests:
-                storage: 50Gi
-
+      # storageSpec: 
+      #   volumeClaimTemplate:
+      #     spec:
+      #       storageClassName: default
+      #       resources:
+      #         requests:
+      #           storage: 50Gi
       additionalScrapeConfigs: 
       - job_name: 'pulsar-pods'
         honor_labels: true
