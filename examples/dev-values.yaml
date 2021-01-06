@@ -15,35 +15,101 @@
 #  
 # 
 
+default_storage:
+  existingStorageClassName: default
 persistence: no
 enableAntiAffinity: no
+enableTls: no 
+enableTokenAuth: no
+restartOnConfigMapChange:
+  enabled: yes
+extra:
+  function: yes
+  burnell: yes
+  burnellLogCollector: yes
+  pulsarHeartbeat: yes
+  pulsarAdminConsole: yes
+
+image:
+  broker:
+    repository: datastax/pulsar-all
+    pullPolicy: IfNotPresent
+    tag: latest 
+  bookkeeper:
+    repository: datastax/pulsar-all
+    pullPolicy: IfNotPresent
+    tag: latest
+  zookeeper:
+    repository: datastax/pulsar-all
+    pullPolicy: IfNotPresent
+    tag: latest
+  function:
+    repository: datastax/pulsar-all
+    pullPolicy: IfNotPresent
+    tag: latest
+  proxy:
+    repository: datastax/pulsar-all
+    pullPolicy: IfNotPresent
+    tag: latest
+  bastion:
+    repository: datastax/pulsar-all
+    pullPolicy: IfNotPresent
+    tag: latest
+  burnell:
+    repository: datastax/burnell
+    pullPolicy: IfNotPresent
+    tag: 0.0.1 
+  burnellLogCollector:
+    repository: datastax/burnell
+    pullPolicy: IfNotPresent
+    tag: logcollector_0.0.1 
+  pulsarHeartbeat:
+    repository: datastax/pulsar-monitor
+    pullPolicy: IfNotPresent
+    tag: 0.0.1 
+  pulsarAdminConsole:
+    repository: datastax/pulsar-admin-console
+    pullPolicy: IfNotPresent
+    tag: latest 
+
+cert-manager:
+  enabled: no
+
+pulsarHeartbeat:
+  config:
+    k8sInClusterMonitorEnabled: "false" 
 
 zookeeper:
+  replicaCount: 1 
   resources:
     requests:
       memory: 512Mi
       cpu: 0.3
   configData:
-    PULSAR_MEM: "\"-Xms512m -Xmx512m -Dcom.sun.management.jmxremote -Djute.maxbuffer=10485760 -XX:+ParallelRefProcEnabled -XX:+UnlockExperimentalVMOptions -XX:+AggressiveOpts -XX:+DoEscapeAnalysis -XX:+DisableExplicitGC -XX:+PerfDisableSharedMem -Dzookeeper.forceSync=no\""
+    PULSAR_MEM: "\"-Xms512m -Xmx512m -Djute.maxbuffer=10485760 -XX:+ExitOnOutOfMemoryError\""
 
 bookkeeper:
-  replicaCount: 2
+  replicaCount: 1 
   resources:
     requests:
       memory: 512Mi
       cpu: 0.3
   configData:
-    PULSAR_MEM: "\"-Xms512m -Xmx512m -XX:MaxDirectMemorySize=512m -Dio.netty.leakDetectionLevel=disabled -Dio.netty.recycler.linkCapacity=1024 -XX:+UseG1GC -XX:MaxGCPauseMillis=10 -XX:+ParallelRefProcEnabled -XX:+UnlockExperimentalVMOptions -XX:+AggressiveOpts -XX:+DoEscapeAnalysis -XX:ParallelGCThreads=32 -XX:ConcGCThreads=32 -XX:G1NewSizePercent=50 -XX:+DisableExplicitGC -XX:-ResizePLAB -XX:+ExitOnOutOfMemoryError -XX:+PerfDisableSharedMem -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCApplicationStoppedTime -XX:+PrintHeapAtGC -verbosegc -XX:G1LogLevel=finest\""
+    BOOKIE_MEM: "\"-Xms512m -Xmx512m -XX:MaxDirectMemorySize=512m -XX:+ExitOnOutOfMemoryError\""
 
 broker:
   component: broker
-  replicaCount: 1
+  replicaCount: 1 
+  ledger:
+    defaultEnsembleSize: 1 
+    defaultAckQuorum: 1 
+    defaultWriteQuorum: 1 
   resources:
     requests:
-      memory: 512Mi
+      memory: 600Mi
       cpu: 0.3
   configData:
-    PULSAR_MEM: "\"-Xms512m -Xmx512m -XX:MaxDirectMemorySize=512m -Dio.netty.leakDetectionLevel=disabled -Dio.netty.recycler.linkCapacity=1024 -XX:+ParallelRefProcEnabled -XX:+UnlockExperimentalVMOptions -XX:+AggressiveOpts -XX:+DoEscapeAnalysis -XX:ParallelGCThreads=32 -XX:ConcGCThreads=32 -XX:G1NewSizePercent=50 -XX:+DisableExplicitGC -XX:-ResizePLAB -XX:+ExitOnOutOfMemoryError -XX:+PerfDisableSharedMem\""
+    PULSAR_MEM: "\"-Xms300m -Xmx300m -XX:MaxDirectMemorySize=300m -XX:+ExitOnOutOfMemoryError\""
 
 autoRecovery:
   resources:
@@ -52,24 +118,61 @@ autoRecovery:
       cpu: 1
 
 function:
-  replicaCount: 1
+  replicaCount: 1 
+  functionReplicaCount: 1
   resources:
     requests:
       memory: 512Mi
       cpu: 0.3
   configData:
-    BOOKIE_MEM: "\"-Xms512m -Xmx512m -XX:MaxDirectMemorySize=512m -Dio.netty.leakDetectionLevel=disabled -Dio.netty.recycler.linkCapacity=1024 -XX:+ParallelRefProcEnabled -XX:+UnlockExperimentalVMOptions -XX:+AggressiveOpts -XX:+DoEscapeAnalysis -XX:ParallelGCThreads=32 -XX:ConcGCThreads=32 -XX:G1NewSizePercent=50 -XX:+DisableExplicitGC -XX:-ResizePLAB -XX:+ExitOnOutOfMemoryError -XX:+PerfDisableSharedMem\""
+    BOOKIE_MEM: "\"-Xms512m -Xmx512m -XX:MaxDirectMemorySize=512m -XX:+ExitOnOutOfMemoryError\""
 
 proxy:
   replicaCount: 1 
   resources:
     requests:
       memory: 512Mi
-      cpu: 0.3 
+      cpu: 0.3
   wsResources:
     requests:
       memory: 512Mi
       cpu: 0.3
   configData:
     PULSAR_MEM: "\"-Xms512m -Xmx512m -XX:MaxDirectMemorySize=512m\""
+  autoPortAssign:
+    enablePlainTextWithTLS: yes
+  service:
+    annotations: {}
+    type: NodePort
+    autoPortAssign:
+      enabled: yes
+
+grafanaDashboards:
+  enabled: yes
+  namespaceOverride: ''
+
+pulsarAdminConsole:
+  replicaCount: 1
+  ingress:
+    enabled: no
+
+kube-prometheus-stack:
+  enabled: yes
+  namespaceOverride: ''
+  prometheusOperator:
+    enabled: true
+  grafana:
+    enabled: true
+    adminPassword: e9JYtk83*4#PM8
+    namespaceOverride: ''
+    ingress:
+      enabled: no
+    testFramework:
+      enabled: false
+  prometheus:
+    service:
+      type: NodePort
+    prometheusSpec:
+      storageSpec: null
+
   

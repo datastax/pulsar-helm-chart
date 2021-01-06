@@ -24,10 +24,27 @@ It includes support for:
 [Helm](https://helm.sh) must be installed and initialized to use the chart. Only Helm 3 is supported.
 Please refer to Helm's [documentation](https://helm.sh/docs/) to get started.
 
+## Quick start
+
+With Helm installed with access to a Kuberentes cluster (ex minikube):
+
+```
+helm repo add datastax-pulsar https://datastax.github.io/pulsar-helm-chart
+curl -LOs https://datastax.github.io/pulsar-helm-chart/examples/dev-values.yaml
+helm install pulsar -f dev-values.yaml datastax-pulsar/pulsar
+```
+
+Once all the pods are running (takes 5 to 10 minutes), you can access the admin console by forwarding to localhost: 
+
+```kubectl port-forward $(kubectl get pods -l component=adminconsole -o jsonpath='{.items[0].metadata.name}') 8080:80```
+
+Then open a browser to http://localhost:8080. In the admin console you can test your Pulsar setup using the built-in clients (Test Clients in the left-hand menu).
+
+
 ## Add to local Helm repository 
 To add this chart to your local Helm repository:
 
-```helm repo add datastax https://datastax.github.io```
+```helm repo add datastax-pulsar https://datastax.github.io/pulsar-helm-chart```
 
 To update to the latest chart:
 
@@ -35,13 +52,9 @@ To update to the latest chart:
 
 Note: This command updates all your Helm charts.
 
-Since there are dependent charts, to update chart dependencies run this command:
-
-```helm dep update```
-
 To list the version of the chart in the local Helm repository:
 
-```helm search repo datastax/pulsar```
+```helm search repo datastax-pulsar```
 
 
 ## Installing Pulsar in a Cloud Provider
