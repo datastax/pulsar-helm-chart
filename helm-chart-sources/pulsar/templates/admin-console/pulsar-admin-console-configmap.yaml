@@ -42,7 +42,7 @@ data:
         "test": "",
         "client_token": "",
         "admin_token": "",
-        "login": "{{ .Values.pulsarAdminConsole.adminUser }}",
+        "login": "admin",
         "email": "",
         "client_role": "",
         "plan": "",

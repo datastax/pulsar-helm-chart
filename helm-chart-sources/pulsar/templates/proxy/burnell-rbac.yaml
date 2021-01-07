@@ -16,7 +16,7 @@
 # 
 
 {{- if or .Values.enableProvisionContainer .Values.extra.pulsarHealer .Values.extra.pulsarAdminConsole }}
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: "{{ template "pulsar.fullname" . }}-burnell"
@@ -46,7 +46,7 @@ metadata:
   name: "{{ template "pulsar.fullname" . }}-burnell"
   namespace: {{ .Release.Namespace }}
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: "{{ template "pulsar.fullname" . }}-burnell"

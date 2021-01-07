@@ -38,7 +38,7 @@ Once all the pods are running (takes 5 to 10 minutes), you can access the admin 
 
 ```kubectl port-forward $(kubectl get pods -l component=adminconsole -o jsonpath='{.items[0].metadata.name}') 8888:80```
 
-Then open a browser to http://localhost:8080. In the admin console you can test your Pulsar setup using the built-in clients (Test Clients in the left-hand menu).
+Then open a browser to http://localhost:8888. In the admin console you can test your Pulsar setup using the built-in clients (Test Clients in the left-hand menu).
 
 If you also forward the Grafana port, like this:
 
@@ -131,15 +131,15 @@ For an example set of values, download this [values file](https://github.com/dat
 
 
 ```
-helm install pulsar datastax/pulsar --namespace pulsar --values dev-values.yaml --create-namespace
+helm install pulsar -f dev-values.yaml datastax-pulsar/pulsar
 ```
 
 ## Accessing the Pulsar cluster in cloud
 
-The default values will create a ClusterIP for all components. ClusterIPs are only accessible within the Kubernetes cluster. The easiest way to work with Pulsar is to log into the bastion host (assuming it is in the pulsar namespace):
+The default values will create a ClusterIP for all components. ClusterIPs are only accessible within the Kubernetes cluster. The easiest way to work with Pulsar is to log into the bastion host:
 
 ```
-kubectl exec $(kubectl get pods -l component=bastion -o jsonpath="{.items[*].metadata.name}" -n pulsar) -it -n pulsar -- /bin/bash
+kubectl exec $(kubectl get pods -l component=bastion -o jsonpath="{.items[*].metadata.name}") -it -- /bin/bash
 ```
 Once you are logged into the bastion, you can run Pulsar admin commands:
 
@@ -152,32 +152,25 @@ For external access, you can use a load balancer. Here is an example set of valu
 proxy:
  service:
     type: LoadBalancer
-    ports:
-    - name: http
-      port: 8080
-      protocol: TCP
-    - name: pulsar
-      port: 6650
-      protocol: TCP
 ```
 
 If you are using a load balancer on the proxy, you can find the IP address using:
 
-```kubectl get service -n pulsar```
+```kubectl get service```
 
 ## Accessing the Pulsar cluster on localhost
 
 To port forward the proxy admin and Pulsar ports to your local machine:
 
-```kubectl port-forward -n pulsar $(kubectl get pods -n pulsar -l component=proxy -o jsonpath='{.items[0].metadata.name}') 8080:8080```
+```kubectl port-forward -n pulsar $(kubectl get pods -l component=proxy -o jsonpath='{.items[0].metadata.name}') 8080:8080```
 
-```kubectl port-forward -n pulsar $(kubectl get pods -n pulsar -l component=proxy -o jsonpath='{.items[0].metadata.name}') 6650:6650```
+```kubectl port-forward -n pulsar $(kubectl get pods -l component=proxy -o jsonpath='{.items[0].metadata.name}') 6650:6650```
 
 Or if you would rather go directly to the broker:
 
-```kubectl port-forward -n pulsar $(kubectl get pods -n pulsar -l component=broker -o jsonpath='{.items[0].metadata.name}') 8080:8080```
+```kubectl port-forward -n pulsar $(kubectl get pods -l component=broker -o jsonpath='{.items[0].metadata.name}') 8080:8080```
 
-```kubectl port-forward -n pulsar $(kubectl get pods -n pulsar -l component=broker -o jsonpath='{.items[0].metadata.name}') 6650:6650```
+```kubectl port-forward -n pulsar $(kubectl get pods -l component=broker -o jsonpath='{.items[0].metadata.name}') 6650:6650```
 
 ## Managing Pulsar using Admin Console
 
@@ -191,14 +184,41 @@ extra:
 
 It will be automatically configured to connect to the Pulsar cluster.
 
-By default, the admin console has authentication disabled. You can enabled authentication... [TODO]
+By default, the admin console has authentication disabled. You can enabled authentication with these settings:
+
+```
+pulsarAdminConsole:
+    authMode: k8s
+```
+When `k8s` authentication mode is enabled, the admin console gets the users from Kubernetes secrets that start with `dashboard-user-` in the same namespace where it is deployed. The text that follows the prefix is the username. For example, for a user `admin` you need to have a secret `dashboard-user-admin`. The secret data must have a key named `password` with the base-64 encoded password. The following command will create a secret for a user `admin` with a password of `password`:
+
+```
+kubectl create secret generic dashboard-user-admin --from-literal=password=password
+```
+
+You can create multiple users for the admin console by creating multiple secrets. To change the password for a user, delete the secret then recreate it with a new password:
+
+```
+kubectl delete secret dashboard-user-admin
+kubectl create secret generic dashboard-user-admin --from-literal=password=newpassword
+```
+
+For convenience, the Helm chart is able to create an initial user for the admin console with the following settings:
+
+```
+pulsarAdminConsole:
+    createUserSecret:
+      enabled: yes
+      user: 'admin'
+      password: 'password'
+```
 
 ### Accessing Admin Console on your local machine
 
-To access the Pulsar admin console on your local machine, forward port 3000:
+To access the Pulsar admin console on your local machine, forward port 80:
 
 ```
-kubectl port-forward -n pulsar $(kubectl get pods -n pulsar -l component=pulsarAdminConsole -o jsonpath='{.items[0].metadata.name}') 3000:3000
+kubectl port-forward -n pulsar $(kubectl get pods -n pulsar -l component=pulsarAdminConsole -o jsonpath='{.items[0].metadata.name}') 8888:80
 ```
 
 ### Accessing Admin Console from cloud provider
@@ -219,6 +239,15 @@ pulsarAdminConsole:
 TODO
 
 ## Example configurations
+
+There are several example configurations in the [examples](https://github.com/datastax/pulsar-helm-chart/blob/master/examples) directory:
+
+* [dev-values.yaml](https://github.com/datastax/pulsar-helm-chart/blob/master/examples/dev-values.yaml). A configuration for setting up a development environment to run in a local Kubernetes environment (ex [minikube](https://minikube.sigs.k8s.io/docs/start/), [kind](https://kind.sigs.k8s.io/)). Message/state persistence, redundancy, authentication, and TLS are disabled. 
+
+Note: With message/state persistence disabled, the cluster will not survive a restart of the ZooKeeper or BookKeeper.
+
+* dev-values-persistence. Same as above, but persistence is enabled. This will allow for the cluster to survive the restarts of the pods, but requires persistent volume claims (PVC) to be supported by the Kubernetes environment. 
+* dev-values-authentication. A development environment with authentication enabled. New keys and tokens from those keys are automatically generated and stored in Kubernetes secrets. You can retrieve the superuser token from the admin console (Credentials menu) or from the secret `token-superuser`.
 
 
 
@@ -283,7 +312,6 @@ The Helm chart has the following optional dependencies:
 
 * [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack)
 * [cert-manager](https://cert-manager.io/)
-
 
 
 ### Authentication

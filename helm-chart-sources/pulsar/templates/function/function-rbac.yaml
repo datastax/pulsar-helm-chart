@@ -16,7 +16,7 @@
 # 
 
 {{- if .Values.extra.function }}
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}"
@@ -42,7 +42,7 @@ metadata:
   name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}"
   namespace: {{ .Release.Namespace }}
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}"
