@@ -20,7 +20,7 @@ default_storage:
 persistence: no
 enableAntiAffinity: no
 enableTls: no 
-enableTokenAuth: no
+enableTokenAuth: yes
 restartOnConfigMapChange:
   enabled: yes
 extra:
@@ -105,6 +105,7 @@ broker:
     PULSAR_MEM: "\"-Xms400m -Xmx400m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError\""
 
 autoRecovery:
+  enableProvisionContainer: yes
   resources:
     requests:
       memory: 300Mi
@@ -145,6 +146,11 @@ grafanaDashboards:
 
 pulsarAdminConsole:
   replicaCount: 1
+  authMode: k8s
+  createUserSecret:
+    enabled: yes
+    user: 'admin'
+    password: 'e9JYtk83*4#PM8'
 
 kube-prometheus-stack:
   enabled: yes

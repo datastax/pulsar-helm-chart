@@ -42,7 +42,7 @@ data:
         "test": "",
         "client_token": "",
         "admin_token": "",
-        "login": "{{ .Values.pulsarAdminConsole.adminUser }}",
+        "login": "admin",
         "email": "",
         "client_role": "",
         "plan": "",
@@ -58,7 +58,7 @@ data:
         {{- if index .Values "kube-prometheus-stack" "grafana" "ingress" "enabled"}}
         "grafana_url": "https://{{ index .Values "kube-prometheus-stack" "grafana" "ingress" "hosts" 0 }}{{ index .Values "kube-prometheus-stack" "grafana" "ingress" "path" }}",
         {{- else }}
-        "grafana_url": "",
+        "grafana_url": "http://localhost:3000",
         {{- end }}
         "user_role": "administrator",
         "feature_flags": {

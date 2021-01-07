@@ -1234,7 +1234,7 @@ proxy:
     enabled: no
     annotations: {}
     autoPortAssign:
-      enabled: no
+      enabled: yes
     type: ClusterIP
     ports:
     - name: http
@@ -1335,7 +1335,6 @@ autoRecovery:
 pulsarAdminConsole:
   component: adminconsole
   defaultTenant: public
-  adminUser: admin
   # authMode: none or k8s
   authMode: none
   serverLogLevel: info
@@ -1358,7 +1357,7 @@ pulsarAdminConsole:
     websocket: "wss://pulsarhost:8001"
     http: "https://pulsarhost:8085"
   ingress:
-    enabled: yes
+    enabled: no
     host: ui.host.com
     annotations: {}
     enableTls: no
@@ -1511,7 +1510,7 @@ pulsarHeartbeat:
   prometheus:
     enabled: true
   config:
-    k8sInClusterMonitorEnabled: "true"
+    k8sInClusterMonitorEnabled: "false"
     alertUrl:
     opsGenieHeartbeatUrl:
     opsGenieHeartbeatKey:
@@ -1584,7 +1583,7 @@ createCertificates:
 
 grafanaDashboards:
   enabled: no
-  namespaceOverride: monitoring
+  # namespaceOverride: monitoring
 
 # Deploy the kube-prometheus-stack which includes:
 # * Prometheus (using Prometheus Operator)
@@ -1611,9 +1610,9 @@ grafanaDashboards:
 
 kube-prometheus-stack:
   enabled: no
-  namespaceOverride: monitoring
+  # namespaceOverride: monitoring
   prometheus-node-exporter:
-    namespaceOverride: monitoring
+    # namespaceOverride: monitoring
   defaultRules:
     create: no
     rules:
@@ -1633,9 +1632,7 @@ kube-prometheus-stack:
       node: true
       prometheusOperator: true
       prometheus: true
-
   additionalPrometheusRules:
-
   - name: general-rules
     groups:
     - name: acks
@@ -1743,15 +1740,20 @@ kube-prometheus-stack:
 
   grafana:
     enabled: true
-    namespaceOverride: "monitoring"
+    # namespaceOverride: "monitoring"
     defaultDashboardsEnabled: true
-    adminUser: admin
     adminPassword: ZhF9sS8B7PQSTR
     ingress:
       enabled: false
       hosts: 
         - grafana.example.com
       path: /
+    grafana.ini:
+      server:
+        root_url: 'http://localhost:3000'
+      security:
+        allow_embedding: true
+        cookie_samesite: 'lax'
 
   kubeApiServer:
     enabled: true
@@ -1785,22 +1787,21 @@ kube-prometheus-stack:
         - prometheus.example.com
     prometheusSpec:
       retention: 10d
-      storageSpec: 
-        volumeClaimTemplate:
-          spec:
-            storageClassName: default
-            resources:
-              requests:
-                storage: 50Gi
-
+      # storageSpec: 
+      #   volumeClaimTemplate:
+      #     spec:
+      #       storageClassName: default
+      #       resources:
+      #         requests:
+      #           storage: 50Gi
       additionalScrapeConfigs: 
       - job_name: 'pulsar-pods'
         honor_labels: true
         kubernetes_sd_configs:
         - role: pod
-          namespaces:
-            names:
-            - pulsar
+          # namespaces:
+          #   names:
+          #   - pulsar
         relabel_configs:
         - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
           action: keep
@@ -1824,6 +1825,6 @@ kube-prometheus-stack:
           target_label: job
         - source_labels: [__meta_kubernetes_pod_name]
           action: replace
-          target_label: kubernetes_pod_name  
+          target_label: kubernetes_pod_name 
 
 
