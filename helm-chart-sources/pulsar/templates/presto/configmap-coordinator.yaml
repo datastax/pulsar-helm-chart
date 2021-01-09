@@ -54,6 +54,7 @@ data:
     query.max-memory-per-node={{ .Values.pulsarSQL.server.config.query.maxMemoryPerNode }}
     discovery-server.enabled=true
     discovery.uri=http://localhost:{{ .Values.pulsarSQL.server.config.http.port }}
+    catalog.config-dir=/pulsar/conf/presto/catalog
 
   log.properties: |
     io.prestosql={{ .Values.pulsarSQL.server.log.presto.level }}

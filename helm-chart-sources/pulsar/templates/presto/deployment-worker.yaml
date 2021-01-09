@@ -147,20 +147,28 @@ spec:
               bin/pulsar sql-worker run \
                 --etc-dir=/pulsar/conf/presto \
                 --data-dir=/pulsar/data;
+          ports:
+            - name: http-coord
+              containerPort: {{ .Values.pulsarSQL.server.config.http.port }}
+              protocol: TCP
           livenessProbe:
-            exec:
-              command:
-                - /bin/bash
-                - /pulsar/conf/presto/health_check.sh
+            httpGet:
+              path: /v1/service/presto
+              port: http-coord
             initialDelaySeconds: 10
-            periodSeconds: 25
-          readinessProbe:
-            exec:
-              command:
-                - /bin/bash
-                - /pulsar/conf/presto/health_check.sh
-            initialDelaySeconds: 5
             periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 3
+            failureThreshold: 4
+          readinessProbe:
+            httpGet:
+              path: /v1/service/presto
+              port: http-coord
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 3
+            failureThreshold: 4
           resources:
 {{ toYaml .Values.pulsarSQL.resources | indent 12 }}
     {{- with .Values.pulsarSQL.nodeSelector }}
