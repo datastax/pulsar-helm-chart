@@ -64,7 +64,7 @@ data:
   brokerClientTlsEnabled: "true"
   tlsCertificateFilePath: /pulsar/certs/tls.crt
   tlsKeyFilePath: /pulsar/tls-pk8.key
-  {{- if .Values.secrets }}
+  {{- if or .Values.secrets .Values.createCertificates.selfSigned}}
   tlsTrustCertsFilePath: /pulsar/certs/ca.crt
   {{- else }}
   tlsTrustCertsFilePath: "{{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}"

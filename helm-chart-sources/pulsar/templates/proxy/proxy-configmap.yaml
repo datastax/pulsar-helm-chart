@@ -77,13 +77,13 @@ data:
   tlsEnabledInProxy: "true"
   tlsCertificateFilePath: /pulsar/certs/tls.crt
   tlsKeyFilePath: /pulsar/tls-pk8.key
-  {{- if .Values.secrets }}
+  {{- if or .Values.secrets .Values.createCertificates.selfSigned}}
   tlsTrustCertsFilePath: /pulsar/certs/ca.crt
   {{- else }}
   tlsTrustCertsFilePath: "{{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}"
   {{- end }}
   tlsProtocols: "TLSv1.2,TLSv1.1"
-  {{- if .Values.secrets }}
+  {{- if or .Values.secrets .Values.createCertificates.selfSigned}}
   brokerClientTrustCertsFilePath: /pulsar/certs/ca.crt
   {{- else }}
   brokerClientTrustCertsFilePath: "{{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}"

@@ -86,7 +86,7 @@ spec:
       value: https://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8443/
     - name: brokerServiceUrl
       value: pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6651/
-    {{- if .Values.secrets }}
+    {{- if or .Values.secrets .Values.createCertificates.selfSigned}}
     - name: tlsTrustCertsFilePath
       value: /pulsar/certs/ca.crt
     {{- else }}

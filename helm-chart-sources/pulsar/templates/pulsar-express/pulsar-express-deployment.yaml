@@ -95,7 +95,7 @@ spec:
           - name: PE_CONNECTION_URL
             value: https://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8443
           - name: PE_CA_PATH
-            {{- if .Values.secrets }}
+            {{- if or .Values.secrets .Values.createCertificates.selfSigned}}
             value: /pulsar/certs/ca.crt
             {{- else }}
             value: "{{ .Values.pulsarexpress.tlsCaPath }}/{{ .Values.pulsarexpress.tlsCaCert }}"

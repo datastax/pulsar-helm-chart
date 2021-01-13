@@ -33,9 +33,6 @@ extra:
 cert-manager:
   enabled: yes
 
-tlsCaPath: /pulsar/certs
-tlsCaCert: ca.crt
-
 createCertificates:
   selfSigned: 
     enabled: yes

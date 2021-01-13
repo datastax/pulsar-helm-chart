@@ -33,7 +33,7 @@ data:
   authParams: "file:///pulsar/token-superuser-stripped.jwt"
   authPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
   {{- end }}
-  {{- if .Values.secrets }}
+  {{- if or .Values.secrets .Values.createCertificates.selfSigned}}
   tlsTrustCertsFilePath: /pulsar/certs/ca.crt
   {{- else }}
   tlsTrustCertsFilePath: "{{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}"
