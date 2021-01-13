@@ -19,7 +19,7 @@ default_storage:
   existingStorageClassName: default
 persistence: no
 enableAntiAffinity: no
-enableTls: no 
+enableTls: yes 
 enableTokenAuth: no
 restartOnConfigMapChange:
   enabled: yes
@@ -29,6 +29,16 @@ extra:
   burnellLogCollector: yes
   pulsarHeartbeat: yes
   pulsarAdminConsole: yes
+
+cert-manager:
+  enabled: yes
+
+tlsCaPath: /pulsar/certs
+tlsCaCert: ca.crt
+
+createCertificates:
+  selfSigned: 
+    enabled: yes
 
 zookeeper:
   replicaCount: 1 

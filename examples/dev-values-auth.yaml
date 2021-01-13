@@ -30,48 +30,6 @@ extra:
   pulsarHeartbeat: yes
   pulsarAdminConsole: yes
 
-image:
-  broker:
-    repository: datastax/pulsar-all
-    pullPolicy: IfNotPresent
-    tag: latest 
-  bookkeeper:
-    repository: datastax/pulsar-all
-    pullPolicy: IfNotPresent
-    tag: latest
-  zookeeper:
-    repository: datastax/pulsar-all
-    pullPolicy: IfNotPresent
-    tag: latest
-  function:
-    repository: datastax/pulsar-all
-    pullPolicy: IfNotPresent
-    tag: latest
-  proxy:
-    repository: datastax/pulsar-all
-    pullPolicy: IfNotPresent
-    tag: latest
-  bastion:
-    repository: datastax/pulsar-all
-    pullPolicy: IfNotPresent
-    tag: latest
-  burnell:
-    repository: datastax/burnell
-    pullPolicy: IfNotPresent
-    tag: 0.0.1 
-  burnellLogCollector:
-    repository: datastax/burnell
-    pullPolicy: IfNotPresent
-    tag: logcollector_0.0.1 
-  pulsarHeartbeat:
-    repository: datastax/pulsar-monitor
-    pullPolicy: IfNotPresent
-    tag: 0.0.1 
-  pulsarAdminConsole:
-    repository: datastax/pulsar-admin-console
-    pullPolicy: IfNotPresent
-    tag: latest 
-
 zookeeper:
   replicaCount: 1 
   resources:

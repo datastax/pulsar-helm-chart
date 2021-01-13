@@ -247,7 +247,17 @@ There are several example configurations in the [examples](https://github.com/da
 Note: With message/state persistence disabled, the cluster will not survive a restart of the ZooKeeper or BookKeeper.
 
 * dev-values-persistence. Same as above, but persistence is enabled. This will allow for the cluster to survive the restarts of the pods, but requires persistent volume claims (PVC) to be supported by the Kubernetes environment. 
-* dev-values-authentication. A development environment with authentication enabled. New keys and tokens from those keys are automatically generated and stored in Kubernetes secrets. You can retrieve the superuser token from the admin console (Credentials menu) or from the secret `token-superuser`.
+* dev-values-auth.yaml. A development environment with authentication enabled. New keys and tokens from those keys are automatically generated and stored in Kubernetes secrets. You can retrieve the superuser token from the admin console (Credentials menu) or from the secret `token-superuser`.
+
+```helm install pulsar -f dev-values-auth.yaml datastax-pulsar/pulsar```
+
+* dev-values-tls.yaml. Development environment with self-signed certficate created by cert-manager. You need to install the cert-manager CRDs before installing the Helm chart. The chart will install the cert-manager application.
+
+```
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.crds.yaml
+helm install pulsar -f dev-values-auth.yaml datastax-pulsar/pulsar
+```
+
 
 
 

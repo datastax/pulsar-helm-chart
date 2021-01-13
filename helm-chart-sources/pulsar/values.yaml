@@ -132,10 +132,10 @@ tls:
     enabled: no
   # Enable TLS between function worker and broker
   function:
-    enabled: yes
+    enabled: no
   # Enable TLS between WebSocket proxy and broker
   websocket:
-    enabled: yes
+    enabled: no
 
 # secrets:
   ## If you're providing your own certificates, please use this to add the certificates as secrets
@@ -316,7 +316,7 @@ image:
     pullPolicy: IfNotPresent
     tag: 0.23.21
   burnell:
-    repository: datastatx/burnell
+    repository: datastax/burnell
     pullPolicy: Always
     tag: 0.0.2
   burnellLogCollector:
@@ -1526,11 +1526,8 @@ pulsarHeartbeat:
 # Deploy cert-manager
 cert-manager:
   enabled: no
-  namespaceOverride: cert-manager
-  selfSigned: 
-    enabled: no
-    includeDns: no
-  installCRDs: yes
+  # namespaceOverride: cert-manager
+  installCRDs: no
 
 createCertificates:
   selfSigned: 
