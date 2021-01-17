@@ -15,14 +15,56 @@ It includes support for:
 * [Tiered Storage](#tiered-storage) including Tardigarde distributed cloud storage
 * [Pulsar SQL Workers](#pulsar-sql)
 * [Admin Console](#managing-pulsar-using-admin-console) for managing the cluster
-* Pulsar heartbeat
-* Burnell for API-based token generation
-* Prometheus/Grafana/Alertmanager stack with default Grafana dashboards and Pulsar-specific alerting rules
+* [Pulsar heartbeat](https://github.com/datastax/pulsar-heartbeat)
+* [Burnell](https://github.com/datastax/burnell) for API-based token generation
+* Prometheus/Grafana/Alertmanager [stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) with default Grafana dashboards and Pulsar-specific alerting rules
 * cert-manager with support for self-signed certificates as well as public certificates using ACME (for example, Let's Encrypt)
-* Ingress for all HTTP ports (Admin Console, Prometheus, Grafana, etc)
+* Ingress configuration for all HTTP ports (Admin Console, Prometheus, Grafana, etc)
 
 [Helm](https://helm.sh) must be installed and initialized to use the chart. Only Helm 3 is supported.
 Please refer to Helm's [documentation](https://helm.sh/docs/) to get started.
+
+## Minikube quick start
+
+Make sure you have minikube [installed](https://minikube.sigs.k8s.io/docs/start/) and running (`minikube start`).
+
+Install the Helm chart:
+
+```
+helm repo add datastax-pulsar https://datastax.github.io/pulsar-helm-chart
+curl -LOs https://datastax.github.io/pulsar-helm-chart/examples/dev-values.yaml
+helm install pulsar -f dev-values.yaml --wait datastax-pulsar/pulsar
+```
+
+The Helm command waits until all pods are up, which take about 5 minutes.
+
+In another terminal, start the minikube tunnel:
+
+```
+minikube tunnel
+```
+
+Open your browser to http://localhost to view the Admin Console:
+
+![Admin Console](assets/admin_console.png?raw=true "Admin Console")
+
+
+Can view the embedded Grafana charts using the Cluster/Monitoring menu in the Admin Console:
+
+![Grafana in Admin Console](assets/grafana.png?raw=true "Grafana in Admin Console")
+
+Grafana is password protected. The username is `admin`. You can get the password with this command:
+
+```
+kubectl get secret pulsar-grafana -o=jsonpath="{.data.admin-password}" | base64 --decode
+```
+
+
+
+
+
+
+
 
 ## Quick start
 
@@ -178,7 +220,7 @@ Or if you would rather go directly to the broker:
 You can install the Pulsar admin console in your cluster by enabling with this values setting:
 
 ```
-extra:
+component:
   pulsarAdminConsole: yes
 ```
 
@@ -265,15 +307,15 @@ helm install pulsar -f dev-values-auth.yaml datastax-pulsar/pulsar
 
 Tiered storage (offload to blob storage) can be configured in the `storageOffload` section of the `values.yaml` file. Instructions for AWS S3 and Google Cloud Storage are provided in the file.
 
-In addition you can configure any S3 compatible storage. There is explicit support for [Tardigrade](https://tardigrade.io), which is a provider of secure, decentralized storage. You can enable the Tardigarde S3 gateway in the `extras` configuration. The instructions for configuring the gateway are provided in the `tardigrade` section of the `values.yaml` file.
+In addition you can configure any S3 compatible storage. There is explicit support for [Tardigrade](https://tardigrade.io), which is a provider of secure, decentralized storage. You can enable the Tardigarde S3 gateway in the `extra` configuration. The instructions for configuring the gateway are provided in the `tardigrade` section of the `values.yaml` file.
 
 ## Pulsar SQL
-If you enable Pulsar SQL, the cluster provides [Presto](https://prestodb.io/) access to the data stored in BookKeeper (and tiered storage, if enabled). Presto is exposed on the service named `<release>-sql-svc`.
+If you enable Pulsar SQL, the cluster provides [Presto](https://prestodb.io/) access to the data stored in BookKeeper (and tiered storage, if enabled). Presto is exposed on the service named `<release>-sql`.
 
 The easiest way to access the Presto command line is to log into the bastion host and then connect to the Presto service port, like this:
 
 ```
-bin/pulsar sql --server pulsar-sql-svc:8080
+bin/pulsar sql --server pulsar-sql:8090
 ```
 Where the value for the `server` option should be the service name plus port. Once you are connected, you can enter Presto commands:
 
@@ -289,7 +331,9 @@ Query 20200608_155725_00000_gpdae, FINISHED, 2 nodes
 Splits: 17 total, 17 done (100.00%)
 0:04 [2 rows, 144B] [0 rows/s, 37B/s]
 ```
-To access Pulsar SQL from outside the cluster, you can enable the `ingress` option which will expose the Presto port on hostname. We have tested with the Traefik ingress, but any Kubernetes ingress should work. You can then run SQL queries using the Presto CLI and monitoring Presto using the built-in UI (point browser to the ingress hostname). It is recommended that you match the Presto CLI version to the version running as part of Pulsar SQL (currently 0.206).
+To access Pulsar SQL from outside the cluster, you can enable the `ingress` option which will expose the Presto port on hostname. We have tested with the Traefik ingress, but any Kubernetes ingress should work. You can then run SQL queries using the Presto CLI and monitoring Presto using the built-in UI (point browser to the ingress hostname). Authentication is not enabled on the UI, so you can log in with any username.
+
+It is recommended that you match the Presto CLI version to the version running as part of Pulsar SQL.
 
 The Presto CLI supports basic authentication, so if you enabled that on the ingress (using annotations), you can have secure Presto access.
 
