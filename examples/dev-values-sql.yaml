@@ -26,6 +26,7 @@ extra:
   burnellLogCollector: yes
   pulsarHeartbeat: yes
   pulsarAdminConsole: yes
+  pulsarSQL: yes
 
 zookeeper:
   replicaCount: 1 
@@ -92,6 +93,12 @@ proxy:
   service:
     autoPortAssign:
       enabled: yes
+
+pulsarSQL:
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 0.3
 
 grafanaDashboards:
   enabled: yes

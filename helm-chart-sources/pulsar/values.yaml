@@ -52,7 +52,8 @@ priorityClass:
 # even though they could operate.
 enableWaitContainers: yes
 
-default_storage: {}
+default_storage: 
+  existingStorageClassName: default
 
 # If default_storage is set, that storage class is the default for all 
 # persistent volmes created by the chart.
@@ -325,7 +326,7 @@ image:
     tag: logcollector_latest
   pulsarSQL:
     repository: datastax/pulsar-all
-    tag: 2.6.2
+    tag: 2.6.2-ds-3
     pullPolicy: IfNotPresent
   tardigrade:
     repository: storjlabs/gateway
@@ -746,7 +747,7 @@ broker:
   gracePeriod: 60
   # Enable extra services in the broker
   # These can also be enabled as standalone services
-  # See extras section above
+  # See extra section above
   functionsWorkerEnabled: no
   webSocketServiceEnabled: no
   probe:
@@ -1035,6 +1036,10 @@ pulsarSQL:
   # nodeSelector:
   # affinity:
   # tolerations:
+  resources:
+    requests:
+      memory: 2Gi
+      cpu: 1
   server:
     scheduleCoordinator: yes
     workers: 0
@@ -1045,7 +1050,7 @@ pulsarSQL:
         level: INFO
     config:
       http:
-        port: 8080
+        port: 8090
       query:
         maxMemory: "4GB"
         maxMemoryPerNode: "1GB"
@@ -1063,7 +1068,7 @@ pulsarSQL:
       runAsGroup: 1000
 
   service:
-    type: ClusterIP
+    type: LoadBalancer
 
   ingress:
     enabled: no
@@ -1100,7 +1105,7 @@ tardigrade:
 # Placeholder for Burnell config options
 burnell: {}
 
-## Pulsar Extra: Proxy
+## Pulsar Component: Proxy
 ## templates/proxy-deployment.yaml
 ##
 proxy:
@@ -1215,7 +1220,7 @@ proxy:
     matchingNodePort: no
   service:
     annotations: {}
-    type: ClusterIP
+    type: LoadBalancer
     autoPortAssign:
       enabled: no
     ports:
@@ -1261,7 +1266,7 @@ proxy:
     usePolicy: yes
     maxUnavailable: 1
 
-## Pulsar Extra:  DNS on proxy RBAC
+## Pulsar Component:  DNS on proxy RBAC
 ## templates/dns-rbac.yaml
 ## templates/dns-deployment.yaml
 dns:
@@ -1281,7 +1286,7 @@ dns:
   #         values:
   #         - pulsar
 
-## Pulsar Extra: Bookkeeper auto-recovery
+## Pulsar Component: Bookkeeper auto-recovery
 ## templates/autorecovery-deployment.yaml
 ##
 autoRecovery:
@@ -1329,7 +1334,7 @@ autoRecovery:
     PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info"
 
 
-## Pulsar Extra: Pulsar Admin console
+## Pulsar Component: Pulsar Admin console
 ## templates/admin-console/pulsar-admin-console-deployment.yaml
 ##
 pulsarAdminConsole:
@@ -1375,11 +1380,12 @@ pulsarAdminConsole:
   ##
   service:
     annotations: {}
+    type: LoadBalancer
     ports:
     - name: server
       port: 3100
 
-## Pulsar Extra: Zoonavigator
+## Pulsar Component: Zoonavigator
 ## templates/zoonavigator-deployment.yaml
 ##
 zoonavigator:
@@ -1431,7 +1437,7 @@ zoonavigator:
       port: 8778
 
 
-## Pulsar Extra: Bastion
+## Pulsar Component: Bastion
 ## templates/bastion-deployment.yaml
 ##
 bastion:
@@ -1738,8 +1744,13 @@ kube-prometheus-stack:
   grafana:
     enabled: true
     # namespaceOverride: "monitoring"
+    testFramework:
+      enabled: false
     defaultDashboardsEnabled: true
     adminPassword: ZhF9sS8B7PQSTR
+    service:
+      type: LoadBalancer
+      port: 3000
     ingress:
       enabled: false
       hosts: 
