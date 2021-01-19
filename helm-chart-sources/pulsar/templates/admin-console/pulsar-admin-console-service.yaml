@@ -31,12 +31,12 @@ metadata:
   annotations:
 {{ toYaml .Values.pulsarAdminConsole.annotations | indent 4 }}
 spec:
+  type: {{ .Values.pulsarAdminConsole.service.type }}
   ports:
   - name: http
     port: 80
   - name: https
     port: 443
-  clusterIP: None
   selector:
     app: {{ template "pulsar.name" . }}
     release: {{ .Release.Name }}

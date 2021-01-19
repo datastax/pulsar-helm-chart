@@ -15,9 +15,6 @@
 #  
 # 
 
-default_storage:
-  existingStorageClassName: default
-persistence: no
 enableAntiAffinity: no
 enableTls: yes 
 enableTokenAuth: no
@@ -32,9 +29,6 @@ extra:
 
 cert-manager:
   enabled: yes
-
-tlsCaPath: /pulsar/certs
-tlsCaCert: ca.crt
 
 createCertificates:
   selfSigned: 
@@ -103,8 +97,6 @@ proxy:
   autoPortAssign:
     enablePlainTextWithTLS: yes
   service:
-    annotations: {}
-    type: NodePort
     autoPortAssign:
       enabled: yes
 
@@ -121,12 +113,3 @@ kube-prometheus-stack:
   grafana:
     enabled: true
     adminPassword: e9JYtk83*4#PM8
-    ingress:
-      enabled: no
-    testFramework:
-      enabled: false
-  prometheus:
-    service:
-      type: NodePort
-
-  

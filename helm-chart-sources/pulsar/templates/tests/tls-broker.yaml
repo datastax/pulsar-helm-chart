@@ -48,7 +48,7 @@ spec:
   - name: "{{ template "pulsar.fullname" . }}-test-client-broker-tls"
     image: "{{ .Values.image.bastion.repository }}:{{ .Values.image.bastion.tag }}"
     env:
-      {{- if .Values.secrets }}
+      {{- if or .Values.secrets .Values.createCertificates.selfSigned}}
       - name: tlsTrustCertsFilePath
         value: /pulsar/certs/ca.crt
       {{- else }}
