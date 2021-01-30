@@ -256,7 +256,7 @@ pulsarAdminConsole:
 To access the Pulsar admin console on your local machine, forward port 80:
 
 ```
-kubectl port-forward -n pulsar $(kubectl get pods -n pulsar -l component=pulsarAdminConsole -o jsonpath='{.items[0].metadata.name}') 8888:80
+kubectl port-forward -n pulsar $(kubectl get pods -n pulsar -l component=adminconsole -o jsonpath='{.items[0].metadata.name}') 8888:80
 ```
 
 ### Accessing Admin Console from cloud provider
