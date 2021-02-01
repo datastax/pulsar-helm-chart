@@ -274,7 +274,7 @@ pulsarAdminConsole:
 
 ## Enabling the Prometheus stack
 
-You can enable a full Prometheus stack (Prometheus, Altermanager, Grafana) from [kube-prometheus](https://github.com/prometheus-operator/kube-prometheus). This includes default Prometheus rules and Grafana dashboards for Kubernetes. 
+You can enable a full Prometheus stack (Prometheus, Alertmanager, Grafana) from [kube-prometheus](https://github.com/prometheus-operator/kube-prometheus). This includes default Prometheus rules and Grafana dashboards for Kubernetes. 
 
 In an addition, this chart can deploy Grafana dashboards for Pulsar as well as Pulsar-specific rules for Prometheus. 
 
