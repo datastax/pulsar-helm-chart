@@ -154,7 +154,7 @@ See the [values file](https://github.com/datastax/pulsar-helm-chart/blob/master/
 Once you have your storage settings in the values file, install the chart like this :
 
 ```
-helm install pulsar datastax/pulsar --namespace pulsar --values storage_values.yaml --create-namespace
+helm install pulsar datastax-pulsar/pulsar --namespace pulsar --values storage_values.yaml --create-namespace
 ```
 
 ## Installing Pulsar for development
