@@ -319,7 +319,7 @@ image:
   burnell:
     repository: datastax/burnell
     pullPolicy: Always
-    tag: latest
+    tag: 1.0.0
   burnellLogCollector:
     repository: datastax/burnell
     pullPolicy: IfNotPresent
