@@ -32,6 +32,7 @@ Install the Helm chart:
 
 ```
 helm repo add datastax-pulsar https://datastax.github.io/pulsar-helm-chart
+helm repo update
 curl -LOs https://datastax.github.io/pulsar-helm-chart/examples/dev-values.yaml
 helm install pulsar -f dev-values.yaml --wait datastax-pulsar/pulsar
 ```
@@ -60,18 +61,13 @@ kubectl get secret pulsar-grafana -o=jsonpath="{.data.admin-password}" | base64 
 ```
 
 
-
-
-
-
-
-
 ## Quick start
 
 With Helm installed with access to a Kubernetes cluster (ex minikube):
 
 ```
 helm repo add datastax-pulsar https://datastax.github.io/pulsar-helm-chart
+helm repo update
 curl -LOs https://datastax.github.io/pulsar-helm-chart/examples/dev-values.yaml
 helm install pulsar -f dev-values.yaml datastax-pulsar/pulsar
 ```
@@ -158,7 +154,7 @@ See the [values file](https://github.com/datastax/pulsar-helm-chart/blob/master/
 Once you have your storage settings in the values file, install the chart like this :
 
 ```
-helm install pulsar datastax/pulsar --namespace pulsar --values storage_values.yaml --create-namespace
+helm install pulsar datastax-pulsar/pulsar --namespace pulsar --values storage_values.yaml --create-namespace
 ```
 
 ## Installing Pulsar for development
@@ -260,7 +256,7 @@ pulsarAdminConsole:
 To access the Pulsar admin console on your local machine, forward port 80:
 
 ```
-kubectl port-forward -n pulsar $(kubectl get pods -n pulsar -l component=pulsarAdminConsole -o jsonpath='{.items[0].metadata.name}') 8888:80
+kubectl port-forward -n pulsar $(kubectl get pods -n pulsar -l component=adminconsole -o jsonpath='{.items[0].metadata.name}') 8888:80
 ```
 
 ### Accessing Admin Console from cloud provider
@@ -278,7 +274,31 @@ pulsarAdminConsole:
 
 ## Enabling the Prometheus stack
 
-TODO
+You can enable a full Prometheus stack (Prometheus, Alertmanager, Grafana) from [kube-prometheus](https://github.com/prometheus-operator/kube-prometheus). This includes default Prometheus rules and Grafana dashboards for Kubernetes. 
+
+In an addition, this chart can deploy Grafana dashboards for Pulsar as well as Pulsar-specific rules for Prometheus. 
+
+To deploy the Prometheus stack, use the following setting in your values file:
+
+```
+kube-prometheus-stack:
+  enabled: yes
+```
+
+To enable the Grafana dashboards, use the following setting:
+
+```
+grafanaDashboards:
+  enabled: no
+```
+
+To enable the Kubernetes default rules, use the following setting:
+```
+kube-prometheus-stack:
+  defaultRules:
+    create: yes
+```
+
 
 ## Example configurations
 
@@ -299,8 +319,6 @@ Note: With message/state persistence disabled, the cluster will not survive a re
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.crds.yaml
 helm install pulsar -f dev-values-auth.yaml datastax-pulsar/pulsar
 ```
-
-
 
 
 ## Tiered Storage
@@ -351,14 +369,6 @@ Query 20200610_131641_00027_tzc7t, FINISHED, 1 node
 Splits: 19 total, 19 done (100.00%)
 0:01 [0 rows, 0B] [0 rows/s, 0B/s]
 ```
-
-## Pulsar heartbeat and Burnell
-
-TODO
-
-## Ingress support
-
-TODO
 
 ## Dependencies
 
