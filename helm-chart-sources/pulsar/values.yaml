@@ -286,32 +286,32 @@ image:
     # If not using tiered storage, you can use the smaller pulsar image for the broker
     repository: datastax/pulsar-all
     pullPolicy: IfNotPresent
-    tag: 2.6.2_1.0.0
+    tag: 2.6.2_1.0.1
   brokerSts:
     # If not using tiered storage, you can use the smaller pulsar image for the broker
     repository: datastax/pulsar-all
     pullPolicy: IfNotPresent
-    tag: 2.6.2_1.0.0
+    tag: 2.6.2_1.0.1
   function:
     repository: datastax/pulsar-all
     pullPolicy: IfNotPresent
-    tag: 2.6.2_1.0.0
+    tag: 2.6.2_1.0.1
   zookeeper:
     repository: datastax/pulsar
     pullPolicy: IfNotPresent
-    tag: 2.6.2_1.0.0
+    tag: 2.6.2_1.0.1
   bookkeeper:
     repository: datastax/pulsar
     pullPolicy: IfNotPresent
-    tag: 2.6.2_1.0.0
+    tag: 2.6.2_1.0.1
   proxy:
     repository: datastax/pulsar
     pullPolicy: IfNotPresent
-    tag: 2.6.2_1.0.0
+    tag: 2.6.2_1.0.1
   bastion:
     repository: datastax/pulsar
     pullPolicy: IfNotPresent
-    tag: 2.6.2_1.0.0
+    tag: 2.6.2_1.0.1
   pulsarBeam:
     repository: kesque/pulsar-beam
     pullPolicy: IfNotPresent
@@ -326,7 +326,7 @@ image:
     tag: logcollector_latest
   pulsarSQL:
     repository: datastax/pulsar-all
-    tag: 2.6.2_1.0.0
+    tag: 2.6.2_1.0.1
     pullPolicy: IfNotPresent
   tardigrade:
     repository: storjlabs/gateway
