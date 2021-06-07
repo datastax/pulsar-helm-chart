@@ -117,6 +117,20 @@ spec:
         {{- end }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.zookeeper.gracePeriod }}
+      {{- if .Values.fixRootlessPermissions.enabled }}
+      initContainers:
+      # This init container will make sure permisisons are set correctly for the rootless container
+      - name: fix-rootless-permissions
+        image: {{ .Values.fixRootlessPermissions.containerImage }}
+        imagePullPolicy: IfNotPresent
+        command: ["sh", "-c"]
+        volumeMounts:
+          - name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-{{ .Values.zookeeper.volumes.data.name }}"
+            mountPath: /pulsar/data
+        args:
+          - >
+            chown -R 10000:10001 /pulsar/data
+      {{- end }}
       containers:
       - name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}"
         image: "{{ .Values.image.zookeeper.repository }}:{{ .Values.image.zookeeper.tag }}"

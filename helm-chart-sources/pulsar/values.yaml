@@ -208,6 +208,16 @@ enableTests: no
 # Also enabled extended tests
 enableExtendedTests: no
 
+# When upgrading to Luna Streaming version 2.7.2 (or higher) from any prior version, the 2.7.2 containers
+# do not run as root for enhanced security. Because of this, the containers may not have the correct 
+# permissions to read files. This is remediated by fixing the file system permissions in an init container.
+#
+# In most cases this is not required for new installations. However, depending on how volumes are mounted
+# it may be necessary to enable this feature even for new installations.
+fixRootlessPermissions:
+  enabled: no
+  containerImage: openjdk:11-jdk-slim
+
 # By default, Kubernetes will not restart pods when only their
 # configmap is changed. This setting will restart pods when their
 # configmap is changed using an annotation that calculates the
