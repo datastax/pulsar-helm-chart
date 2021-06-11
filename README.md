@@ -26,11 +26,16 @@ Please refer to Helm's [documentation](https://helm.sh/docs/) to get started.
 
 ## Upgrade considerations
 
-### Luna Streaming 2.7.2/Apache Pulsar 2.8.0
+### Luna Streaming 2.7.2
 
-Starting in Luna Streaming 2.7.2 and Apache Pulsar 2.8.0, the Pulsar containers run as a non-root user for enhanced security. When upgrading files created in prior version will have root permissions and will not be readable by containers running the new version.
+Starting in Luna Streaming 2.7.2, the Pulsar containers run as a non-root user for enhanced security. When upgrading files created in prior version will have root permissions and will not be readable by containers running the new version.
 
-To fix this, you can manually log into the ZooKeeper, BookKeeper, and Function Worker pods an make sure that all files in the `/pulsar/data/` and `pulsar/logs` directories are owned by UID 10000 (user pulsar). 
+To fix this, you can manually log into the ZooKeeper, BookKeeper, and Function Worker pods and make sure that all files in the `/pulsar/data/` and `pulsar/logs` directories are owned by UID 10000 (user pulsar). 
+The group ID of the files should also be set to GID 10001 (group pulsar). Here is an example command:
+
+```
+chown -R 10000:10001 /pulsar/data
+```
 
 Alternatively, you can enable automatic fixing of the permissions using an init container, with the following setting:
 
