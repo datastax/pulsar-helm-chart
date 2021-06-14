@@ -2,7 +2,7 @@ apiVersion: v1
 entries:
   pulsar:
   - apiVersion: v1
-    appVersion: 2.6.2
+    appVersion: 2.7.2
     created: "2021-06-14T15:33:32.78305875Z"
     description: Apache Pulsar Helm chart for Kubernetes
     digest: 749c802e223d692855a2c5f14114bff8c592f1d925124e57c178235be7290745

@@ -16,10 +16,10 @@
 # 
 
 apiVersion: v1
-appVersion: "2.6.2"
+appVersion: "2.7.2"
 description: Apache Pulsar Helm chart for Kubernetes
 name: pulsar
-version: 1.0.4
+version: 1.0.5
 dependencies:
 - name: kube-prometheus-stack
   version: 12.x.x
