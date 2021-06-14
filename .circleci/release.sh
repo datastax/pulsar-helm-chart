@@ -77,7 +77,7 @@ release_charts() {
 }
 
 update_index() {
-    chart-releaser index -o datastax -r pulsar-helm-chart -t "$CH_TOKEN" -c https://datastax.github.io 
+    chart-releaser index -o datastax -r pulsar-helm-chart -t "$CH_TOKEN" -c https://datastax.github.io/pulsar-helm-chart
 
     git config user.email "$GIT_EMAIL"
     git config user.name "$GIT_USERNAME"

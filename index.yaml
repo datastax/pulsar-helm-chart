@@ -3,6 +3,15 @@ entries:
   pulsar:
   - apiVersion: v1
     appVersion: 2.6.2
+    created: "2021-05-31T12:31:40.44118-04:00"
+    description: Apache Pulsar Helm chart for Kubernetes
+    digest: 2f80b281f9e7717e2a34f8d3e4932d04fc8d94a1fc76e6dff0212c7522ed45a2
+    name: pulsar
+    urls:
+    - https://github.com/datastax/pulsar-helm-chart/releases/download/pulsar-1.0.4/pulsar-1.0.4.tgz
+    version: 1.0.4
+  - apiVersion: v1
+    appVersion: 2.6.2
     created: "2021-01-27T13:03:08.989149237Z"
     description: Apache Pulsar Helm chart for Kubernetes
     digest: d044fcc133170f0131c01bb92d1b26ceb1a0bcb967603a07436fe9fe4c4190f3
