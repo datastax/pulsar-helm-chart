@@ -57,11 +57,11 @@ spec:
       terminationGracePeriodSeconds: {{ .Values.pulsarAdminConsole.gracePeriod }}
       containers:
       - name: nginx 
-        image: nginx 
-        imagePullPolicy: {{ .Values.image.pulsarAdminConsole.pullPolicy }}
+        image: bitnami/nginx:latest 
+        imagePullPolicy: Always
         ports:
         - name: "nginx"
-          containerPort: 80
+          containerPort: 8080
         {{- if .Values.enableTls }}
         - name: "nginx-tls"
           containerPort: 443

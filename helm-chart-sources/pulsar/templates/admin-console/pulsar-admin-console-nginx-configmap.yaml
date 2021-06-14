@@ -141,7 +141,7 @@ data:
               proxy_pass http://http-pulsar-proxy$uri$is_args$args;
             }
 
-            listen 80 default_server;
+            listen 8080 default_server;
             {{- if .Values.tlsEnabled }}
             listen 443 ssl;
             ssl_certificate /certs/tls.crt;
