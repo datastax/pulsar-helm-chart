@@ -1,7 +1,7 @@
 dependencies:
 - name: kube-prometheus-stack
   repository: https://prometheus-community.github.io/helm-charts
-  version: 12.8.0
+  version: 16.7.0
 - name: cert-manager
   repository: https://charts.jetstack.io
   version: v1.1.0
