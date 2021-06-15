@@ -15,7 +15,7 @@
 #  
 # 
 
-{{- if or .Values.enableProvisionContainer .Values.extra.pulsarHealer .Values.extra.pulsarAdminConsole }}
+{{- if or .Values.autoRecovery.enableProvisionContainer .Values.extra.pulsarHealer .Values.extra.pulsarAdminConsole }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
