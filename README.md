@@ -59,7 +59,7 @@ curl -LOs https://datastax.github.io/pulsar-helm-chart/examples/dev-values.yaml
 helm install pulsar -f dev-values.yaml --wait datastax-pulsar/pulsar
 ```
 
-The Helm command waits until all pods are up, which take about 5 minutes.
+The Helm command waits until all pods are up, which takes about 5 minutes.
 
 In another terminal, start the minikube tunnel:
 
@@ -72,7 +72,7 @@ Open your browser to http://localhost to view the Admin Console:
 ![Admin Console](assets/admin_console.png?raw=true "Admin Console")
 
 
-Can view the embedded Grafana charts using the Cluster/Monitoring menu in the Admin Console:
+You can view the embedded Grafana charts using the Cluster/Monitoring menu in the Admin Console:
 
 ![Grafana in Admin Console](assets/grafana.png?raw=true "Grafana in Admin Console")
 
@@ -98,13 +98,13 @@ Once all the pods are running (takes 5 to 10 minutes), you can access the admin 
 
 ```kubectl port-forward $(kubectl get pods -l component=adminconsole -o jsonpath='{.items[0].metadata.name}') 8888:80```
 
-Then open a browser to http://localhost:8888. In the admin console you can test your Pulsar setup using the built-in clients (Test Clients in the left-hand menu).
+Then open a browser to http://localhost:8888. In the admin console, you can test your Pulsar setup using the built-in clients (Test Clients in the left-hand menu).
 
 If you also forward the Grafana port, like this:
 
 ```kubectl port-forward $(kubectl get pods -l app.kubernetes.io/name=grafana -o jsonpath='{.items[0].metadata.name}') 3000:3000```
 
-You can view metrics for the Pulsar cluster the Cluster, Monitoring menu item. You will have to log into Grafana. The username is `admin` and the password is in the downloaded file `dev-values.yaml` under the `adminPassword` setting.
+You can view metrics for the Pulsar cluster via the Cluster, Monitoring menu item. You will have to log into Grafana. The username is `admin` and the password is in the downloaded file `dev-values.yaml` under the `adminPassword` setting.
 
 To use the Pulsar admin and client tools (ex pulsar-admin, pulsar-client, pulsar-perf), log into the bastion pod:
 
@@ -311,7 +311,7 @@ To enable the Grafana dashboards, use the following setting:
 
 ```
 grafanaDashboards:
-  enabled: no
+  enabled: yes
 ```
 
 To enable the Kubernetes default rules, use the following setting:
