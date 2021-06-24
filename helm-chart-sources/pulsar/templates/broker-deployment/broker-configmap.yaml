@@ -58,6 +58,9 @@ data:
     {{- end }}
     {{- end }}
   clusterName: {{ template "pulsar.fullname" . }}
+  {{- if .Values.broker.brokerDeleteInactiveTopicsEnabled }}
+  brokerDeleteInactiveTopicsEnabled: {{ .Values.brokerDeleteInactiveTopicsEnabled }}
+  {{- end }}
   {{- if .Values.broker.functionsWorkerEnabled }}
   functionsWorkerEnabled: "true"
   PF_pulsarFunctionsCluster: {{ template "pulsar.fullname" . }}
