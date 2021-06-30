@@ -24,6 +24,13 @@ fullnameOverride: pulsar
 # DNS name for loadbalancer
 dnsName: pulsar.example.com
 
+# RBAC resource configuration
+rbac:
+  # create ClusterRole/Role and ClusterRoleBinding/RoleBinding resources
+  create: true
+  # use ClusterRole and ClusterRoleBinding resources when set to true
+  # use namespaced Role and RoleBinding resources when set to false
+  clusterRoles: true
 # Global node selector
 # If set, this will apply to all components
 # Individual components can be set to a different node

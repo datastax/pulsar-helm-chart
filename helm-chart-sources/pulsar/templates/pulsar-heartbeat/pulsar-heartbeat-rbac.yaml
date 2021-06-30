@@ -15,11 +15,14 @@
 #
 #
 
-{{- if .Values.extra.pulsarHeartbeat }}
+{{- if and .Values.rbac.create .Values.extra.pulsarHeartbeat }}
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
+kind: {{ if .Values.rbac.clusterRoles }}ClusterRole{{ else }}Role{{ end }}
 metadata:
   name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarHeartbeat.component }}"
+  {{- if not .Values.rbac.clusterRoles }}
+  namespace: {{ .Release.Namespace }}
+  {{- end }}
 rules:
 - apiGroups: [""]
   resources:
@@ -44,12 +47,15 @@ metadata:
   namespace: {{ .Release.Namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+kind: {{ if .Values.rbac.clusterRoles }}ClusterRoleBinding{{ else }}RoleBinding{{ end }}
 metadata:
   name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarHeartbeat.component }}"
+  {{- if not .Values.rbac.clusterRoles }}
+  namespace: {{ .Release.Namespace }}
+  {{- end }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
+  kind: {{ if .Values.rbac.clusterRoles }}ClusterRole{{ else }}Role{{ end }}
   name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarHeartbeat.component }}"
 subjects:
 - kind: ServiceAccount

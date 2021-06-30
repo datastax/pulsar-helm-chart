@@ -15,11 +15,14 @@
 #
 #
 
-{{- if or .Values.enableProvisionContainer .Values.extra.pulsarHealer .Values.extra.pulsarAdminConsole }}
+{{- if and .Values.rbac.create ( or .Values.enableProvisionContainer .Values.extra.pulsarHealer .Values.extra.pulsarAdminConsole ) }}
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
+kind: {{ if .Values.rbac.clusterRoles }}ClusterRole{{ else }}Role{{ end }}
 metadata:
   name: "{{ template "pulsar.fullname" . }}-burnell"
+  {{- if not .Values.rbac.clusterRoles }}
+  namespace: {{ .Release.Namespace }}
+  {{- end }}
 rules:
 - apiGroups: [""]
   resources:
@@ -47,12 +50,15 @@ metadata:
   namespace: {{ .Release.Namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+kind: {{ if .Values.rbac.clusterRoles }}ClusterRoleBinding{{ else }}RoleBinding{{ end }}
 metadata:
   name: "{{ template "pulsar.fullname" . }}-burnell"
+  {{- if not .Values.rbac.clusterRoles }}
+  namespace: {{ .Release.Namespace }}
+  {{- end }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
+  kind: {{ if .Values.rbac.clusterRoles }}ClusterRole{{ else }}Role{{ end }}
   name: "{{ template "pulsar.fullname" . }}-burnell"
 subjects:
 - kind: ServiceAccount
