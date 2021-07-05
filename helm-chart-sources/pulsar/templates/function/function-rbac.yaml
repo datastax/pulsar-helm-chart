@@ -26,18 +26,16 @@ metadata:
 rules:
 - apiGroups: [""]
   resources:
-  - services
-  - configmaps
   - pods
-  - secrets
-  verbs:
-  - '*'
-- apiGroups:
-  - apps
+  verbs: ["list"]
+- apiGroups: [""]
+  resources:
+  - services
+  verbs: ["get", "create", "delete"]
+- apiGroups: ["apps"]
   resources:
   - statefulsets
-  verbs:
-  - '*'
+  verbs: ["get", "create", "delete"]
 ---
 apiVersion: v1
 kind: ServiceAccount
