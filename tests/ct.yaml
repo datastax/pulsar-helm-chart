@@ -18,3 +18,8 @@
 remote: origin
 target-branch: master
 helm-extra-args: "--timeout 600s"
+chart-dirs:
+  - helm-chart-sources
+chart-repos:
+  - kube-prometheus-stack=https://prometheus-community.github.io/helm-charts
+  - cert-manager=https://charts.jetstack.io
