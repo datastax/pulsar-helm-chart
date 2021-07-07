@@ -1,19 +1,19 @@
-# 
-#  Copyright 2021 DataStax, Inc. 
-#  
+#
+#  Copyright 2021 DataStax, Inc.
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-#  
-# 
+#
+#
 
 {{- if .Values.extra.function }}
 apiVersion: apps/v1
@@ -97,8 +97,8 @@ spec:
             topologyKey: "kubernetes.io/hostname"
           {{- end }}
           {{- if .Values.antiAffinity.zone.enabled }}
-          preferredDuringSchedulingIgnoredDuringExecution: 
-          - weight: 100  
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
             podAffinityTerm:
               topologyKey: failure-domain.beta.kubernetes.io/zone
               labelSelector:
@@ -115,14 +115,14 @@ spec:
                   operator: In
                   values:
                   - {{ .Values.function.component }}
-          {{- end }} 
+          {{- end }}
         {{- end }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.function.gracePeriod }}
       volumes:
         - name: config-volume
           configMap:
-            name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}" 
+            name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}"
         {{- if .Values.enableTokenAuth }}
         - name: token-superuser
           secret:
@@ -137,7 +137,7 @@ spec:
             secretName: "{{ .Values.tlsSecretName }}"
          {{- if .Values.tls.zookeeper.enabled}}
         - name: certconverter
-          configMap: 
+          configMap:
             name: "{{ template "pulsar.fullname" . }}-certconverter-configmap"
             defaultMode: 0755
           {{- end }}
@@ -188,8 +188,8 @@ spec:
         readinessProbe:
           tcpSocket:
             port: {{ .Values.function.probe.port }}
-          initialDelaySeconds: {{ .Values.function.probe.initial }} 
-          periodSeconds:  {{ .Values.function.probe.period }} 
+          initialDelaySeconds: {{ .Values.function.probe.initial }}
+          periodSeconds:  {{ .Values.function.probe.period }}
         {{- end }}
         {{- if .Values.function.resources }}
         resources:
@@ -230,8 +230,8 @@ spec:
         - name: workerHostname
           valueFrom:
             fieldRef:
-              fieldPath: metadata.name 
-        - name: PF_workerId 
+              fieldPath: metadata.name
+        - name: PF_workerId
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
