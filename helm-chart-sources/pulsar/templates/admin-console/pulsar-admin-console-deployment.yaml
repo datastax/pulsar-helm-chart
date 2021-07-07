@@ -1,19 +1,19 @@
-# 
-#  Copyright 2021 DataStax, Inc. 
-#  
+#
+#  Copyright 2021 DataStax, Inc.
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-#  
-# 
+#
+#
 
 {{- if .Values.extra.pulsarAdminConsole }}
 apiVersion: apps/v1
@@ -34,7 +34,7 @@ spec:
     matchLabels:
       app: {{ template "pulsar.name" . }}
       release: {{ .Release.Name }}
-      component: {{ .Values.pulsarAdminConsole.component }} 
+      component: {{ .Values.pulsarAdminConsole.component }}
   template:
     metadata:
       labels:
@@ -56,8 +56,8 @@ spec:
     {{- end }}
       terminationGracePeriodSeconds: {{ .Values.pulsarAdminConsole.gracePeriod }}
       containers:
-      - name: nginx 
-        image: nginx 
+      - name: nginx
+        image: nginx
         imagePullPolicy: {{ .Values.image.pulsarAdminConsole.pullPolicy }}
         ports:
         - name: "nginx"
@@ -74,17 +74,17 @@ spec:
         - mountPath: /certs
           name: certs
           readOnly: true
-        {{- end }}          
+        {{- end }}
         livenessProbe:
           httpGet:
             path: /ruok
-            port: 80 
+            port: 80
           initialDelaySeconds: {{ .Values.pulsarAdminConsole.probe.liveness.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.pulsarAdminConsole.probe.liveness.timeoutSeconds }}
         readinessProbe:
           httpGet:
             path: /ruok
-            port: 80 
+            port: 80
           initialDelaySeconds: {{ .Values.pulsarAdminConsole.probe.readiness.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.pulsarAdminConsole.probe.readiness.timeoutSeconds }}
         resources:
@@ -134,14 +134,14 @@ spec:
               path: config-override.js
         - name: nginxconf
           configMap:
-            name: {{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}-nginx 
-            items: 
+            name: {{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}-nginx
+            items:
             - key: nginx.conf
               path: nginx.conf
         {{- if .Values.enableTls }}
         - name: certs
           secret:
-            secretName: "{{ .Values.tlsSecretName }}" 
+            secretName: "{{ .Values.tlsSecretName }}"
         {{- end }}
         {{- if .Values.enableTokenAuth }}
         - name: token-superuser

@@ -1,19 +1,19 @@
-# 
-#  Copyright 2021 DataStax, Inc. 
-#  
+#
+#  Copyright 2021 DataStax, Inc.
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-#  
-# 
+#
+#
 
 {{- if .Values.extra.broker }}
 apiVersion: apps/v1
@@ -120,8 +120,8 @@ spec:
           {{- end }}
           {{- end }}
           {{- if .Values.antiAffinity.zone.enabled }}
-          preferredDuringSchedulingIgnoredDuringExecution: 
-          - weight: 100  
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
             podAffinityTerm:
               topologyKey: failure-domain.beta.kubernetes.io/zone
               labelSelector:
@@ -138,13 +138,13 @@ spec:
                   operator: In
                   values:
                   - {{ .Values.broker.component }}
-          {{- end }}  
+          {{- end }}
         {{- end }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.broker.gracePeriod }}
       volumes:
         - name: health
-          configMap: 
+          configMap:
             name: "{{ template "pulsar.fullname" . }}-health"
             defaultMode: 0755
         {{- if .Values.enableTls }}
@@ -153,7 +153,7 @@ spec:
             secretName: "{{ .Values.tlsSecretName }}"
           {{- if .Values.tls.zookeeper.enabled}}
         - name: certconverter
-          configMap: 
+          configMap:
             name: "{{ template "pulsar.fullname" . }}-certconverter-configmap"
             defaultMode: 0755
           {{- end }}
@@ -216,14 +216,14 @@ spec:
           exec:
             command:
             - "/pulsar/health/broker_health_check.sh"
-          initialDelaySeconds: {{ .Values.broker.probe.initial }} 
-          periodSeconds:  {{ .Values.broker.probe.period }} 
+          initialDelaySeconds: {{ .Values.broker.probe.initial }}
+          periodSeconds:  {{ .Values.broker.probe.period }}
         livenessProbe:
           exec:
             command:
             - "/pulsar/health/broker_health_check.sh"
-          initialDelaySeconds: {{ .Values.broker.probe.initial }} 
-          periodSeconds: {{ .Values.broker.probe.period }} 
+          initialDelaySeconds: {{ .Values.broker.probe.initial }}
+          periodSeconds: {{ .Values.broker.probe.period }}
         {{- end }}
       {{- if .Values.broker.resources }}
         resources:

@@ -1,19 +1,19 @@
-# 
-#  Copyright 2021 DataStax, Inc. 
-#  
+#
+#  Copyright 2021 DataStax, Inc.
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-#  
-# 
+#
+#
 
 {{- if .Values.extra.proxy }}
 apiVersion: apps/v1
@@ -120,8 +120,8 @@ spec:
           {{- end }}
           {{- end }}
           {{- if .Values.antiAffinity.zone.enabled }}
-          preferredDuringSchedulingIgnoredDuringExecution: 
-          - weight: 100  
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
             podAffinityTerm:
               topologyKey: failure-domain.beta.kubernetes.io/zone
               labelSelector:
@@ -138,13 +138,13 @@ spec:
                   operator: In
                   values:
                   - {{ .Values.proxy.component }}
-          {{- end }} 
+          {{- end }}
         {{- end }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.proxy.gracePeriod }}
       volumes:
         - name: health
-          configMap: 
+          configMap:
             name: "{{ template "pulsar.fullname" . }}-health"
             defaultMode: 0755
         {{- if .Values.enableTls }}
@@ -153,10 +153,10 @@ spec:
             secretName: "{{ .Values.tlsSecretName }}"
          {{- if .Values.tls.zookeeper.enabled}}
         - name: certconverter
-          configMap: 
+          configMap:
             name: "{{ template "pulsar.fullname" . }}-certconverter-configmap"
             defaultMode: 0755
-          {{- end }}           
+          {{- end }}
         {{- end }}
         {{- if .Values.enableTokenAuth }}
         - name: token-public-key
@@ -192,7 +192,7 @@ spec:
             until nslookup {{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-{{ add (.Values.bookkeeper.replicaCount | int) -1 }}.{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}.{{ .Release.Namespace }}; do
               sleep 3;
             done;
-      {{- end }}      
+      {{- end }}
       {{- if .Values.proxy.initContainer }}
       - name: add-libs
         image: "{{ .Values.proxy.initContainer.repository }}:{{ .Values.proxy.initContainer.tag }}"
@@ -230,14 +230,14 @@ spec:
           exec:
             command:
             - "/pulsar/health/proxy_health_check.sh"
-          initialDelaySeconds: {{ .Values.proxy.probe.initial }} 
-          periodSeconds:  {{ .Values.proxy.probe.period }} 
+          initialDelaySeconds: {{ .Values.proxy.probe.initial }}
+          periodSeconds:  {{ .Values.proxy.probe.period }}
         livenessProbe:
           exec:
             command:
             - "/pulsar/health/proxy_health_check.sh"
-          initialDelaySeconds: {{ .Values.proxy.probe.initial }} 
-          periodSeconds: {{ .Values.proxy.probe.period }} 
+          initialDelaySeconds: {{ .Values.proxy.probe.initial }}
+          periodSeconds: {{ .Values.proxy.probe.period }}
         {{- end }}
       {{- if .Values.proxy.resources }}
         resources:
@@ -352,7 +352,7 @@ spec:
       {{- end }}
         ports:
         - name: wss
-          containerPort: 8500 
+          containerPort: 8500
         volumeMounts:
           - name: certs
             readOnly: true
@@ -360,15 +360,15 @@ spec:
         env:
           - name: PORT
             value: "8500"
-          - name: CA_PATH 
+          - name: CA_PATH
             value: /pulsar/certs/ca.crt
-          - name: CERT_PATH 
+          - name: CERT_PATH
             value: /pulsar/certs/tls.crt
-          - name: KEY_PATH 
+          - name: KEY_PATH
             value: /pulsar/certs/tls.key
-          - name: TARGET_URL 
-            value: ws://localhost:8000 
-          - name: FUNC_URL 
+          - name: TARGET_URL
+            value: ws://localhost:8000
+          - name: FUNC_URL
             value: "http://{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}:6750"
           - name: TOKEN_SERVER_URL
             value: http://localhost:8084
@@ -422,7 +422,7 @@ spec:
           - mountPath: "/pulsar/token-public-key"
             name: token-public-key
             readOnly: true
-          {{- end }}          
+          {{- end }}
         args: ["-mode", "http"]
         env:
           - name: ProcessMode
@@ -499,7 +499,7 @@ spec:
           - mountPath: "/pulsar/token-public-key"
             name: token-public-key
             readOnly: true
-          {{- end }} 
+          {{- end }}
         env:
           - name: PORT
             value: "8964"
