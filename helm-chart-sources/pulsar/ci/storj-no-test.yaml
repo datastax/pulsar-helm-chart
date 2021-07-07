@@ -79,8 +79,6 @@ broker:
     managedLedgerMinLedgerRolloverTimeMinutes: "1"
     managedLedgerMaxLedgerRolloverTimeMinutes: "2"
 
-
-
 function:
   replicaCount: 1
   resources:
@@ -102,4 +100,3 @@ proxy:
       cpu: 0.3
   configData:
     PULSAR_MEM: "\"-Xms512m -Xmx512m -XX:MaxDirectMemorySize=512m\""
-

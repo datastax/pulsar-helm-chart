@@ -54,7 +54,6 @@ data:
         server localhost:6454;
       }
 
-
       upstream http-pulsar-proxy {
         server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8080;
       }
@@ -67,9 +66,7 @@ data:
         server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8964;
       }
 
-
       server {
-
 
             location /ruok {
               access_log off;

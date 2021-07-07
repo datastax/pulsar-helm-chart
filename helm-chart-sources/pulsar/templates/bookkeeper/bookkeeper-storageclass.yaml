@@ -63,8 +63,6 @@ parameters:
 {{- end }}
 {{- end }}
 
-
-
 ---
 {{- if not .Values.default_storage.existingStorageClassName }}
 {{- if not .Values.bookkeeper.volumes.ledgers.existingStorageClassName }}

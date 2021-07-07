@@ -75,4 +75,3 @@ spec:
     release: {{ .Release.Name }}
     component: {{ .Values.zookeeper.component }}
 
-

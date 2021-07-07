@@ -48,8 +48,6 @@ storageOffload:
   managedLedgerOffloadDeletionLagMs: "1000"
   managedLedgerOffloadAutoTriggerSizeThresholdBytes: "1000"
 
-
-
 zookeeper:
   resources:
     requests:
@@ -68,7 +66,6 @@ bookkeeper:
     BOOKIE_MEM: "\"-Xms512m -Xmx512m -XX:MaxDirectMemorySize=512m -XX:+ExitOnOutOfMemoryError\""
     BOOKIE_GC: "\"-XX:+UseG1GC -XX:MaxGCPauseMillis=10\""
 
-
 broker:
   component: broker
   replicaCount: 1
@@ -81,8 +78,6 @@ broker:
     managedLedgerMaxEntriesPerLedger: "5000"
     managedLedgerMinLedgerRolloverTimeMinutes: "1"
     managedLedgerMaxLedgerRolloverTimeMinutes: "2"
-
-
 
 function:
   replicaCount: 1
@@ -105,4 +100,3 @@ proxy:
       cpu: 0.3
   configData:
     PULSAR_MEM: "\"-Xms512m -Xmx512m -XX:MaxDirectMemorySize=512m\""
-

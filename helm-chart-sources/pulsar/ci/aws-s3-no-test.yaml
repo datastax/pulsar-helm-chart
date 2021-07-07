@@ -69,7 +69,6 @@ bookkeeper:
     BOOKIE_MEM: "-Xms512m -Xmx512m -XX:MaxDirectMemorySize=512m -XX:+ExitOnOutOfMemoryError"
     BOOKIE_GC: "\"-XX:+UseG1GC -XX:MaxGCPauseMillis=10\""
 
-
 broker:
   component: broker
   replicaCount: 1
@@ -82,5 +81,3 @@ broker:
     managedLedgerMaxEntriesPerLedger: "5000"
     managedLedgerMinLedgerRolloverTimeMinutes: "1"
     managedLedgerMaxLedgerRolloverTimeMinutes: "2"
-
-
