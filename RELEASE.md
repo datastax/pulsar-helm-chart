@@ -7,7 +7,7 @@ Helm Chart Release
 
 # CircleCI
 
-CircleCI is being used to release a new version of the DataStax Pulsar Helm Charts. The [release script](https://github.com/datastax/pulsar-helm-chart/blob/master/.circleci/release.sh) creates a release package of the new Helm Chart version and updates the [index.yaml](https://github.com/datastax/pulsar-helm-chart/blob/gh-pages/index.yaml) which in this case is hosted in a Github page. The CircleCI is triggered, when a new commit is pushed in the **release** branch.
+CircleCI is being used to release a new version of the DataStax Pulsar Helm Charts. The [release script](https://github.com/datastax/pulsar-helm-chart/blob/master/.circleci/release.sh) creates a release package of the new Helm Chart version and updates the [index.yaml](https://datastax.github.io/pulsar-helm-chart/index.yaml) which in this case is hosted in a Github page. The CircleCI is triggered, when a new commit is pushed in the **release** branch.
 
 # How to Release a new Version
 
@@ -42,7 +42,7 @@ It is likely becuase one of the Helm charts has changed but the version number w
 
 You should verify that the new chart version are present in the index.yaml:
 
-https://datastax.github.io/index.yaml
+https://datastax.github.io/pulsar-helm-chart/index.yaml
 
 Also confirm that **master** has been updated with the new versions in the Chart.yaml files.
 
@@ -50,28 +50,28 @@ Also confirm that **master** has been updated with the new versions in the Chart
 
 # How to Install a New Release
 
-The *index.yaml* is hosted in a Github page and can be accessed via https://datastax.github.io/. In order to make use of a DataStax Pulsar Helm Chart specific version the DataStax Helm repo should be added first by running:
+The *index.yaml* is hosted in a Github page and can be accessed via https://datastax.github.io/pulsar-helm-chart/. In order to make use of a DataStax Pulsar Helm Chart specific version the DataStax Helm repo should be added first by running:
 
 ```bash
-helm repo add datastax https://datastax.github.io
+helm repo add datastax-pulsar https://datastax.github.io/pulsar-helm-chart
 ```
 
 And then a version of the preferred chart can be installed by running:
 
 ```bash
-helm install --namespace pulsar datastax/pulsar --version <version_number>
+helm install --namespace pulsar datastax-pulsar/pulsar --version <version_number>
 ```
 Or for Helm3:
 
 ```
-helm3 install <name> --namespace pulsar --version <version_number> datastax/pulsar
+helm3 install <name> --namespace pulsar --version <version_number> datastax-pulsar/pulsar
 ```
 
 For example:
 
 
 ```bash
-helm install --namespace pulsar --repo https://datastax.github.io pulsar --version v1.0.3
+helm install --namespace pulsar --repo https://datastax.github.io/pulsar-helm-chart pulsar --version v1.0.3
 ```
 
 If no Helm Chart version is specified the latest version will be installed.
