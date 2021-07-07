@@ -1,19 +1,19 @@
-# 
-#  Copyright 2021 DataStax, Inc. 
-#  
+#
+#  Copyright 2021 DataStax, Inc.
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-#  
-# 
+#
+#
 
 # Namespace to deploy pulsar
 # Use the Helm --namespace option to set the namespace
@@ -22,45 +22,44 @@
 fullnameOverride: pulsar
 
 # DNS name for loadbalancer
-dnsName: pulsar.example.com 
-
+dnsName: pulsar.example.com
 
 # Global node selector
 # If set, this will apply to all components
-# Individual components can be set to a different node 
+# Individual components can be set to a different node
 # selector
-#nodeSelector:
-#  zone: pulsar
+# nodeSelector:
+#   zone: pulsar
 ## If persistence is enabled, components that has state will
 ## be deployed with PersistentVolumeClaims, otherwise, for test
 ## purposes, they will be deployed with emptDir
-persistence: yes
+persistence: true
 
 # Global priority class
 #
 # If enabled, a new priority class will be created and applied to
-# all Pulsar core pods. Priority indicates the importance of a Pod relative to other Pods. 
+# all Pulsar core pods. Priority indicates the importance of a Pod relative to other Pods.
 # If you are running Pulsar with other pods that depend on it (ex. microservices),
 # using a higher priority will ensure it gets scheduled first
 priorityClass:
-  enabled: no
+  enabled: false
   value: 1000000
 
-# Enable initContainers that wait for dependent components to 
+# Enable initContainers that wait for dependent components to
 # be enabled. Provides a graceful initial install. However, it some
 # failure scenarios it can prevent containers from starting
 # even though they could operate.
-enableWaitContainers: yes
+enableWaitContainers: true
 
-default_storage: 
+default_storage:
   existingStorageClassName: default
 
-# If default_storage is set, that storage class is the default for all 
+# If default_storage is set, that storage class is the default for all
 # persistent volmes created by the chart.
 #
 # You can override the default_storage storage class in the
 # volumes section of each component configuration (example: zookeeper.volumes.data.storageClass)
-# 
+#
 # If you want to use an existing storage class as the default, then
 # set existingStorageClassName, like this:
 
@@ -74,7 +73,7 @@ default_storage:
 
 # If you want the chart to create storage classes, then don't set
 # existingStorageClass name and provide configuration values
-# for the storage class. The settings vary based on cloud 
+# for the storage class. The settings vary based on cloud
 # provider. Below are examples for AWS, GCP, and Azure.
 
 # For AWS
@@ -84,7 +83,6 @@ default_storage:
 #  fsType: ext4
 #  extraParams:
 #     iopsPerGB: "10"
-
 
 # For GCP
 # default_storage:
@@ -105,42 +103,42 @@ default_storage:
 #     cachingmode: ReadOnly
 
 # TLS
-# When you enable TLS and are using a proxy, you need to expose the 
+# When you enable TLS and are using a proxy, you need to expose the
 # TLS-enabled ports on the service. To allow TLS connections only, remove the plain-text ports.
 # See the proxy and broker sections for details.
 
-enableTls: no
+enableTls: false
 tlsSecretName: pulsar-tls
 
-# By default, TLS is enabled on the client- or admin-facing components (broker, proxy, websocket 
+# By default, TLS is enabled on the client- or admin-facing components (broker, proxy, websocket
 # proxy, standalone function worker).
 # For added security, you can also enable TLS between the internal components (zookeeper, bookkeeper,
 # function worker [connect to broker])
 tls:
   # Enable TLS between ZooKeeper nodes (quorum TLS), between BookKeeper and ZooKeeper, and between
   # broker and ZooKeeper.
-  # Note: The configured certificate must allow for both server and client use since it is used 
+  # Note: The configured certificate must allow for both server and client use since it is used
   #       for mTLS. This should be in certficate:
   #
-  # X509v3 Extended Key Usage: 
+  # X509v3 Extended Key Usage:
   #               TLS Web Server Authentication, TLS Web Client Authentication
   # If using cert-manager, make sure your certficate includes:
-  #   
+  #
   zookeeper:
-    enabled: no
+    enabled: false
   # Enable TLS between broker and BookKeeper
   bookkeeper:
-    enabled: no
+    enabled: false
   # Enable TLS between function worker and broker
   function:
-    enabled: no
+    enabled: false
   # Enable TLS between WebSocket proxy and broker
   websocket:
-    enabled: no
+    enabled: false
 
 # secrets:
   ## If you're providing your own certificates, please use this to add the certificates as secrets
-  ## key and certificate should start with -----BEGIN CERTIFICATE----- or 
+  ## key and certificate should start with -----BEGIN CERTIFICATE----- or
   ## -----BEGIN RSA PRIVATE KEY----- # pragma: allowlist secret
   ##
   ## If you're using cert-manager (see below), this is unneeded, as it will create the secret for you if it is not set
@@ -161,7 +159,7 @@ tls:
 #
 # tlsCaPath: /pulsar/certs
 # tlsCaCert: ca.crt
-# 
+#
 # If your certificate is signed by public CA (ex Let's Encrypt), then you can use
 # the standard CA store from the container OS using the following settings:
 
@@ -172,7 +170,7 @@ superUserRoles: superuser,admin,websocket,proxy
 proxyRoles: proxy
 
 # Enable token-based authentication and authorization
-enableTokenAuth: no
+enableTokenAuth: false
 
 # Token public key file name
 tokenPublicKeyFile: my-public.key
@@ -180,42 +178,41 @@ tokenPublicKeyFile: my-public.key
 # Token private key file name
 tokenPrivateKeyFile: my-private.key
 
-# Turn on anti affinity rules so that replica pods are spread for 
+# Turn on anti affinity rules so that replica pods are spread for
 # high availablity.
 # In development environments (ex. Minikube) with a single node, this needs to be disabled
-enableAntiAffinity: yes
+enableAntiAffinity: true
 
-# Settings for anti-affinity. Host antiAffinity ensures that 
+# Settings for anti-affinity. Host antiAffinity ensures that
 # replica pods are scheduled on different hosts. The
-# number of hosts >= number of replicas. By default, this is 
-# required, but you can set mode to "preferred" to make 
+# number of hosts >= number of replicas. By default, this is
+# required, but you can set mode to "preferred" to make
 # this a preferred scheduling setting for deployments only (broker, proxy)
 #
-# Zone antiAffinity distributes replica pods across availability 
-# zones. This is a "soft" requirement, so that in the event of 
+# Zone antiAffinity distributes replica pods across availability
+# zones. This is a "soft" requirement, so that in the event of
 # a failure of a zone, pods will run in a different zone
 antiAffinity:
   host:
-    enabled: yes
+    enabled: true
     mode: "required"
   zone:
-    enabled: no
-  
+    enabled: false
 
 # Install Helm tests (run with helm test <release>)
 # Enable basic tests
-enableTests: no
+enableTests: false
 # Also enabled extended tests
-enableExtendedTests: no
+enableExtendedTests: false
 
 # When upgrading to Luna Streaming version 2.7.2 (or higher) from any prior version, the 2.7.2 containers
-# do not run as root for enhanced security. Because of this, the containers may not have the correct 
+# do not run as root for enhanced security. Because of this, the containers may not have the correct
 # permissions to read files. This is remediated by fixing the file system permissions in an init container.
 #
 # In most cases this is not required for new installations. However, depending on how volumes are mounted
 # it may be necessary to enable this feature even for new installations.
 fixRootlessPermissions:
-  enabled: no
+  enabled: false
   containerImage: openjdk:11-jdk-slim
 
 # By default, Kubernetes will not restart pods when only their
@@ -223,27 +220,27 @@ fixRootlessPermissions:
 # configmap is changed using an annotation that calculates the
 # checksum of the configmap
 restartOnConfigMapChange:
-  enabled: no
+  enabled: false
 
 ## which extra components
 extra:
   # Broker as deployment
-  broker: yes
+  broker: true
   # Broker as stateful set
-  brokerSts: no
+  brokerSts: false
   # Pulsar proxy
-  proxy: yes
+  proxy: true
   # Websocket proxy
-  # 
+  #
   # This will enable a standalone WebSocket proxy that
-  # runs as part of the proxy pod. 
+  # runs as part of the proxy pod.
   #
   # See the broker config section for enabling WebSocket
   # service within the broker.
-  wsproxy: yes
+  wsproxy: true
   # Standalone functions workers
   #
-  # See broker config section for information on enabling 
+  # See broker config section for information on enabling
   # the function worker within the broker. If you should use one or the other.
   #
   # When enabling the standalone function worker, the proxy will be configured
@@ -254,41 +251,40 @@ extra:
   # These are extra ZooKeepers that can be used to achieve quorum that
   # are not locked to an AZ or host by a PVC requirement
   # They can "float" between AZs for quorum in complete AZ failure scenarios
-  zookeepernp: no
+  zookeepernp: false
   # Standalone function worker
-  # 
-  function: no 
-  pulsarSQL: no
+  #
+  function: false
+  pulsarSQL: false
   # DNS on proxy
-  usedns: no
-  dnsOnProxy: yes
+  usedns: false
+  dnsOnProxy: true
   # Bookkeeper auto-recovery
-  autoRecovery: yes
+  autoRecovery: true
   # Bastion pod for administrative commands
-  bastion: yes
+  bastion: true
   # Pulsar Beam for HTTP interface
   # Pulsar Beam depends on the proxy pod, so you must enable
   # that to use Beam. You need to expose the Pulsar Beam
   # port on the proxy. See the proxy section for details.
-  pulsarBeam: no
+  pulsarBeam: false
   # Burnell - various Pulsar proxies
-  burnell: no
+  burnell: false
   # Burnell log collector for functions when using process runtime
-  burnellLogCollector: no
+  burnellLogCollector: false
   # Zoonavigator for debugging Zookeeper
-  zoonavigator: no
+  zoonavigator: false
   # Tardigrade for decentralized blob storage
   # This runs the S3 gateway that connects to Tardigrade
-  tardigrade: no
+  tardigrade: false
   # Pulsar Heartbeat
-  pulsarHeartbeat: no
+  pulsarHeartbeat: false
   # Pulsar Admin console
-  pulsarAdminConsole: no
+  pulsarAdminConsole: false
 
-  
 ## Which images to use
-# When upgrading a Pulsar cluster, it is recommended to upgrade the 
-# components one at a time (zookeeper, bookkeeper, broker, etc). 
+# When upgrading a Pulsar cluster, it is recommended to upgrade the
+# components one at a time (zookeeper, bookkeeper, broker, etc).
 # This section allows for targeted upgrades of each component.
 #
 image:
@@ -345,12 +341,11 @@ image:
   pulsarHeartbeat:
     repository: datastax/pulsar-heartbeat
     pullPolicy: IfNotPresent
-    tag: 1.0.2 
+    tag: 1.0.2
   pulsarAdminConsole:
     repository: datastax/pulsar-admin-console
     pullPolicy: IfNotPresent
-    tag: 1.0.0 
-
+    tag: 1.0.0
 
 ## Tiered Storage
 ##
@@ -360,7 +355,7 @@ storageOffload: {}
   ## =======
   # bucket: <bucket>
   # region: <region>
-  # maxBlockSizeInBytes: "64000000" 
+  # maxBlockSizeInBytes: "64000000"
   # readBufferSizeInBytes: "1000000"
   ## The following are default values for the cluster. They can be changed
   ## on each namespace.
@@ -369,7 +364,7 @@ storageOffload: {}
 
   # For AWS S3
   # ======
-  # You must create an IAM account with access to the bucket and 
+  # You must create an IAM account with access to the bucket and
   # generate keys for that account.
   #
   # driver: aws-s3
@@ -382,38 +377,35 @@ storageOffload: {}
   #
   # driver: aws-s3
   # accessKey: <access-key>
-  # accessSecret: <secret-key> # pragma: allowlist secret 
+  # accessSecret: <secret-key> # pragma: allowlist secret
   # serviceEndpoint: host:port
 
   # For Tardigrade
   # =================
-  # Need to enable extra.tardigrade for the S3 gateway. 
+  # Need to enable extra.tardigrade for the S3 gateway.
   # See tardigrade section below to configure the S3 gateway
   #
   # driver: aws-s3
- 
-  
 
   ## For Google Cloud Storage
   ## ====================
   ## You must create a service account that has access to the objects in GCP buckets
   ## and upload its key as a JSON file to a secret.
-  ## 
+  ##
   ## 1. Go to https://console.cloud.google.com/iam-admin/serviceaccounts
   ## 2. Select your project.
   ## 3. Create a new service account.
-  ## 4. Give the service account permission to access the bucket. For example, 
+  ## 4. Give the service account permission to access the bucket. For example,
   ##    the "Storage Object Admin" role.
   ## 5. Create a key for the service account and save it as a JSON file.
   ## 6. Save the JSON file in a secret:
   ##       kubectl create secret generic pulsar-gcp-sa-secret \
   ##          --from-file=account-223201-f12856532197.json \
   ##          --namespace pulsar
-  ## 
+  ##
   # driver: google-cloud-storage
   # gcsServiceAccountSecret: pulsar-gcp-sa-secret # pragma: allowlist secret
   # gcsServiceAccountJsonFile: account-223201-f12856532197.json
- 
 
 ## Pulsar: Zookeeper cluster
 ## templates/zookeeper-statefulset.yaml
@@ -441,7 +433,7 @@ zookeeper:
   tolerations: []
   gracePeriod: 60
   probe:
-    enabled: yes
+    enabled: true
     initial: 10
     period: 30
   resources:
@@ -455,10 +447,10 @@ zookeeper:
     data:
       name: data
       size: 5Gi
-      # You can override the default_storage class for this volume. 
+      # You can override the default_storage class for this volume.
       # To use an existing storage class, set existingStorageClassName.
-      # To have the chart create a storage class, leave existingStorageClassName 
-      # unset and specify the storage class parameters under storageClass. The 
+      # To have the chart create a storage class, leave existingStorageClassName
+      # unset and specify the storage class parameters under storageClass. The
       # appropriate parameters will vary by cloud provider. See default_storage above for examples.
       #
       # existingStorageClassName: <name>
@@ -499,7 +491,7 @@ zookeeper:
   ## templates/zookeeper-pdb.yaml
   ##
   pdb:
-    usePolicy: yes
+    usePolicy: true
     maxUnavailable: 1
 
 ## Pulsar: Zookeeper cluster non persistent storage
@@ -530,7 +522,7 @@ zookeepernp:
   tolerations: []
   gracePeriod: 60
   probe:
-    enabled: yes
+    enabled: true
     initial: 10
     period: 30
   resources:
@@ -569,7 +561,7 @@ zookeepernp:
   ## templates/zookeepernp-pdb.yaml
   ##
   pdb:
-    usePolicy: yes
+    usePolicy: true
     maxUnavailable: 1
 
 ## Pulsar Zookeeper metadata. The metadata will be deployed as
@@ -592,7 +584,7 @@ bookkeeper:
   podManagementPolicy: OrderedReady
   # nodeSelector:
     # cloud.google.com/gke-nodepool: default-pool
-  # nodeAffinity: 
+  # nodeAffinity:
   #   requiredDuringSchedulingIgnoredDuringExecution:
   #     nodeSelectorTerms:
   #     - matchExpressions:
@@ -606,7 +598,7 @@ bookkeeper:
   tolerations: []
   pvcPrexix: ''
   probe:
-    enabled: yes
+    enabled: true
     port: 3181
     initial: 10
     period: 30
@@ -622,9 +614,9 @@ bookkeeper:
     journal:
       name: journal
       size: 20Gi
-      # To override the default_storage class for this volume, set storageClass. 
+      # To override the default_storage class for this volume, set storageClass.
       # To use an existing storage class, set existingStorageClassName.
-      # To have the chart create a storage class, leave existingStorageClassName 
+      # To have the chart create a storage class, leave existingStorageClassName
       # unset and specify the storage class parameters. The appropriate parameters
       # will vary by cloud provider. See default_storage above for examples.
       #
@@ -644,9 +636,9 @@ bookkeeper:
     ledgers:
       name: ledgers
       size: 50Gi
-      # To override the default_storage class for this volume, set storageClass. 
+      # To override the default_storage class for this volume, set storageClass.
       # To use an existing storage class, set existingStorageClassName.
-      # To have the chart create a storage class, leave existingStorageClassName 
+      # To have the chart create a storage class, leave existingStorageClassName
       # unset and specify the storage class parameters. The appropriate parameters
       # will vary by cloud provider. See default_storage above for examples.
       #
@@ -669,9 +661,9 @@ bookkeeper:
     ranges:
       name: ranges
       size: 5Gi
-    # To override the default_storage class for this volume, set storageClass. 
+    # To override the default_storage class for this volume, set storageClass.
     # To use an existing storage class, set existingStorageClassName.
-    # To have the chart create a storage class, leave existingStorageClassName 
+    # To have the chart create a storage class, leave existingStorageClassName
     # unset and specify the storage class parameters. The appropriate parameters
     # will vary by cloud provider. See default_storage above for examples.
     #
@@ -689,7 +681,6 @@ bookkeeper:
     #   extraParams:
     #      replication-type: none
 
-    
   ## Bookkeeper configmap
   ## templates/bookkeeper-configmap.yaml
   ##
@@ -712,7 +703,7 @@ bookkeeper:
   ## templates/bookkeeper-pdb.yaml
   ##
   pdb:
-    usePolicy: yes
+    usePolicy: true
     maxUnavailable: 1
 
 ## Pulsar: Broker cluster
@@ -733,7 +724,7 @@ broker:
   # nodeSelector:
   #   cloud.google.com/gke-nodepool: default-pool
   #
-  # nodeAffinity: 
+  # nodeAffinity:
   #   requiredDuringSchedulingIgnoredDuringExecution:
   #     nodeSelectorTerms:
   #     - matchExpressions:
@@ -758,10 +749,10 @@ broker:
   # Enable extra services in the broker
   # These can also be enabled as standalone services
   # See extra section above
-  functionsWorkerEnabled: no
-  webSocketServiceEnabled: no
+  functionsWorkerEnabled: false
+  webSocketServiceEnabled: false
   probe:
-    enabled: yes
+    enabled: true
     port: 8080
     initial: 10
     period: 30
@@ -772,7 +763,7 @@ broker:
     # limits:
     #   memory: 2Gi
     #   cpu: 1
-  # Init container to add files to image 
+  # Init container to add files to image
   initContainer: {}
   # initContainer:
   #   repository: repository/image
@@ -794,7 +785,7 @@ broker:
     exposeTopicLevelMetricsInPrometheus: "true"
     exposeConsumerLevelMetricsInPrometheus: "false"
     backlogQuotaDefaultRetentionPolicy: "producer_exception"
-  
+
   ## Broker service
   ## templates/broker-service.yaml
   ##
@@ -808,7 +799,7 @@ broker:
   service:
     annotations: {}
     type: ClusterIP
-    headless: no
+    headless: false
     ports:
     - name: http
       port: 8080
@@ -819,12 +810,12 @@ broker:
     - name: pulsarssl
       port: 6651
   ingress:
-    enabled: no
+    enabled: false
   ## Broker PodDisruptionBudget
   ## templates/broker-pdb.yaml
   ##
   pdb:
-    usePolicy: yes
+    usePolicy: true
     maxUnavailable: 1
 
 ## Pulsar: Broker cluster
@@ -839,7 +830,7 @@ brokerSts:
   #   defaultWriteQuorum: 2
   # nodeSelector:
   #   cloud.google.com/gke-nodepool: default-pool
-  # nodeAffinity: 
+  # nodeAffinity:
   #   requiredDuringSchedulingIgnoredDuringExecution:
   #     nodeSelectorTerms:
   #     - matchExpressions:
@@ -864,10 +855,10 @@ brokerSts:
   # Enable extra services in the broker
   # These can also be enabled as standalone services
   # See extras section above
-  functionsWorkerEnabled: no
-  webSocketServiceEnabled: no
+  functionsWorkerEnabled: false
+  webSocketServiceEnabled: false
   probe:
-    enabled: yes
+    enabled: true
     port: 8080
     initial: 10
     period: 30
@@ -878,7 +869,7 @@ brokerSts:
     # limits:
     #   memory: 2Gi
     #   cpu: 1
-  # Init container to add files to image 
+  # Init container to add files to image
   initContainer: {}
   # initContainer:
   #   repository: repository/image
@@ -900,7 +891,7 @@ brokerSts:
     exposeTopicLevelMetricsInPrometheus: "true"
     exposeConsumerLevelMetricsInPrometheus: "false"
     backlogQuotaDefaultRetentionPolicy: "producer_exception"
-  
+
   ## Broker service
   ## templates/broker-service.yaml
   ##
@@ -914,7 +905,7 @@ brokerSts:
   service:
     annotations: {}
     type: ClusterIP
-    headless: no
+    headless: false
     ports:
     - name: http
       port: 8080
@@ -925,24 +916,24 @@ brokerSts:
     - name: pulsarssl
       port: 6651
   ingress:
-    enabled: no
+    enabled: false
   ## Broker PodDisruptionBudget
   ## templates/broker-pdb.yaml
   ##
   pdb:
-    usePolicy: yes
+    usePolicy: true
     maxUnavailable: 1
 
 function:
   component: function
   replicaCount: 2
   functionReplicaCount: 2
-  usePython3: no
+  usePython3: false
   updateStrategy:
     type: RollingUpdate
   podManagementPolicy: OrderedReady
   probe:
-    enabled: yes
+    enabled: true
     port: 6750
     initial: 10
     period: 30
@@ -952,12 +943,12 @@ function:
     cpu: "0.1"
     ram: "307200000"
     disk: "10737418240"
-  # If state storage is enabled state storage will be enabled on Bookkeeper and the 
+  # If state storage is enabled state storage will be enabled on Bookkeeper and the
   # function workers will connect to BookKeeper by default.
   # Note: State storage is in developer preview
-  enableStateStorage: no
-  enableMetrics: no
-  # nodeAffinity: 
+  enableStateStorage: false
+  enableMetrics: false
+  # nodeAffinity:
   #   requiredDuringSchedulingIgnoredDuringExecution:
   #     nodeSelectorTerms:
   #     - matchExpressions:
@@ -983,9 +974,9 @@ function:
     data:
       name: logs
       size: 5Gi
-      # To override the default_storage class for this volume, set storageClass. 
+      # To override the default_storage class for this volume, set storageClass.
       # To use an existing storage class, set existingStorageClassName.
-      # To have the chart create a storage class, leave existingStorageClassName 
+      # To have the chart create a storage class, leave existingStorageClassName
       # unset and specify the storage class parameters. The appropriate parameters
       # will vary by cloud provider. See default_storage above for examples.
       #
@@ -1002,7 +993,7 @@ function:
       #   fsType: ext4
       #   extraParams:
       #      replication-type: none
-  # Init container to add files to image 
+  # Init container to add files to image
   initContainer: {}
   # initContainer:
   #   repository: repository/image
@@ -1027,7 +1018,7 @@ function:
   service:
     annotations: {}
     type: ClusterIP
-    headless: yes
+    headless: true
     ports:
     - name: http
       port: 6750
@@ -1037,7 +1028,7 @@ function:
   ## templates/function-pdb.yaml
   ##
   pdb:
-    usePolicy: yes
+    usePolicy: true
     maxUnavailable: 1
 
 # Configuration for presto SQL
@@ -1051,7 +1042,7 @@ pulsarSQL:
       memory: 2Gi
       cpu: 1
   server:
-    scheduleCoordinator: yes
+    scheduleCoordinator: true
     workers: 0
     node:
       environment: production
@@ -1073,7 +1064,7 @@ pulsarSQL:
 
   image:
     securityContext:
-      enabled: no
+      enabled: false
       runAsUser: 1000
       runAsGroup: 1000
 
@@ -1081,7 +1072,7 @@ pulsarSQL:
     type: LoadBalancer
 
   ingress:
-    enabled: no
+    enabled: false
     host: presto.host.com
     annotations: {}
 
@@ -1098,10 +1089,10 @@ pulsarSQL:
 
 # Tardigrade S3 gateway
 #
-# Configure the S3 gateway according to instructions here: 
+# Configure the S3 gateway according to instructions here:
 #     https://documentation.tardigrade.io/api-reference/s3-gateway
 # Make sure you configure an access grant. Once you have done that, you can find the values
-# for acess, accesKey, and secretKey in: 
+# for acess, accesKey, and secretKey in:
 #     ~/.local/share/storj/gatewayconfig.yaml
 #
 tardigrade:
@@ -1121,8 +1112,8 @@ burnell: {}
 proxy:
   component: proxy
   replicaCount: 3
-  disableZookeeperDiscovery: yes
-  useStsBrokersForDiscover: no
+  disableZookeeperDiscovery: true
+  useStsBrokersForDiscover: false
   updateStrategy:
     type: RollingUpdate
     rollingUpdate:
@@ -1134,7 +1125,7 @@ proxy:
     prometheus.io/scrape: "true"
     prometheus.io/port: "8080"
   tolerations: []
-  # nodeAffinity: 
+  # nodeAffinity:
   #   requiredDuringSchedulingIgnoredDuringExecution:
   #     nodeSelectorTerms:
   #     - matchExpressions:
@@ -1144,7 +1135,7 @@ proxy:
   #         - pulsar
   gracePeriod: 60
   probe:
-    enabled: yes
+    enabled: true
     initial: 10
     period: 30
   # Resources for the main Pulsar proxy
@@ -1163,7 +1154,7 @@ proxy:
     # limits:
     #   memory: 1Gi
     #   cpu: 1
-  # Init container to add files to image 
+  # Init container to add files to image
   initContainer: {}
   # initContainer:
   #   repository: repository/image
@@ -1226,13 +1217,13 @@ proxy:
   ## templates/proxy-service.yaml
   ##
   autoPortAssign:
-    enablePlainTextWithTLS: no
-    matchingNodePort: no
+    enablePlainTextWithTLS: false
+    matchingNodePort: false
   service:
     annotations: {}
     type: LoadBalancer
     autoPortAssign:
-      enabled: no
+      enabled: false
     ports:
     - name: http
       port: 8080
@@ -1246,10 +1237,10 @@ proxy:
 
   # For creating and extra service pointing to the proxy
   extraService:
-    enabled: no
+    enabled: false
     annotations: {}
     autoPortAssign:
-      enabled: yes
+      enabled: true
     type: ClusterIP
     ports:
     - name: http
@@ -1263,17 +1254,17 @@ proxy:
       protocol: TCP
 
   ingress:
-    enabled: no
+    enabled: false
     host: admin.host.com
-    enableWebSocket: no
+    enableWebSocket: false
     wssPortOnProxy: 8001
-    enableBurnell: no
+    enableBurnell: false
 
   ## Proxy PodDisruptionBudget
   ## templates/proxy-pdb.yaml
   ##
   pdb:
-    usePolicy: yes
+    usePolicy: true
     maxUnavailable: 1
 
 ## Pulsar Component:  DNS on proxy RBAC
@@ -1282,12 +1273,12 @@ proxy:
 dns:
   component: dns
   provider: aws
-  domainFilter: example.com 
+  domainFilter: example.com
   hostAnnotations:
   # Trying to create CNAME records (ex AWS NLB)
   # Need to add TXT prefix to prevent conflicts
   # txtPrefix: k8s-
-  # nodeAffinity: 
+  # nodeAffinity:
   #   requiredDuringSchedulingIgnoredDuringExecution:
   #     nodeSelectorTerms:
   #     - matchExpressions:
@@ -1303,10 +1294,10 @@ autoRecovery:
   component: autorecovery
   replicaCount: 1
   # Enable auto provisioning of Pulsar keys and JWT
-  enableProvisionContainer: no
+  enableProvisionContainer: false
   # nodeSelector:
   #   cloud.google.com/gke-nodepool: default-pool
-  # nodeAffinity: 
+  # nodeAffinity:
   #   requiredDuringSchedulingIgnoredDuringExecution:
   #     nodeSelectorTerms:
   #     - matchExpressions:
@@ -1343,7 +1334,6 @@ autoRecovery:
     PULSAR_LOG_ROOT_LEVEL: "info"
     PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info"
 
-
 ## Pulsar Component: Pulsar Admin console
 ## templates/admin-console/pulsar-admin-console-deployment.yaml
 ##
@@ -1354,7 +1344,7 @@ pulsarAdminConsole:
   authMode: none
   serverLogLevel: info
   createUserSecret:
-    enabled: no
+    enabled: false
     user: ''
     password: ''
   apiBaseUrl: "api/v1/"
@@ -1367,15 +1357,15 @@ pulsarAdminConsole:
       timeoutSeconds: 3
   replicaCount: 1
   codeSampleUrl:
-    useDnsName: yes
+    useDnsName: true
     pulsar: "pulsar+ssl://pulsarhost:6651"
     websocket: "wss://pulsarhost:8001"
     http: "https://pulsarhost:8085"
   ingress:
-    enabled: no
+    enabled: false
     host: ui.host.com
     annotations: {}
-    enableTls: no
+    enableTls: false
   # nodeSelector:
     # cloud.google.com/gke-nodepool: default-pool
   annotations: {}
@@ -1404,7 +1394,7 @@ zoonavigator:
   autoConnect: true
   # nodeSelector:
     # cloud.google.com/gke-nodepool: default-pool
-  # nodeAffinity: 
+  # nodeAffinity:
   #   requiredDuringSchedulingIgnoredDuringExecution:
   #     nodeSelectorTerms:
   #     - matchExpressions:
@@ -1420,7 +1410,7 @@ zoonavigator:
       memory: 128Mi
       cpu: 0.1
   image:
-    repository: 
+    repository:
       web: elkozmon/zoonavigator-web
       api: elkozmon/zoonavigator-api
     tag: 0.6.0
@@ -1435,28 +1425,16 @@ zoonavigator:
     - name: server
       port: 8001
 
-  ## Dashboard service
-  ## templates/dashboard-service.yaml
-  ##
-  service:
-    annotations: {}
-    ports:
-    - name: server
-      port: 8000
-    - name: jolokia
-      port: 8778
-
-
 ## Pulsar Component: Bastion
 ## templates/bastion-deployment.yaml
 ##
 bastion:
   component: bastion
-  installDebugTools: no
+  installDebugTools: false
   replicaCount: 1
   # nodeSelector:
     # cloud.google.com/gke-nodepool: default-pool
-  # nodeAffinity: 
+  # nodeAffinity:
   #   requiredDuringSchedulingIgnoredDuringExecution:
   #     nodeSelectorTerms:
   #     - matchExpressions:
@@ -1500,7 +1478,7 @@ pulsarBeam:
   tolerations: []
   gracePeriod: 60
   # logLevel: debug
-  # nodeAffinity: 
+  # nodeAffinity:
   #   requiredDuringSchedulingIgnoredDuringExecution:
   #     nodeSelectorTerms:
   #     - matchExpressions:
@@ -1508,7 +1486,7 @@ pulsarBeam:
   #         operator: In
   #         values:
   #         - pulsar
-  
+
 pulsarHeartbeat:
   component: pulsarheartbeat
   port: "8089"
@@ -1541,16 +1519,16 @@ pulsarHeartbeat:
 
 # Deploy cert-manager
 cert-manager:
-  enabled: no
+  enabled: false
   # namespaceOverride: cert-manager
-  installCRDs: no
+  installCRDs: false
 
 createCertificates:
-  selfSigned: 
-    enabled: no
-    includeDns: no
+  selfSigned:
+    enabled: false
+    includeDns: false
   acme:
-    enabled: no
+    enabled: false
     # Production server: https://acme-v02.api.letsencrypt.org/directory
     # Staging server: https://acme-staging-v02.api.letsencrypt.org/directory
     server: https://acme-v02.api.letsencrypt.org/directory
@@ -1558,11 +1536,11 @@ createCertificates:
     # Only enabled one of the below solvers
     httpSolver:
       # For this solver to work the ingress must support TCP connections to the Pulsar protocol port (6650) as well as HTTP connections since everything must have a single domain name
-      enabled: no
+      enabled: false
       ingressClass: nginx
     azureDns:
       # See https://cert-manager.io/docs/configuration/acme/dns01/azuredns/ for information on getting these values and the format of the file for the secret
-      enabled: no
+      enabled: false
       clientId: ""
       clientSecretName: "azuredns-config"
       clientSecretKey: "client-secret"
@@ -1571,31 +1549,31 @@ createCertificates:
       resourceGroupName: ""
       dnsZone: ""
     awsDns:
-      # Secret must contain the IAM secretAccessKey 
+      # Secret must contain the IAM secretAccessKey
       # See https://cert-manager.io/docs/configuration/acme/dns01/route53/ for more info
-      enabled: no
+      enabled: false
       region: "us-east-1"
       accessKey: ""
       accessSecretName: ""
       accessSecretKey: "secret-access-key"
     gcpDns:
       # See https://cert-manager.io/docs/configuration/acme/dns01/google/ for information
-      enabled: no
+      enabled: false
       projectId: ""
       secretName: "clouddns-dns01-solver-svc-acct"
       secretKey: "key.json"
     digitalOceanDns:
       # See https://cert-manager.io/docs/configuration/acme/dns01/digitalocean/
-      enabled: no
+      enabled: false
       secretName: "digitalocean-dns"
       secretKey: "access-token"
 
 # Deploy Grafana dashboard for Pulsar.
-# These dashboard will be discovered by the kube-prometheus-stack 
+# These dashboard will be discovered by the kube-prometheus-stack
 # if it is running the same namespace as the stack
 
 grafanaDashboards:
-  enabled: no
+  enabled: false
   # namespaceOverride: monitoring
 
 # Deploy the kube-prometheus-stack which includes:
@@ -1606,28 +1584,28 @@ grafanaDashboards:
 #
 # https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
 #
-# The default values will enable Prometheus and 
-# Grafana, but not AlertManager. 
+# The default values will enable Prometheus and
+# Grafana, but not AlertManager.
 # Scraping configs for Pulsar pods are included. By default
 # pods in the namespace of the deployment will be scraped.
 #
-# The stack can add standard Kubernetes alert rules, but those 
-# are disabled by default. 
+# The stack can add standard Kubernetes alert rules, but those
+# are disabled by default.
 #
 # A set of Pulsar-specific rules are included below.
-# The threshold for some of the rules are low and should 
-# be adjusted to match the performance/use of the Pulsar 
+# The threshold for some of the rules are low and should
+# be adjusted to match the performance/use of the Pulsar
 # deployment. To be notified when the rules are triggered,
 # you need to enable and configure Alertmanager. It supports
 # many targets including email, Slack, OpsGenie, PagerDuty.
 
 kube-prometheus-stack:
-  enabled: no
+  enabled: false
   # namespaceOverride: monitoring
   prometheus-node-exporter:
     # namespaceOverride: monitoring
   defaultRules:
-    create: no
+    create: false
     rules:
       alertmanager: true
       etcd: true
@@ -1735,7 +1713,7 @@ kube-prometheus-stack:
           severity: warning
         annotations:
           description: Outgoing message rate is high on broker
-          identifier: '{{ $labels.topic }}'  
+          identifier: '{{ $labels.topic }}'
   - name: volumes
     groups:
     - name: volumes-filling
@@ -1763,7 +1741,7 @@ kube-prometheus-stack:
       port: 3000
     ingress:
       enabled: false
-      hosts: 
+      hosts:
         - grafana.example.com
       path: /
     grafana.ini:
@@ -1801,18 +1779,18 @@ kube-prometheus-stack:
     enabled: true
     ingress:
       enabled: false
-      hosts: 
+      hosts:
         - prometheus.example.com
     prometheusSpec:
       retention: 10d
-      # storageSpec: 
+      # storageSpec:
       #   volumeClaimTemplate:
       #     spec:
       #       storageClassName: default
       #       resources:
       #         requests:
       #           storage: 50Gi
-      additionalScrapeConfigs: 
+      additionalScrapeConfigs:
       - job_name: 'pulsar-pods'
         honor_labels: true
         kubernetes_sd_configs:
@@ -1843,6 +1821,4 @@ kube-prometheus-stack:
           target_label: job
         - source_labels: [__meta_kubernetes_pod_name]
           action: replace
-          target_label: kubernetes_pod_name 
-
-
+          target_label: kubernetes_pod_name
