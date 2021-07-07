@@ -15,13 +15,13 @@
 #
 #
 
-persistence: no
-enableTests: yes
+persistence: false
+enableTests: true
 extra:
-  autoRecovery: no
-  bastion: yes
-  proxy: no
-  pulsarHeartbeat: no
+  autoRecovery: false
+  bastion: true
+  proxy: false
+  pulsarHeartbeat: false
 
 image:
   broker:

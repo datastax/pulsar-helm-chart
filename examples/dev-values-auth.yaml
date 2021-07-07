@@ -15,17 +15,17 @@
 #
 #
 
-enableAntiAffinity: no
-enableTls: no
-enableTokenAuth: yes
+enableAntiAffinity: false
+enableTls: false
+enableTokenAuth: true
 restartOnConfigMapChange:
-  enabled: yes
+  enabled: true
 extra:
-  function: yes
-  burnell: yes
-  burnellLogCollector: yes
-  pulsarHeartbeat: yes
-  pulsarAdminConsole: yes
+  function: true
+  burnell: true
+  burnellLogCollector: true
+  pulsarHeartbeat: true
+  pulsarAdminConsole: true
 
 zookeeper:
   replicaCount: 1
@@ -60,7 +60,7 @@ broker:
     PULSAR_MEM: "\"-Xms400m -Xmx400m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError\""
 
 autoRecovery:
-  enableProvisionContainer: yes
+  enableProvisionContainer: true
   resources:
     requests:
       memory: 300Mi
@@ -89,24 +89,24 @@ proxy:
   configData:
     PULSAR_MEM: "\"-Xms400m -Xmx400m -XX:MaxDirectMemorySize=112m\""
   autoPortAssign:
-    enablePlainTextWithTLS: yes
+    enablePlainTextWithTLS: true
   service:
     autoPortAssign:
-      enabled: yes
+      enabled: true
 
 grafanaDashboards:
-  enabled: yes
+  enabled: true
 
 pulsarAdminConsole:
   replicaCount: 1
   authMode: k8s
   createUserSecret:
-    enabled: yes
+    enabled: true
     user: 'admin'
     password: 'e9JYtk83*4#PM8'
 
 kube-prometheus-stack:
-  enabled: yes
+  enabled: true
   prometheusOperator:
     enabled: true
   grafana:

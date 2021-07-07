@@ -15,17 +15,17 @@
 #
 #
 
-enableAntiAffinity: no
-enableTls: no
-enableTokenAuth: no
+enableAntiAffinity: false
+enableTls: false
+enableTokenAuth: false
 restartOnConfigMapChange:
-  enabled: yes
+  enabled: true
 extra:
-  function: yes
-  burnell: yes
-  burnellLogCollector: yes
-  pulsarHeartbeat: yes
-  pulsarAdminConsole: yes
+  function: true
+  burnell: true
+  burnellLogCollector: true
+  pulsarHeartbeat: true
+  pulsarAdminConsole: true
 
 zookeeper:
   replicaCount: 1
@@ -88,19 +88,19 @@ proxy:
   configData:
     PULSAR_MEM: "\"-Xms400m -Xmx400m -XX:MaxDirectMemorySize=112m\""
   autoPortAssign:
-    enablePlainTextWithTLS: yes
+    enablePlainTextWithTLS: true
   service:
     autoPortAssign:
-      enabled: yes
+      enabled: true
 
 grafanaDashboards:
-  enabled: yes
+  enabled: true
 
 pulsarAdminConsole:
   replicaCount: 1
 
 kube-prometheus-stack:
-  enabled: yes
+  enabled: true
   prometheusOperator:
     enabled: true
   grafana:

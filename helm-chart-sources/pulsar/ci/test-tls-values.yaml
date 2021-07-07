@@ -15,13 +15,13 @@
 #
 #
 
-persistence: no
-enableTests: yes
+persistence: false
+enableTests: true
 extra:
-  autoRecovery: no
-  bastion: no
-  pulsarHeartbeat: no
-enableTls: yes
+  autoRecovery: false
+  bastion: false
+  pulsarHeartbeat: false
+enableTls: true
 tlsSecretName: pulsar-tls
 secrets:
   key: |

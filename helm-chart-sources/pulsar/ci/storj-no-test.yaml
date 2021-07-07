@@ -15,11 +15,11 @@
 #
 #
 
-persistence: no
-enableTests: yes
+persistence: false
+enableTests: true
 extra:
-  autoRecovery: no
-  bastion: yes
+  autoRecovery: false
+  bastion: true
 
 image:
   broker:

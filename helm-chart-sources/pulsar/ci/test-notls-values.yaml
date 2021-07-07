@@ -15,17 +15,17 @@
 #
 #
 
-persistence: no
-enableTests: yes
+persistence: false
+enableTests: true
 extra:
-  autoRecovery: no
-  bastion: yes
-  pulsarHeartbeat: yes
-  burnell: yes
-  pulsarHealer: yes
+  autoRecovery: false
+  bastion: true
+  pulsarHeartbeat: true
+  burnell: true
+  pulsarHealer: true
 
 autoRecovery:
-  enableProvisionContainer: yes
+  enableProvisionContainer: true
 
 image:
   broker:

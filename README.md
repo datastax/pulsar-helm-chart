@@ -41,7 +41,7 @@ Alternatively, you can enable automatic fixing of the permissions using an init 
 
 ```
 fixRootlessPermissions:
-  enabled: yes
+  enabled: true
 ```
 
 Note that this setting only needs to be enabled during the migration to the non-root user version. Once the cluster has been upgraded this setting can be disabled for future upgrades.
@@ -239,7 +239,7 @@ You can install the Pulsar admin console in your cluster by enabling with this v
 
 ```
 component:
-  pulsarAdminConsole: yes
+  pulsarAdminConsole: true
 ```
 
 It will be automatically configured to connect to the Pulsar cluster.
@@ -268,7 +268,7 @@ For convenience, the Helm chart is able to create an initial user for the admin 
 ```
 pulsarAdminConsole:
     createUserSecret:
-      enabled: yes
+      enabled: true
       user: 'admin'
       password: 'password'
 ```
@@ -290,7 +290,7 @@ Set these values to configure the Ingress for the admin console:
 ```
 pulsarAdminConsole:
   ingress:
-    enabled: yes
+    enabled: true
     host: pulsar-ui.example.com
 ```
 
@@ -304,21 +304,21 @@ To deploy the Prometheus stack, use the following setting in your values file:
 
 ```
 kube-prometheus-stack:
-  enabled: yes
+  enabled: true
 ```
 
 To enable the Grafana dashboards, use the following setting:
 
 ```
 grafanaDashboards:
-  enabled: yes
+  enabled: true
 ```
 
 To enable the Kubernetes default rules, use the following setting:
 ```
 kube-prometheus-stack:
   defaultRules:
-    create: yes
+    create: true
 ```
 
 
@@ -413,9 +413,9 @@ The chart includes tooling to automatically create the necessary secrets or you 
 Use these settings to enable automatic generation of the secrets and enable token-based authentication:
 
 ```
-enableTokenAuth: yes
+enableTokenAuth: true
 autoRecovery:
-  enableProvisionContainer: yes
+  enableProvisionContainer: true
 ```
 
 When the provision container is enabled, it will check if the required secrets exist. If they don't exist, it will generate new token keys and use those keys to generate the default set of tokens
@@ -478,7 +478,7 @@ kubectl create secret generic token-<subject> \
 Once you have created the required secrets, you can enable token-based authentication with this setting in the values:
 
 ```
-enableTokenAuth: yes
+enableTokenAuth: true
 ```
 
 ### TLS
@@ -512,6 +512,6 @@ such as [cert-manager](https://cert-mananager). The following [page](https://git
 Once you have created the secrets that store the certificate info (or specified it in the values), you can enable TLS in the values:
 
 ```
-enableTls: yes
+enableTls: true
 
 ```
