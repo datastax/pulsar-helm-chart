@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 set -o errexit
 set -o nounset
@@ -32,7 +33,7 @@ docker_exec() {
 }
 
 create_kind_cluster() {
-    if [ ! -f /usr/local/bin/kind ]; then
+    if ! [ -x "$(command -v kind)" ]; then
         echo 'Installing kind...'
         curl -Lo ./kind https://kind.sigs.k8s.io/dl/$KIND_VERSION/kind-linux-amd64
         chmod +x ./kind
@@ -41,6 +42,7 @@ create_kind_cluster() {
 
     export KUBECONFIG=/tmp/kind_kube_config$$
     kind create cluster --name "$CLUSTER_NAME" --config tests/kind-config.yaml --image "kindest/node:$K8S_VERSION" --wait 60s
+    pull_and_cache_docker_images
 
     docker_exec mkdir -p /root/.kube
 
@@ -61,6 +63,22 @@ create_kind_cluster() {
 install_charts() {
     docker_exec ct install --config tests/ct.yaml
     echo
+}
+
+pull_and_cache_docker_images() {
+    if ! [ -x "$(command -v yq)" ]; then
+        echo 'Installing yq...'
+        curl -Lo ./yq https://github.com/mikefarah/yq/releases/download/v4.9.8/yq_linux_amd64
+        chmod +x ./yq
+        sudo mv yq /usr/local/bin/
+    fi
+
+    # extract the images from values.yaml
+    images=$(yq e '.image | .[] |= ([.repository, .tag] | join(":")) | to_entries | .[] | .value' $SCRIPT_DIR/../helm-chart-sources/pulsar/values.yaml | sort | uniq)
+    for image in $images; do
+        docker pull $image
+        kind load docker-image --name "$CLUSTER_NAME" $image
+    done
 }
 
 main() {
