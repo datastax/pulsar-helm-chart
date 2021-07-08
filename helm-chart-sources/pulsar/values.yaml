@@ -749,6 +749,7 @@ broker:
   # Enable extra services in the broker
   # These can also be enabled as standalone services
   # See extra section above
+  brokerDeleteInactiveTopicsEnabled: yes
   functionsWorkerEnabled: false
   webSocketServiceEnabled: false
   probe:
