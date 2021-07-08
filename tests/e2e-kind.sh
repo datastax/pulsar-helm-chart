@@ -13,7 +13,6 @@ readonly CLUSTER_NAME=pulsar-helm-test
 run_ct_container() {
     echo 'Running ct container...'
     docker run --rm --interactive --detach --network host --name ct \
-        --volume "$(pwd)/tests/ct.yaml:/etc/ct/ct.yaml" \
         --volume "$(pwd):/workdir" \
         --workdir /workdir \
         "quay.io/helmpack/chart-testing:$CT_VERSION" \
@@ -40,14 +39,13 @@ create_kind_cluster() {
         sudo mv kind /usr/local/bin/kind
     fi
 
+    export KUBECONFIG=/tmp/kind_kube_config$$
     kind create cluster --name "$CLUSTER_NAME" --config tests/kind-config.yaml --image "kindest/node:$K8S_VERSION" --wait 60s
 
     docker_exec mkdir -p /root/.kube
 
     echo 'Copying kubeconfig to container...'
-    local kubeconfig
-    kubeconfig="${HOME}/.kube/config"
-    docker cp "$kubeconfig" ct:/root/.kube/config
+    docker cp "$KUBECONFIG" ct:/root/.kube/config
 
     docker_exec kubectl cluster-info
     echo
@@ -61,9 +59,7 @@ create_kind_cluster() {
 
 
 install_charts() {
-    docker_exec helm repo add kube-prometheus-stack https://prometheus-community.github.io/helm-charts
-    docker_exec helm repo add cert-manager https://charts.jetstack.io 
-    docker_exec ct install --chart-dirs helm-chart-sources
+    docker_exec ct install --config tests/ct.yaml
     echo
 }
 
