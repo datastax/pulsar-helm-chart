@@ -27,18 +27,6 @@ extra:
 autoRecovery:
   enableProvisionContainer: true
 
-image:
-  broker:
-    repository: datastax/pulsar
-  pulsarHeartbeat:
-    repository: datastax/pulsar-heartbeat
-    pullPolicy: IfNotPresent
-    tag: latest
-  burnell:
-    repository: datastax/burnell
-    pullPolicy: IfNotPresent
-    tag: latest
-
 zookeeper:
   replicaCount: 1
   resources:
@@ -55,7 +43,7 @@ bookkeeper:
       memory: 400Mi
       cpu: 0.3
   configData:
-    BOOKIE_MEM: "\"-Xms512m -Xmx512m -XX:MaxDirectMemorySize=512m -XX:+ExitOnOutOfMemoryError\""
+    BOOKIE_MEM: "\"-Xms256m -Xmx512m -XX:MaxDirectMemorySize=512m -XX:+ExitOnOutOfMemoryError\""
     BOOKIE_GC: "\"-XX:+UseG1GC -XX:MaxGCPauseMillis=10\""
 
 broker:
@@ -75,7 +63,7 @@ function:
       memory: 400Mi
       cpu: 0.3
   configData:
-    PULSAR_MEM: "\"-Xms256m -Xmx400m -XX:MaxDirectMemorySize=400m -Dio.netty.leakDetectionLevel=disabled -Dio.netty.recycler.linkCapacity=1024 -XX:+ParallelRefProcEnabled -XX:+UnlockExperimentalVMOptions -XX:+AggressiveOpts -XX:+DoEscapeAnalysis -XX:ParallelGCThreads=32 -XX:ConcGCThreads=32 -XX:G1NewSizePercent=50 -XX:+DisableExplicitGC -XX:-ResizePLAB -XX:+ExitOnOutOfMemoryError -XX:+PerfDisableSharedMem\""
+    PULSAR_MEM: "\"-Xms256m -Xmx400m -XX:MaxDirectMemorySize=400m -Dio.netty.leakDetectionLevel=disabled -Dio.netty.recycler.linkCapacity=1024 -XX:+ParallelRefProcEnabled -XX:+DisableExplicitGC -XX:+ExitOnOutOfMemoryError -XX:+PerfDisableSharedMem\""
 
 proxy:
   replicaCount: 1
