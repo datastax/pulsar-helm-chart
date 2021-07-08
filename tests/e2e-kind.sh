@@ -4,10 +4,11 @@ set -o errexit
 set -o nounset
 set -o pipefail
 
-readonly CT_VERSION=v3.3.1
-readonly KIND_VERSION=v0.9.0
+readonly CT_VERSION=latest
+readonly KIND_VERSION=v0.11.1
+readonly K8S_VERSION=v1.18.19
+
 readonly CLUSTER_NAME=pulsar-helm-test
-readonly K8S_VERSION=v1.18.8
 
 run_ct_container() {
     echo 'Running ct container...'
