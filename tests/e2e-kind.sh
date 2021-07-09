@@ -81,11 +81,14 @@ pull_and_cache_docker_images() {
         sudo mv yq /usr/local/bin/
     fi
 
+    # kind cluster worker nodes as comma separated list
+    local nodes=$(kind get nodes --name "$CLUSTER_NAME" -q | grep worker | tr '\n' ',' | sed 's/,$//')
+
     # extract the images from values.yaml
-    images=$(yq e '.image | .[] |= ([.repository, .tag] | join(":")) | to_entries | .[] | .value' "$SCRIPT_DIR"/../helm-chart-sources/pulsar/values.yaml | sort | uniq)
+    local images=$(yq e '.image | .[] |= ([.repository, .tag] | join(":")) | to_entries | .[] | .value' "$SCRIPT_DIR"/../helm-chart-sources/pulsar/values.yaml | sort | uniq)
     for image in $images; do
         docker pull "$image"
-        kind load docker-image --name "$CLUSTER_NAME" "$image"
+        kind load docker-image --name "$CLUSTER_NAME" --nodes "$nodes" "$image"
     done
 }
 
