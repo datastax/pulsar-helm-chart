@@ -757,6 +757,21 @@ broker:
   # These can also be enabled as standalone services
   # See extra section above
   functionsWorkerEnabled: false
+  # enable Kafka-on-Pulsar protocol handler
+  # Enabling this will set
+  #    protocolHandlerDirectory: "./protocols"
+  #    messagingProtocols: "kafka"
+  #    allowAutoTopicCreationType: "partitioned"
+  #    brokerDeleteInactiveTopicsEnabled: "false"
+  # and all Kafka-on-Pulsar parameters listed in kafkaOnPulsar below
+  # the rest of the KoP parameters documented at
+  # https://github.com/datastax/kop
+  kafkaOnPulsarEnabled: false
+  kafkaOnPulsar:
+    kafkaListeners: "PLAINTEXT://localhost:9092"
+    kafkaAdvertisedListeners: "PLAINTEXT://localhost:9092"
+    brokerEntryMetadataInterceptors: "org.apache.pulsar.common.intercept.AppendIndexMetadataInterceptor,org.apache.pulsar.common.intercept.AppendBrokerTimestampMetadataInterceptor"
+
   webSocketServiceEnabled: false
   probe:
     enabled: true
