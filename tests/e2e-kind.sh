@@ -47,6 +47,7 @@ create_kind_cluster() {
     export KUBECONFIG=/tmp/kind_kube_config$$
     if [ $node_count -eq 0 ]; then
         kind create cluster --name "$CLUSTER_NAME" --config tests/kind-config.yaml --image "kindest/node:$K8S_VERSION" --wait 60s
+        setup_load_balancer
         pull_and_cache_docker_images
     else
         kind export kubeconfig --name "$CLUSTER_NAME"
@@ -87,6 +88,19 @@ pull_and_cache_docker_images() {
         kind load docker-image --name "$CLUSTER_NAME" "$image"
     done
 }
+
+
+setup_load_balancer() {
+    # resource that use a load balancer will be in pending state forever and 
+    # "helm install --wait" will never finish unless a loadbalancer is configured in the cluster
+
+    # https://kind.sigs.k8s.io/docs/user/loadbalancer/
+    kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/master/manifests/namespace.yaml
+    kubectl create secret generic -n metallb-system memberlist --from-literal=secretkey="$(openssl rand -base64 128)"
+    kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/master/manifests/metallb.yaml
+    kubectl apply -f https://kind.sigs.k8s.io/examples/loadbalancer/metallb-configmap.yaml
+}
+
 
 main() {
     run_ct_container
