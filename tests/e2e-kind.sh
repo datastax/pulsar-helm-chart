@@ -42,10 +42,9 @@ create_kind_cluster() {
         sudo mv kind /usr/local/bin/kind
     fi
 
-    local no_cluster=0
-    kind get nodes --name "$CLUSTER_NAME" >/dev/null 2>&1 || no_cluster=1
+    local node_count=$(kind get nodes --name "$CLUSTER_NAME" -q | wc -l)
 
-    if [ $no_cluster -eq 1 ]; then
+    if [ $node_count -eq 0 ]; then
         export KUBECONFIG=/tmp/kind_kube_config$$
         kind create cluster --name "$CLUSTER_NAME" --config tests/kind-config.yaml --image "kindest/node:$K8S_VERSION" --wait 60s
         pull_and_cache_docker_images
