@@ -57,14 +57,14 @@ spec:
       terminationGracePeriodSeconds: {{ .Values.pulsarAdminConsole.gracePeriod }}
       containers:
       - name: nginx
-        image: nginx
+        image: nginxinc/nginx-unprivileged:stable-alpine
         imagePullPolicy: {{ .Values.image.pulsarAdminConsole.pullPolicy }}
         ports:
         - name: "nginx"
-          containerPort: 80
+          containerPort: 8080
         {{- if .Values.enableTls }}
         - name: "nginx-tls"
-          containerPort: 443
+          containerPort: 8443
         {{- end }}
         volumeMounts:
         - mountPath: /etc/nginx
@@ -78,13 +78,13 @@ spec:
         livenessProbe:
           httpGet:
             path: /ruok
-            port: 80
+            port: 8080
           initialDelaySeconds: {{ .Values.pulsarAdminConsole.probe.liveness.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.pulsarAdminConsole.probe.liveness.timeoutSeconds }}
         readinessProbe:
           httpGet:
             path: /ruok
-            port: 80
+            port: 8080
           initialDelaySeconds: {{ .Values.pulsarAdminConsole.probe.readiness.initialDelaySeconds }}
           timeoutSeconds: {{ .Values.pulsarAdminConsole.probe.readiness.timeoutSeconds }}
         resources:

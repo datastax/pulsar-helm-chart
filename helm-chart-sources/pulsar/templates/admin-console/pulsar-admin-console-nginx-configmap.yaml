@@ -32,10 +32,17 @@ data:
   nginx.conf: |
     worker_processes  3;
     error_log  /var/log/nginx/error.log;
+    pid        /tmp/nginx.pid;
     events {
       worker_connections  10240;
     }
     http {
+      proxy_temp_path /tmp/proxy_temp;
+      client_body_temp_path /tmp/client_temp;
+      fastcgi_temp_path /tmp/fastcgi_temp;
+      uwsgi_temp_path /tmp/uwsgi_temp;
+      scgi_temp_path /tmp/scgi_temp;
+
       log_format  main
               'remote_addr:$remote_addr\t'
               'time_local:$time_local\t'
@@ -138,9 +145,9 @@ data:
               proxy_pass http://http-pulsar-proxy$uri$is_args$args;
             }
 
-            listen 80 default_server;
+            listen 8080 default_server;
             {{- if .Values.tlsEnabled }}
-            listen 443 ssl;
+            listen 8443 ssl;
             ssl_certificate /certs/tls.crt;
             ssl_certificate_key /certs/tls.key;
             ssl_protocols TLSv1.1 TLSv1.2 TLSv1.3;
@@ -159,7 +166,7 @@ data:
 
         }
 
-        listen 8080 ;
+        listen 8081 ;
 
       }
 

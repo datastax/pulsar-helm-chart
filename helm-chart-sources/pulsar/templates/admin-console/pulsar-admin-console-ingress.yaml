@@ -39,11 +39,11 @@ spec:
           - path: /
             backend:
               serviceName: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}"
-              servicePort: 80
+              servicePort: 8080
           - path: /ws/
             backend:
               serviceName: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}"
-              servicePort: 80
+              servicePort: 8080
   {{- if and .Values.enableTls .Values.pulsarAdminConsole.ingress.enableTls}}
   tls:
   - hosts:
