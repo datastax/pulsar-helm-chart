@@ -52,7 +52,7 @@ data:
         "cluster_list": ["{{ template "pulsar.fullname" . }}"],
         "api_base_url": "{{ .Values.pulsarAdminConsole.apiBaseUrl }}",
         "ca_certificate": "",
-        "api_version": "2.6.1",
+        "api_version": "{{ .Values.pulsarAdminConsole.apiVersion }}",
         "default_plan": "",
         "notice_text": "",
         {{- if index .Values "kube-prometheus-stack" "grafana" "ingress" "enabled"}}

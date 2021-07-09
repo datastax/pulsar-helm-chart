@@ -1348,6 +1348,7 @@ pulsarAdminConsole:
     user: ''
     password: ''
   apiBaseUrl: "api/v1/"
+  apiVersion: "2.7.2"
   probe:
     liveness:
       initialDelaySeconds: 15
