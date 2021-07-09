@@ -84,7 +84,7 @@ data:
   brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
   brokerClientAuthenticationParameters: "file:///pulsar/token-superuser/superuser.jwt"
   {{- if .Values.brokerSts.extraAuthProvider }}
-  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken,{{ .Values.proxy.extraAuthProvider }}"
+  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken,{{ .Values.brokerSts.extraAuthProvider }}"
   {{- else }}
   authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
   {{- end }}
