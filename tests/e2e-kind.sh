@@ -44,25 +44,26 @@ create_kind_cluster() {
 
     local node_count=$(kind get nodes --name "$CLUSTER_NAME" -q | wc -l)
 
+    export KUBECONFIG=/tmp/kind_kube_config$$
     if [ $node_count -eq 0 ]; then
-        export KUBECONFIG=/tmp/kind_kube_config$$
         kind create cluster --name "$CLUSTER_NAME" --config tests/kind-config.yaml --image "kindest/node:$K8S_VERSION" --wait 60s
         pull_and_cache_docker_images
-
-        docker_exec mkdir -p /root/.kube
-
-        echo "Copying kubeconfig $KUBECONFIG to container..."
-        docker cp "$KUBECONFIG" ct:/root/.kube/config
-
-        docker_exec kubectl cluster-info
-        echo
-
-        docker_exec kubectl get nodes
-        echo
-
-        echo 'Cluster ready!'
-        echo
+    else
+        kind export kubeconfig --name "$CLUSTER_NAME"
     fi
+    docker_exec mkdir -p /root/.kube
+
+    echo "Copying kubeconfig $KUBECONFIG to container..."
+    docker cp "$KUBECONFIG" ct:/root/.kube/config
+
+    docker_exec kubectl cluster-info
+    echo
+
+    docker_exec kubectl get nodes
+    echo
+
+    echo 'Cluster ready!'
+    echo
 }
 
 
