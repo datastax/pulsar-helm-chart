@@ -17,65 +17,63 @@
 
 persistence: false
 enableTests: true
+
+enableAntiAffinity: false
+enableTls: false
+enableTokenAuth: false
+restartOnConfigMapChange:
+  enabled: true
 extra:
   autoRecovery: false
-  bastion: true
-  pulsarHeartbeat: true
   burnell: true
-  pulsarHealer: true
+  pulsarHeartbeat: true
+  pulsarAdminConsole: true
 
 autoRecovery:
   enableProvisionContainer: true
-
-image:
-  broker:
-    repository: datastax/pulsar
-  pulsarHeartbeat:
-    repository: datastax/pulsar-heartbeat
-    pullPolicy: IfNotPresent
-    tag: latest
-  burnell:
-    repository: datastax/burnell
-    pullPolicy: IfNotPresent
-    tag: latest
 
 zookeeper:
   replicaCount: 1
   resources:
     requests:
-      memory: 400Mi
+      memory: 300Mi
       cpu: 0.3
   configData:
-    PULSAR_MEM: "\"-Xms256m -Xmx400m -Djute.maxbuffer=10485760 -Dzookeeper.forceSync=no\""
+    PULSAR_MEM: "\"-Xms200m -Xmx300m -Djute.maxbuffer=10485760 -XX:+ExitOnOutOfMemoryError\""
 
 bookkeeper:
-  replicaCount: 2
+  replicaCount: 1
   resources:
     requests:
       memory: 400Mi
       cpu: 0.3
   configData:
-    BOOKIE_MEM: "\"-Xms512m -Xmx512m -XX:MaxDirectMemorySize=512m -XX:+ExitOnOutOfMemoryError\""
-    BOOKIE_GC: "\"-XX:+UseG1GC -XX:MaxGCPauseMillis=10\""
+    BOOKIE_MEM: "-Xms256m -Xmx512m -XX:MaxDirectMemorySize=512m -XX:+ExitOnOutOfMemoryError"
+    BOOKIE_GC: "-XX:+UseG1GC -XX:MaxGCPauseMillis=10"
 
 broker:
   component: broker
   replicaCount: 1
+  ledger:
+    defaultEnsembleSize: 1
+    defaultAckQuorum: 1
+    defaultWriteQuorum: 1
   resources:
     requests:
       memory: 400Mi
       cpu: 0.3
   configData:
-    PULSAR_MEM: "\"-Xms256m -Xmx400m -XX:MaxDirectMemorySize=400m -XX:+ExitOnOutOfMemoryError\""
+    PULSAR_MEM: "-Xms256m -Xmx400m -XX:MaxDirectMemorySize=400m -XX:+ExitOnOutOfMemoryError"
 
 function:
   replicaCount: 1
+  functionReplicaCount: 1
   resources:
     requests:
       memory: 400Mi
       cpu: 0.3
   configData:
-    PULSAR_MEM: "\"-Xms256m -Xmx400m -XX:MaxDirectMemorySize=400m -Dio.netty.leakDetectionLevel=disabled -Dio.netty.recycler.linkCapacity=1024 -XX:+ParallelRefProcEnabled -XX:+UnlockExperimentalVMOptions -XX:+AggressiveOpts -XX:+DoEscapeAnalysis -XX:ParallelGCThreads=32 -XX:ConcGCThreads=32 -XX:G1NewSizePercent=50 -XX:+DisableExplicitGC -XX:-ResizePLAB -XX:+ExitOnOutOfMemoryError -XX:+PerfDisableSharedMem\""
+    PULSAR_MEM: "-Xms256m -Xmx400m -XX:MaxDirectMemorySize=400m -Dio.netty.leakDetectionLevel=disabled -Dio.netty.recycler.linkCapacity=1024 -XX:+ParallelRefProcEnabled -XX:+DisableExplicitGC -XX:+ExitOnOutOfMemoryError -XX:+PerfDisableSharedMem"
 
 proxy:
   replicaCount: 1
@@ -88,23 +86,22 @@ proxy:
       memory: 400Mi
       cpu: 0.3
   configData:
-    PULSAR_MEM: "\"-Xms256m -Xmx400m -XX:MaxDirectMemorySize=400m\""
+    PULSAR_MEM: "\"-Xms400m -Xmx400m -XX:MaxDirectMemorySize=112m\""
+  autoPortAssign:
+    enablePlainTextWithTLS: true
+  service:
+    autoPortAssign:
+      enabled: true
 
-burnell:
-  federatedPromUrl:
+grafanaDashboards:
+  enabled: false
 
-pulsarHeartbeat:
-  component: pulsarheartbeat
-  port: "8089"
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "8089"
-    prometheus.io/path: "/metrics"
-  resources:
-    requests:
-      memory: 64Mi
-      cpu: 0.1
-  prometheus:
-    enabled: true
-  config:
-    k8sInClusterMonitorEnabled: "false"
+pulsarAdminConsole:
+  replicaCount: 1
+
+kube-prometheus-stack:
+  enabled: false
+  prometheusOperator:
+    enabled: false
+  grafana:
+    enabled: false
