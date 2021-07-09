@@ -19,7 +19,7 @@ To trigger a release:
 ```
 git fetch
 git checkout release
-git rebase origin/master
+git merge origin/master
 ```
 
 Now update the versions in the *Chart.yaml* for each chart that has changed. Then push the change to origin:
