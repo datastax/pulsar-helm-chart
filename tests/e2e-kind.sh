@@ -43,7 +43,7 @@ create_kind_cluster() {
     fi
 
     local no_cluster=0
-    kind get nodes --name "$CLUSTER_NAME" 2>&1 >/dev/null || no_cluster=1
+    kind get nodes --name "$CLUSTER_NAME" >/dev/null 2>&1 || no_cluster=1
 
     if [ $no_cluster -eq 1 ]; then
         export KUBECONFIG=/tmp/kind_kube_config$$
@@ -52,7 +52,7 @@ create_kind_cluster() {
 
         docker_exec mkdir -p /root/.kube
 
-        echo 'Copying kubeconfig $KUBECONFIG to container...'
+        echo "Copying kubeconfig $KUBECONFIG to container..."
         docker cp "$KUBECONFIG" ct:/root/.kube/config
 
         docker_exec kubectl cluster-info
@@ -81,10 +81,10 @@ pull_and_cache_docker_images() {
     fi
 
     # extract the images from values.yaml
-    images=$(yq e '.image | .[] |= ([.repository, .tag] | join(":")) | to_entries | .[] | .value' $SCRIPT_DIR/../helm-chart-sources/pulsar/values.yaml | sort | uniq)
+    images=$(yq e '.image | .[] |= ([.repository, .tag] | join(":")) | to_entries | .[] | .value' "$SCRIPT_DIR"/../helm-chart-sources/pulsar/values.yaml | sort | uniq)
     for image in $images; do
-        docker pull $image
-        kind load docker-image --name "$CLUSTER_NAME" $image
+        docker pull "$image"
+        kind load docker-image --name "$CLUSTER_NAME" "$image"
     done
 }
 
