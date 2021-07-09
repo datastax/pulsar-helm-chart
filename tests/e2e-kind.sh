@@ -12,13 +12,15 @@ readonly K8S_VERSION=v1.18.19
 readonly CLUSTER_NAME=pulsar-helm-test
 
 run_ct_container() {
-    echo 'Running ct container...'
-    docker run --rm --interactive --detach --network host --name ct \
-        --volume "$(pwd):/workdir" \
-        --workdir /workdir \
-        "quay.io/helmpack/chart-testing:$CT_VERSION" \
-        cat
-    echo
+    if [ "$(docker inspect -f '{{.State.Running}}' ct 2>/dev/null || true)" != 'true' ]; then
+        echo 'Running ct container...'
+        docker run --rm --interactive --detach --network host --name ct \
+            --volume "$(pwd):/workdir" \
+            --workdir /workdir \
+            "quay.io/helmpack/chart-testing:$CT_VERSION" \
+            cat
+        echo
+    fi
 }
 
 cleanup() {
@@ -40,28 +42,33 @@ create_kind_cluster() {
         sudo mv kind /usr/local/bin/kind
     fi
 
-    export KUBECONFIG=/tmp/kind_kube_config$$
-    kind create cluster --name "$CLUSTER_NAME" --config tests/kind-config.yaml --image "kindest/node:$K8S_VERSION" --wait 60s
-    pull_and_cache_docker_images
+    local no_cluster=0
+    kind get nodes --name "$CLUSTER_NAME" 2>&1 >/dev/null || no_cluster=1
 
-    docker_exec mkdir -p /root/.kube
+    if [ $no_cluster -eq 1 ]; then
+        export KUBECONFIG=/tmp/kind_kube_config$$
+        kind create cluster --name "$CLUSTER_NAME" --config tests/kind-config.yaml --image "kindest/node:$K8S_VERSION" --wait 60s
+        pull_and_cache_docker_images
 
-    echo 'Copying kubeconfig to container...'
-    docker cp "$KUBECONFIG" ct:/root/.kube/config
+        docker_exec mkdir -p /root/.kube
 
-    docker_exec kubectl cluster-info
-    echo
+        echo 'Copying kubeconfig $KUBECONFIG to container...'
+        docker cp "$KUBECONFIG" ct:/root/.kube/config
 
-    docker_exec kubectl get nodes
-    echo
+        docker_exec kubectl cluster-info
+        echo
 
-    echo 'Cluster ready!'
-    echo
+        docker_exec kubectl get nodes
+        echo
+
+        echo 'Cluster ready!'
+        echo
+    fi
 }
 
 
 install_charts() {
-    docker_exec ct install --config tests/ct.yaml
+    docker_exec ct install --debug --config tests/ct.yaml --helm-extra-args "--debug"
     echo
 }
 
