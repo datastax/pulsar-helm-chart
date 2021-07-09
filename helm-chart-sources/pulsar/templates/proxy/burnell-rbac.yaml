@@ -15,30 +15,28 @@
 #
 #
 
-{{- if or .Values.enableProvisionContainer .Values.extra.pulsarHealer .Values.extra.pulsarAdminConsole }}
+{{- if and .Values.rbac.create ( or .Values.autoRecovery.enableProvisionContainer .Values.extra.pulsarHealer .Values.extra.pulsarAdminConsole ) }}
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
+kind: {{ if .Values.rbac.clusterRoles }}ClusterRole{{ else }}Role{{ end }}
 metadata:
   name: "{{ template "pulsar.fullname" . }}-burnell"
+  {{- if not .Values.rbac.clusterRoles }}
+  namespace: {{ .Release.Namespace }}
+  {{- end }}
 rules:
 - apiGroups: [""]
   resources:
-  - services
-  - configmaps
-  - pods
   - secrets
+  verbs: ["get", "create"]
+- apiGroups: [""]
+  resources:
   - namespaces
-  verbs:
-  - '*'
-- apiGroups:
-  - apps
+  verbs: ["list"]
+- apiGroups: ["apps"]
   resources:
   - deployments
   - statefulsets
-  - secrets
-  - namespaces
-  verbs:
-  - '*'
+  verbs: ["list"]
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -47,12 +45,15 @@ metadata:
   namespace: {{ .Release.Namespace }}
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+kind: {{ if .Values.rbac.clusterRoles }}ClusterRoleBinding{{ else }}RoleBinding{{ end }}
 metadata:
   name: "{{ template "pulsar.fullname" . }}-burnell"
+  {{- if not .Values.rbac.clusterRoles }}
+  namespace: {{ .Release.Namespace }}
+  {{- end }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
+  kind: {{ if .Values.rbac.clusterRoles }}ClusterRole{{ else }}Role{{ end }}
   name: "{{ template "pulsar.fullname" . }}-burnell"
 subjects:
 - kind: ServiceAccount
