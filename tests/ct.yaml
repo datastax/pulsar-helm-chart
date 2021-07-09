@@ -16,7 +16,7 @@
 #
 
 remote: origin
-target-branch: master
+target-branch: release
 helm-extra-args: "--timeout 600s"
 chart-dirs:
   - helm-chart-sources
