@@ -1,6 +1,28 @@
 apiVersion: v1
 entries:
   pulsar:
+  - apiVersion: v2
+    appVersion: 2.7.2
+    created: "2021-07-13T23:39:08.238118223Z"
+    dependencies:
+    - condition: kube-prometheus-stack.enabled
+      name: kube-prometheus-stack
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 12.x.x
+    - condition: cert-manager.enabled
+      name: cert-manager
+      repository: https://charts.jetstack.io
+      version: v1.1.x
+    description: Apache Pulsar Helm chart for Kubernetes
+    digest: 36527129793815badae7386de52baac67a4f8b970acf4547d02633374595b5d0
+    maintainers:
+    - name: zzzming
+    - name: cdbartholomew
+    - name: lhotari
+    name: pulsar
+    urls:
+    - https://github.com/datastax/pulsar-helm-chart/releases/download/pulsar-1.0.7/pulsar-1.0.7.tgz
+    version: 1.0.7
   - apiVersion: v1
     appVersion: 2.7.2
     created: "2021-06-14T15:33:32.78305875Z"
