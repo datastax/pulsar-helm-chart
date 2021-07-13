@@ -1,0 +1,186 @@
+#
+#  Copyright 2021 DataStax, Inc.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+#
+image:
+  broker:
+    # If not using tiered storage, you can use the smaller pulsar image for the broker
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: latest-280
+  brokerSts:
+    # If not using tiered storage, you can use the smaller pulsar image for the broker
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: latest-280
+  function:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: latest-280
+  zookeeper:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming
+    pullPolicy: IfNotPresent
+    tag: latest-280
+  bookkeeper:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming
+    pullPolicy: IfNotPresent
+    tag: latest-280
+  proxy:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming
+    pullPolicy: IfNotPresent
+    tag: latest-280
+  bastion:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming
+    pullPolicy: IfNotPresent
+    tag: latest-280
+  pulsarBeam:
+    repository: kesque/pulsar-beam
+    pullPolicy: IfNotPresent
+    tag: 1.0.0
+  burnell:
+    repository: datastax/burnell
+    pullPolicy: Always
+    tag: 1.0.0
+  burnellLogCollector:
+    repository: datastax/burnell
+    pullPolicy: IfNotPresent
+    tag: logcollector_latest
+  pulsarSQL:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
+    tag: latest-280
+    pullPolicy: IfNotPresent
+  tardigrade:
+    repository: storjlabs/gateway
+    pullPolicy: IfNotPresent
+    tag: latest
+  pulsarHeartbeat:
+    repository: datastax/pulsar-heartbeat
+    pullPolicy: IfNotPresent
+    tag: 1.0.2
+  pulsarAdminConsole:
+    repository: datastax/pulsar-admin-console
+    pullPolicy: IfNotPresent
+    tag: 1.0.0
+
+enableAntiAffinity: false
+enableTls: false
+enableTokenAuth: false
+restartOnConfigMapChange:
+  enabled: true
+extra:
+  function: true
+  burnell: true
+  burnellLogCollector: true
+  pulsarHeartbeat: true
+  pulsarAdminConsole: true
+
+zookeeper:
+  replicaCount: 1
+  resources:
+    requests:
+      memory: 300Mi
+      cpu: 0.3
+  configData:
+    PULSAR_MEM: "\"-Xms300m -Xmx300m -Djute.maxbuffer=10485760 -XX:+ExitOnOutOfMemoryError\""
+
+bookkeeper:
+  replicaCount: 1
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 0.3
+  configData:
+    BOOKIE_MEM: "\"-Xms312m -Xmx312m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError\""
+
+broker:
+  component: broker
+  service:
+    ports:
+    - name: http
+      port: 8080
+    - name: pulsar
+      port: 6650
+    - name: https
+      port: 8443
+    - name: pulsarssl
+      port: 6651
+    - name: kafkaplaintext
+      port: 9092
+    - name: kafkassl
+      port: 9093
+  replicaCount: 1
+  ledger:
+    defaultEnsembleSize: 1
+    defaultAckQuorum: 1
+    defaultWriteQuorum: 1
+  resources:
+    requests:
+      memory: 600Mi
+      cpu: 0.3
+  configData:
+    PULSAR_MEM: "\"-Xms400m -Xmx400m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError\""
+  kafkaOnPulsarEnabled: true
+  kafkaOnPulsar:
+    kafkaListeners: "PLAINTEXT://localhost:9092"
+    kafkaAdvertisedListeners: "PLAINTEXT://localhost:9092"
+    brokerEntryMetadataInterceptors: "org.apache.pulsar.common.intercept.AppendIndexMetadataInterceptor,org.apache.pulsar.common.intercept.AppendBrokerTimestampMetadataInterceptor"
+
+autoRecovery:
+  resources:
+    requests:
+      memory: 300Mi
+      cpu: 0.3
+
+function:
+  replicaCount: 1
+  functionReplicaCount: 1
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 0.3
+  configData:
+    PULSAR_MEM: "\"-Xms312m -Xmx312m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError\""
+
+proxy:
+  replicaCount: 1
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 0.3
+  wsResources:
+    requests:
+      memory: 512Mi
+      cpu: 0.3
+  configData:
+    PULSAR_MEM: "\"-Xms400m -Xmx400m -XX:MaxDirectMemorySize=112m\""
+  autoPortAssign:
+    enablePlainTextWithTLS: true
+  service:
+    autoPortAssign:
+      enabled: true
+
+grafanaDashboards:
+  enabled: true
+
+pulsarAdminConsole:
+  replicaCount: 1
+
+kube-prometheus-stack:
+  enabled: true
+  prometheusOperator:
+    enabled: true
+  grafana:
+    enabled: true
+    adminPassword: e9JYtk83*4#PM8
