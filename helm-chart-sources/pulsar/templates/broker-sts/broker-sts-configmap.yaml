@@ -69,14 +69,18 @@ data:
   {{- if .Values.brokerSts.webSocketServiceEnabled }}
   webSocketServiceEnabled: "true"
   {{- end }}
-  {{- if .Values.broker.kafkaOnPulsarEnabled }}
+  {{- if .Values.brokerSts.kafkaOnPulsarEnabled }}
   # enabling Kafka-on-Pulsar
   protocolHandlerDirectory: "./protocols"
   messagingProtocols: "kafka"
-  allowAutoTopicCreationType: "partitioned"
   brokerDeleteInactiveTopicsEnabled: "false"
-  {{- range $key, $val := .Values.broker.kafkaOnPulsar }}
+  PULSAR_PREFIX_protocolHandlerDirectory: "./protocols"
+  PULSAR_PREFIX_messagingProtocols: "kafka"
+  PULSAR_PREFIX_brokerDeleteInactiveTopicsEnabled: "false"
+  allowAutoTopicCreationType: "partitioned"
+  {{- range $key, $val := .Values.brokerSts.kafkaOnPulsar }}
   {{ $key }}: {{ $val | quote }}
+  {{ printf "PULSAR_PREFIX_%s" $key }}: {{ $val | quote }}
   {{- end }}
   # end of Kafka-on-Pulsar configs
   {{ else }}

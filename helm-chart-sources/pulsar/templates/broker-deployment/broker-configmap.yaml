@@ -73,10 +73,14 @@ data:
   # enabling Kafka-on-Pulsar
   protocolHandlerDirectory: "./protocols"
   messagingProtocols: "kafka"
-  allowAutoTopicCreationType: "partitioned"
   brokerDeleteInactiveTopicsEnabled: "false"
+  PULSAR_PREFIX_protocolHandlerDirectory: "./protocols"
+  PULSAR_PREFIX_messagingProtocols: "kafka"
+  PULSAR_PREFIX_brokerDeleteInactiveTopicsEnabled: "false"
+  allowAutoTopicCreationType: "partitioned"
   {{- range $key, $val := .Values.broker.kafkaOnPulsar }}
   {{ $key }}: {{ $val | quote }}
+  {{ printf "PULSAR_PREFIX_%s" $key }}: {{ $val | quote }}
   {{- end }}
   # end of Kafka-on-Pulsar configs
   {{ else }}
