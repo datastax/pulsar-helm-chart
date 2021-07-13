@@ -1,19 +1,19 @@
-# 
-#  Copyright 2021 DataStax, Inc. 
-#  
+#
+#  Copyright 2021 DataStax, Inc.
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-#  
-# 
+#
+#
 
 {{- if .Values.extra.brokerSts }}
 apiVersion: v1
@@ -29,7 +29,7 @@ metadata:
     component: {{ .Values.brokerSts.component }}
     cluster: {{ template "pulsar.fullname" . }}
 data:
-  zookeeperServers: 
+  zookeeperServers:
     {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
     {{- if .Values.extra.zookeepernp }}
     { template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2281,{{ template "pulsar.fullname" . }}-{{ .Values.zookeepernp.component }}-ca:2281
@@ -79,12 +79,12 @@ data:
   authorizationEnabled: "true"
   authenticationEnabled: "true"
   proxyRoles: "{{ .Values.proxyRoles }}"
-  superUserRoles: "{{ .Values.superUserRoles }}" 
+  superUserRoles: "{{ .Values.superUserRoles }}"
   tokenPublicKey: "file:///pulsar/token-public-key/{{ .Values.tokenPublicKeyFile }}"
   brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
   brokerClientAuthenticationParameters: "file:///pulsar/token-superuser/superuser.jwt"
   {{- if .Values.brokerSts.extraAuthProvider }}
-  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken,{{ .Values.proxy.extraAuthProvider }}"
+  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken,{{ .Values.brokerSts.extraAuthProvider }}"
   {{- else }}
   authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
   {{- end }}
@@ -134,84 +134,84 @@ data:
 {{- end }}
 {{- if .Values.storageOffload.driver }}
 {{- if eq .Values.storageOffload.driver "aws-s3" }}
-  managedLedgerOffloadDriver: "{{ .Values.storageOffload.driver }}" 
-  s3ManagedLedgerOffloadBucket: "{{ .Values.storageOffload.bucket }}" 
-  s3ManagedLedgerOffloadRegion: "{{ .Values.storageOffload.region }}" 
-  AWS_ACCESS_KEY_ID: "{{ .Values.storageOffload.accessKey }}" 
+  managedLedgerOffloadDriver: "{{ .Values.storageOffload.driver }}"
+  s3ManagedLedgerOffloadBucket: "{{ .Values.storageOffload.bucket }}"
+  s3ManagedLedgerOffloadRegion: "{{ .Values.storageOffload.region }}"
+  AWS_ACCESS_KEY_ID: "{{ .Values.storageOffload.accessKey }}"
   AWS_SECRET_ACCESS_KEY: "{{ .Values.storageOffload.accessSecret }}" # pragma: allowlist secret
   {{- if .Values.storageOffload.managedLedgerOffloadAutoTriggerSizeThresholdBytes }}
   # Pre 2.6.0 value
-  managedLedgerOffloadAutoTriggerSizeThresholdBytes: "{{ .Values.storageOffload.managedLedgerOffloadAutoTriggerSizeThresholdBytes }}" 
+  managedLedgerOffloadAutoTriggerSizeThresholdBytes: "{{ .Values.storageOffload.managedLedgerOffloadAutoTriggerSizeThresholdBytes }}"
   # Post 2.6.0 value
-  PULSAR_PREFIX_managedLedgerOffloadThresholdInBytes: "{{ .Values.storageOffload.managedLedgerOffloadAutoTriggerSizeThresholdBytes }}" 
-  {{- end }} 
+  PULSAR_PREFIX_managedLedgerOffloadThresholdInBytes: "{{ .Values.storageOffload.managedLedgerOffloadAutoTriggerSizeThresholdBytes }}"
+  {{- end }}
   {{- if .Values.storageOffload.managedLedgerOffloadDeletionLagMs }}
   # Pre 2.6.0 value
   managedLedgerOffloadDeletionLagMs: "{{ .Values.storageOffload.managedLedgerOffloadDeletionLagMs }}"
   # Post 2.6.0 value
-  PULSAR_PREFIX_managedLedgerOffloadDeletionLagInMillis: "{{ .Values.storageOffload.managedLedgerOffloadDeletionLagMs }}" 
+  PULSAR_PREFIX_managedLedgerOffloadDeletionLagInMillis: "{{ .Values.storageOffload.managedLedgerOffloadDeletionLagMs }}"
   {{- end }}
   {{- if .Values.storageOffload.maxBlockSizeInBytes }}
-  s3ManagedLedgerOffloadMaxBlockSizeInBytes: "{{ .Values.storageOffload.maxBlockSizeInBytes }}" 
+  s3ManagedLedgerOffloadMaxBlockSizeInBytes: "{{ .Values.storageOffload.maxBlockSizeInBytes }}"
   {{- end }}
   {{- if .Values.storageOffload.readBufferSizeInBytes }}
-  s3ManagedLedgerOffloadReadBufferSizeInBytes: "{{ .Values.storageOffload.readBufferSizeInBytes }}" 
+  s3ManagedLedgerOffloadReadBufferSizeInBytes: "{{ .Values.storageOffload.readBufferSizeInBytes }}"
   {{- end }}
 {{- end }}
 {{- if eq .Values.storageOffload.driver "s3" }}
-  managedLedgerOffloadDriver: "{{ .Values.storageOffload.driver }}" 
-  s3ManagedLedgerOffloadBucket: "{{ .Values.storageOffload.bucket }}" 
+  managedLedgerOffloadDriver: "{{ .Values.storageOffload.driver }}"
+  s3ManagedLedgerOffloadBucket: "{{ .Values.storageOffload.bucket }}"
   s3ManagedLedgerOffloadRegion: "{{ .Values.storageOffload.region }}"
   {{- if .Values.extra.tardigrade}}
   s3ManagedLedgerOffloadServiceEndpoint: "http://{{ .Release.Name }}-tardigrade-gateway-svc:{{ .Values.tardigrade.service.port }}"
-  AWS_ACCESS_KEY_ID: "{{ .Values.tardigrade.accessKey }}" 
-  AWS_SECRET_ACCESS_KEY: "{{ .Values.tardigrade.secretKey }}" 
+  AWS_ACCESS_KEY_ID: "{{ .Values.tardigrade.accessKey }}"
+  AWS_SECRET_ACCESS_KEY: "{{ .Values.tardigrade.secretKey }}"
   {{- else }}
-  AWS_ACCESS_KEY_ID: "{{ .Values.storageOffload.accessKey }}" 
+  AWS_ACCESS_KEY_ID: "{{ .Values.storageOffload.accessKey }}"
   AWS_SECRET_ACCESS_KEY: "{{ .Values.storageOffload.accessSecret }}" # pragma: allowlist secret
   s3ManagedLedgerOffloadServiceEndpoint: "{{ .Values.storageOffload.serviceEndpoint }}"
   {{- end }}
   {{- if .Values.storageOffload.managedLedgerOffloadAutoTriggerSizeThresholdBytes }}
   # Pre 2.6.0 value
-  managedLedgerOffloadAutoTriggerSizeThresholdBytes: "{{ .Values.storageOffload.managedLedgerOffloadAutoTriggerSizeThresholdBytes }}" 
+  managedLedgerOffloadAutoTriggerSizeThresholdBytes: "{{ .Values.storageOffload.managedLedgerOffloadAutoTriggerSizeThresholdBytes }}"
   # Post 2.6.0 value
-  PULSAR_PREFIX_managedLedgerOffloadThresholdInBytes: "{{ .Values.storageOffload.managedLedgerOffloadAutoTriggerSizeThresholdBytes }}" 
-  {{- end }} 
+  PULSAR_PREFIX_managedLedgerOffloadThresholdInBytes: "{{ .Values.storageOffload.managedLedgerOffloadAutoTriggerSizeThresholdBytes }}"
+  {{- end }}
   {{- if .Values.storageOffload.managedLedgerOffloadDeletionLagMs }}
   # Pre 2.6.0 value
   managedLedgerOffloadDeletionLagMs: "{{ .Values.storageOffload.managedLedgerOffloadDeletionLagMs }}"
   # Post 2.6.0 value
-  PULSAR_PREFIX_managedLedgerOffloadDeletionLagInMillis: "{{ .Values.storageOffload.managedLedgerOffloadDeletionLagMs }}" 
+  PULSAR_PREFIX_managedLedgerOffloadDeletionLagInMillis: "{{ .Values.storageOffload.managedLedgerOffloadDeletionLagMs }}"
   {{- end }}
   {{- if .Values.storageOffload.maxBlockSizeInBytes }}
-  s3ManagedLedgerOffloadMaxBlockSizeInBytes: "{{ .Values.storageOffload.maxBlockSizeInBytes }}" 
+  s3ManagedLedgerOffloadMaxBlockSizeInBytes: "{{ .Values.storageOffload.maxBlockSizeInBytes }}"
   {{- end }}
   {{- if .Values.storageOffload.readBufferSizeInBytes }}
-  s3ManagedLedgerOffloadReadBufferSizeInBytes: "{{ .Values.storageOffload.readBufferSizeInBytes }}" 
+  s3ManagedLedgerOffloadReadBufferSizeInBytes: "{{ .Values.storageOffload.readBufferSizeInBytes }}"
   {{- end }}
 {{- end }}
 {{- if eq .Values.storageOffload.driver "google-cloud-storage" }}
-  managedLedgerOffloadDriver: "{{ .Values.storageOffload.driver }}" 
+  managedLedgerOffloadDriver: "{{ .Values.storageOffload.driver }}"
   gcsManagedLedgerOffloadBucket: "{{ .Values.storageOffload.bucket }}"
   gcsManagedLedgerOffloadRegion: "{{ .Values.storageOffload.region }}"
   gcsManagedLedgerOffloadServiceAccountKeyFile: "/pulsar/gcp-service-account/{{ .Values.storageOffload.gcsServiceAccountJsonFile }}"
   {{- if .Values.storageOffload.managedLedgerOffloadAutoTriggerSizeThresholdBytes }}
   # Pre 2.6.0 value
-  managedLedgerOffloadAutoTriggerSizeThresholdBytes: "{{ .Values.storageOffload.managedLedgerOffloadAutoTriggerSizeThresholdBytes }}" 
+  managedLedgerOffloadAutoTriggerSizeThresholdBytes: "{{ .Values.storageOffload.managedLedgerOffloadAutoTriggerSizeThresholdBytes }}"
   # Post 2.6.0 value
-  PULSAR_PREFIX_managedLedgerOffloadThresholdInBytes: "{{ .Values.storageOffload.managedLedgerOffloadAutoTriggerSizeThresholdBytes }}" 
-  {{- end }} 
+  PULSAR_PREFIX_managedLedgerOffloadThresholdInBytes: "{{ .Values.storageOffload.managedLedgerOffloadAutoTriggerSizeThresholdBytes }}"
+  {{- end }}
   {{- if .Values.storageOffload.managedLedgerOffloadDeletionLagMs }}
   # Pre 2.6.0 value
   managedLedgerOffloadDeletionLagMs: "{{ .Values.storageOffload.managedLedgerOffloadDeletionLagMs }}"
   # Post 2.6.0 value
-  PULSAR_PREFIX_managedLedgerOffloadDeletionLagInMillis: "{{ .Values.storageOffload.managedLedgerOffloadDeletionLagMs }}" 
+  PULSAR_PREFIX_managedLedgerOffloadDeletionLagInMillis: "{{ .Values.storageOffload.managedLedgerOffloadDeletionLagMs }}"
   {{- end }}
   {{- if .Values.storageOffload.maxBlockSizeInBytes }}
-  gcsManagedLedgerOffloadMaxBlockSizeInBytes: "{{ .Values.storageOffload.maxBlockSizeInBytes }}" 
+  gcsManagedLedgerOffloadMaxBlockSizeInBytes: "{{ .Values.storageOffload.maxBlockSizeInBytes }}"
   {{- end }}
   {{- if .Values.storageOffload.readBufferSizeInBytes }}
-  gcsManagedLedgerOffloadReadBufferSizeInBytes: "{{ .Values.storageOffload.readBufferSizeInBytes }}" 
+  gcsManagedLedgerOffloadReadBufferSizeInBytes: "{{ .Values.storageOffload.readBufferSizeInBytes }}"
   {{- end }}
 {{- end }}
 {{- end }}

@@ -1,26 +1,26 @@
-# 
-#  Copyright 2021 DataStax, Inc. 
-#  
+#
+#  Copyright 2021 DataStax, Inc.
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-#  
-# 
+#
+#
 
-persistence: no
-enableTests: yes
+persistence: false
+enableTests: true
 extra:
-  autoRecovery: no
-  bastion: yes
-  pulsarHeartbeat: no
+  autoRecovery: false
+  bastion: true
+  pulsarHeartbeat: false
 
 image:
   broker:
@@ -36,7 +36,7 @@ storageOffload:
   region: us
   # General Storage Offload Setting
   # ===============================
-  # maxBlockSizeInBytes: "64000000" 
+  # maxBlockSizeInBytes: "64000000"
   # readBufferSizeInBytes: "1000000"
   maxBlockSizeInBytes: "64000000"
   readBufferSizeInBytes: "1000000"
@@ -48,13 +48,11 @@ storageOffload:
   managedLedgerOffloadDeletionLagMs: "1000"
   managedLedgerOffloadAutoTriggerSizeThresholdBytes: "1000"
 
-
-
 zookeeper:
   resources:
     requests:
       memory: 512Mi
-      cpu: 0.3 
+      cpu: 0.3
   configData:
     PULSAR_MEM: "\"-Xms512m -Xmx512m -Dzookeeper.forceSync=no\""
 
@@ -63,11 +61,10 @@ bookkeeper:
   resources:
     requests:
       memory: 512Mi
-      cpu: 0.3 
+      cpu: 0.3
   configData:
     BOOKIE_MEM: "\"-Xms512m -Xmx512m -XX:MaxDirectMemorySize=512m -XX:+ExitOnOutOfMemoryError\""
     BOOKIE_GC: "\"-XX:+UseG1GC -XX:MaxGCPauseMillis=10\""
-
 
 broker:
   component: broker
@@ -75,34 +72,31 @@ broker:
   resources:
     requests:
       memory: 512Mi
-      cpu: 0.3 
+      cpu: 0.3
   configData:
     PULSAR_MEM: "\"-Xms512m -Xmx512m -XX:MaxDirectMemorySize=512m -XX:+ExitOnOutOfMemoryError\""
     managedLedgerMaxEntriesPerLedger: "5000"
     managedLedgerMinLedgerRolloverTimeMinutes: "1"
     managedLedgerMaxLedgerRolloverTimeMinutes: "2"
 
-
-
 function:
   replicaCount: 1
   resources:
     requests:
       memory: 512Mi
-      cpu: 0.3 
+      cpu: 0.3
   configData:
     PULSAR_MEM: "\"-Xms512m -Xmx512m -XX:MaxDirectMemorySize=512m -Dio.netty.leakDetectionLevel=disabled -Dio.netty.recycler.linkCapacity=1024 -XX:+ParallelRefProcEnabled -XX:+UnlockExperimentalVMOptions -XX:+AggressiveOpts -XX:+DoEscapeAnalysis -XX:ParallelGCThreads=32 -XX:ConcGCThreads=32 -XX:G1NewSizePercent=50 -XX:+DisableExplicitGC -XX:-ResizePLAB -XX:+ExitOnOutOfMemoryError -XX:+PerfDisableSharedMem\""
 
 proxy:
-  replicaCount: 1 
+  replicaCount: 1
   resources:
     requests:
       memory: 512Mi
-      cpu: 0.3 
+      cpu: 0.3
   wsResources:
     requests:
       memory: 512Mi
       cpu: 0.3
   configData:
     PULSAR_MEM: "\"-Xms512m -Xmx512m -XX:MaxDirectMemorySize=512m\""
-  

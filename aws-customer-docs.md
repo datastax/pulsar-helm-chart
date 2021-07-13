@@ -1,7 +1,7 @@
 # Using Cert-Manager for Pulsar Certificates in AWS
 
 
-This document describes how to configure Cert-Manger to automatically retrieve and renew Let's Encrypt certificates for use in the Pulsar cluster. In order for Let's Encrypt to issue a certificate you must prove domain ownership using a "challenge". In this document, we are using the DNS challenge with AWS Route 53 as the DNS provider. The latest certificate will be stored in a Kubernetes secret which can be referenced by the Datastax Pulsar Helm chart (https://helm.datastax.io).
+This document describes how to configure Cert-Manger to automatically retrieve and renew Let's Encrypt certificates for use in the Pulsar cluster. In order for Let's Encrypt to issue a certificate you must prove domain ownership using a "challenge". In this document, we are using the DNS challenge with AWS Route 53 as the DNS provider. The latest certificate will be stored in a Kubernetes secret which can be referenced by the [Datastax Pulsar Helm chart](https://datastax.github.io/pulsar-helm-chart/).
 
 There are 3 main steps to installing Cert-Manager to use AWS Route 53:
 

@@ -41,7 +41,7 @@ Alternatively, you can enable automatic fixing of the permissions using an init 
 
 ```
 fixRootlessPermissions:
-  enabled: yes
+  enabled: true
 ```
 
 Note that this setting only needs to be enabled during the migration to the non-root user version. Once the cluster has been upgraded this setting can be disabled for future upgrades.
@@ -59,7 +59,7 @@ curl -LOs https://datastax.github.io/pulsar-helm-chart/examples/dev-values.yaml
 helm install pulsar -f dev-values.yaml --wait datastax-pulsar/pulsar
 ```
 
-The Helm command waits until all pods are up, which take about 5 minutes.
+The Helm command waits until all pods are up, which takes about 5 minutes.
 
 In another terminal, start the minikube tunnel:
 
@@ -72,7 +72,7 @@ Open your browser to http://localhost to view the Admin Console:
 ![Admin Console](assets/admin_console.png?raw=true "Admin Console")
 
 
-Can view the embedded Grafana charts using the Cluster/Monitoring menu in the Admin Console:
+You can view the embedded Grafana charts using the Cluster/Monitoring menu in the Admin Console:
 
 ![Grafana in Admin Console](assets/grafana.png?raw=true "Grafana in Admin Console")
 
@@ -98,13 +98,13 @@ Once all the pods are running (takes 5 to 10 minutes), you can access the admin 
 
 ```kubectl port-forward $(kubectl get pods -l component=adminconsole -o jsonpath='{.items[0].metadata.name}') 8888:80```
 
-Then open a browser to http://localhost:8888. In the admin console you can test your Pulsar setup using the built-in clients (Test Clients in the left-hand menu).
+Then open a browser to http://localhost:8888. In the admin console, you can test your Pulsar setup using the built-in clients (Test Clients in the left-hand menu).
 
 If you also forward the Grafana port, like this:
 
 ```kubectl port-forward $(kubectl get pods -l app.kubernetes.io/name=grafana -o jsonpath='{.items[0].metadata.name}') 3000:3000```
 
-You can view metrics for the Pulsar cluster the Cluster, Monitoring menu item. You will have to log into Grafana. The username is `admin` and the password is in the downloaded file `dev-values.yaml` under the `adminPassword` setting.
+You can view metrics for the Pulsar cluster via the Cluster, Monitoring menu item. You will have to log into Grafana. The username is `admin` and the password is in the downloaded file `dev-values.yaml` under the `adminPassword` setting.
 
 To use the Pulsar admin and client tools (ex pulsar-admin, pulsar-client, pulsar-perf), log into the bastion pod:
 
@@ -179,6 +179,18 @@ Once you have your storage settings in the values file, install the chart like t
 helm install pulsar datastax-pulsar/pulsar --namespace pulsar --values storage_values.yaml --create-namespace
 ```
 
+## Using namespace scoped RBAC resources
+
+By default, the Helm deployment uses `ClusterRole` and `ClusterRoleBinding` resources for defining access for service accounts. These resources get created outside of the namespace defined for deployment.
+
+It is possible to use namespace scoped `Role` and `RoleBinding` resources by setting `rbac.clusterRoles` to `false`.
+
+```
+rbac:
+  # use namespaces Role and RoleBinding resources
+  clusterRoles: false
+```
+
 ## Installing Pulsar for development
 
 This chart is designed for production use, but it can be used in development enviroments. To use this chart in a development environment (ex minikube), you need to:
@@ -239,7 +251,7 @@ You can install the Pulsar admin console in your cluster by enabling with this v
 
 ```
 component:
-  pulsarAdminConsole: yes
+  pulsarAdminConsole: true
 ```
 
 It will be automatically configured to connect to the Pulsar cluster.
@@ -268,7 +280,7 @@ For convenience, the Helm chart is able to create an initial user for the admin 
 ```
 pulsarAdminConsole:
     createUserSecret:
-      enabled: yes
+      enabled: true
       user: 'admin'
       password: 'password'
 ```
@@ -290,7 +302,7 @@ Set these values to configure the Ingress for the admin console:
 ```
 pulsarAdminConsole:
   ingress:
-    enabled: yes
+    enabled: true
     host: pulsar-ui.example.com
 ```
 
@@ -304,21 +316,21 @@ To deploy the Prometheus stack, use the following setting in your values file:
 
 ```
 kube-prometheus-stack:
-  enabled: yes
+  enabled: true
 ```
 
 To enable the Grafana dashboards, use the following setting:
 
 ```
 grafanaDashboards:
-  enabled: no
+  enabled: true
 ```
 
 To enable the Kubernetes default rules, use the following setting:
 ```
 kube-prometheus-stack:
   defaultRules:
-    create: yes
+    create: true
 ```
 
 
@@ -413,9 +425,9 @@ The chart includes tooling to automatically create the necessary secrets or you 
 Use these settings to enable automatic generation of the secrets and enable token-based authentication:
 
 ```
-enableTokenAuth: yes
+enableTokenAuth: true
 autoRecovery:
-  enableProvisionContainer: yes
+  enableProvisionContainer: true
 ```
 
 When the provision container is enabled, it will check if the required secrets exist. If they don't exist, it will generate new token keys and use those keys to generate the default set of tokens
@@ -478,7 +490,7 @@ kubectl create secret generic token-<subject> \
 Once you have created the required secrets, you can enable token-based authentication with this setting in the values:
 
 ```
-enableTokenAuth: yes
+enableTokenAuth: true
 ```
 
 ### TLS
@@ -512,6 +524,6 @@ such as [cert-manager](https://cert-mananager). The following [page](https://git
 Once you have created the secrets that store the certificate info (or specified it in the values), you can enable TLS in the values:
 
 ```
-enableTls: yes
+enableTls: true
 
 ```

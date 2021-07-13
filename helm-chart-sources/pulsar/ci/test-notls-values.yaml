@@ -1,112 +1,107 @@
-# 
-#  Copyright 2021 DataStax, Inc. 
-#  
+#
+#  Copyright 2021 DataStax, Inc.
+#
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
 #  You may obtain a copy of the License at
-#  
+#
 #      http://www.apache.org/licenses/LICENSE-2.0
-#  
+#
 #  Unless required by applicable law or agreed to in writing, software
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-#  
-# 
+#
+#
 
-persistence: no
-enableTests: yes
+persistence: false
+enableTests: true
+
+enableAntiAffinity: false
+enableTls: false
+enableTokenAuth: false
+restartOnConfigMapChange:
+  enabled: true
 extra:
-  autoRecovery: no
-  bastion: yes
-  pulsarHeartbeat: yes
-  burnell: yes
-  pulsarHealer: yes
+  autoRecovery: false
+  burnell: true
+  pulsarHeartbeat: true
+  pulsarAdminConsole: true
 
 autoRecovery:
-  enableProvisionContainer: yes
-
-image:
-  broker:
-    repository: datastax/pulsar
-  pulsarHeartbeat:
-    repository: datastax/pulsar-heartbeat
-    pullPolicy: IfNotPresent
-    tag: latest
-  burnell:
-    repository: datastax/burnell
-    pullPolicy: IfNotPresent
-    tag: latest
+  enableProvisionContainer: true
 
 zookeeper:
   replicaCount: 1
   resources:
     requests:
-      memory: 400Mi
-      cpu: 0.3 
+      memory: 300Mi
+      cpu: 0.3
   configData:
-    PULSAR_MEM: "\"-Xms256m -Xmx400m -Djute.maxbuffer=10485760 -Dzookeeper.forceSync=no\""
+    PULSAR_MEM: "\"-Xms200m -Xmx300m -Djute.maxbuffer=10485760 -XX:+ExitOnOutOfMemoryError\""
 
 bookkeeper:
-  replicaCount: 2
+  replicaCount: 1
   resources:
     requests:
       memory: 400Mi
-      cpu: 0.3 
+      cpu: 0.3
   configData:
-    BOOKIE_MEM: "\"-Xms512m -Xmx512m -XX:MaxDirectMemorySize=512m -XX:+ExitOnOutOfMemoryError\""
-    BOOKIE_GC: "\"-XX:+UseG1GC -XX:MaxGCPauseMillis=10\""
-
+    BOOKIE_MEM: "-Xms256m -Xmx512m -XX:MaxDirectMemorySize=512m -XX:+ExitOnOutOfMemoryError"
+    BOOKIE_GC: "-XX:+UseG1GC -XX:MaxGCPauseMillis=10"
 
 broker:
   component: broker
   replicaCount: 1
+  ledger:
+    defaultEnsembleSize: 1
+    defaultAckQuorum: 1
+    defaultWriteQuorum: 1
   resources:
     requests:
       memory: 400Mi
-      cpu: 0.3 
+      cpu: 0.3
   configData:
-    PULSAR_MEM: "\"-Xms256m -Xmx400m -XX:MaxDirectMemorySize=400m -XX:+ExitOnOutOfMemoryError\""
+    PULSAR_MEM: "-Xms256m -Xmx400m -XX:MaxDirectMemorySize=400m -XX:+ExitOnOutOfMemoryError"
 
 function:
+  replicaCount: 1
+  functionReplicaCount: 1
+  resources:
+    requests:
+      memory: 400Mi
+      cpu: 0.3
+  configData:
+    PULSAR_MEM: "-Xms256m -Xmx400m -XX:MaxDirectMemorySize=400m -Dio.netty.leakDetectionLevel=disabled -Dio.netty.recycler.linkCapacity=1024 -XX:+ParallelRefProcEnabled -XX:+DisableExplicitGC -XX:+ExitOnOutOfMemoryError -XX:+PerfDisableSharedMem"
+
+proxy:
   replicaCount: 1
   resources:
     requests:
       memory: 400Mi
-      cpu: 0.3 
-  configData:
-    PULSAR_MEM: "\"-Xms256m -Xmx400m -XX:MaxDirectMemorySize=400m -Dio.netty.leakDetectionLevel=disabled -Dio.netty.recycler.linkCapacity=1024 -XX:+ParallelRefProcEnabled -XX:+UnlockExperimentalVMOptions -XX:+AggressiveOpts -XX:+DoEscapeAnalysis -XX:ParallelGCThreads=32 -XX:ConcGCThreads=32 -XX:G1NewSizePercent=50 -XX:+DisableExplicitGC -XX:-ResizePLAB -XX:+ExitOnOutOfMemoryError -XX:+PerfDisableSharedMem\""
-
-proxy:
-  replicaCount: 1 
-  resources:
-    requests:
-      memory: 400Mi
-      cpu: 0.3 
+      cpu: 0.3
   wsResources:
     requests:
       memory: 400Mi
       cpu: 0.3
   configData:
-    PULSAR_MEM: "\"-Xms256m -Xmx400m -XX:MaxDirectMemorySize=400m\""
+    PULSAR_MEM: "\"-Xms400m -Xmx400m -XX:MaxDirectMemorySize=112m\""
+  autoPortAssign:
+    enablePlainTextWithTLS: true
+  service:
+    autoPortAssign:
+      enabled: true
 
-burnell:
-  federatedPromUrl:
+grafanaDashboards:
+  enabled: false
 
-pulsarHeartbeat:
-  component: pulsarheartbeat
-  port: "8089"
-  annotations:
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "8089"
-    prometheus.io/path: "/metrics"
-  resources:
-    requests:
-      memory: 64Mi
-      cpu: 0.1
-  prometheus:
-    enabled: true
-  config:
-    k8sInClusterMonitorEnabled: "false"
-  
+pulsarAdminConsole:
+  replicaCount: 1
+
+kube-prometheus-stack:
+  enabled: false
+  prometheusOperator:
+    enabled: false
+  grafana:
+    enabled: false
