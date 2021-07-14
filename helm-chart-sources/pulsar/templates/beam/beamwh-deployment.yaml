@@ -218,7 +218,7 @@ spec:
           - name: KeyFile
             value: /pulsar/certs/tls.key
           - name: TrustStore
-            {{- if or .Values.secrets .Values.createCertificates.selfSigned}}
+            {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}
             value: /pulsar/certs/ca.crt
             {{- else }}
             value: "{{ .Values.pulsarBeam.tlsCaPath }}/{{ .Values.pulsarBeam.tlsCaCert }}"

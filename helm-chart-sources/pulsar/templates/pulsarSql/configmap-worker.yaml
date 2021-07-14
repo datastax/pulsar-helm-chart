@@ -61,7 +61,7 @@ data:
     pulsar.broker-service-url=https://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8443
     pulsar.tls-allow-insecure-connection = false
     pulsar.tls-hostname-verification-enable = false
-    {{- if or .Values.secrets .Values.createCertificates.selfSigned}}
+    {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}
     pulsar.tls-trust-cert-file-path = /pulsar/certs/ca.crt
     {{- else }}
     pulsar.tls-trust-cert-file-path = {{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}
