@@ -64,7 +64,7 @@ data:
     {{- if .Values.enableTls }}
     workerPortTls: "6751"
     tlsCertificateFilePath: "/pulsar/certs/tls.crt"
-    {{- if or .Values.secrets .Values.createCertificates.selfSigned}}
+    {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}
     tlsTrustCertsFilePath: /pulsar/certs/ca.crt
     brokerClientTrustCertsFilePath: "/pulsar/certs/ca.crt"
     {{- else }}

@@ -35,7 +35,7 @@ data:
     crtFile=/pulsar/certs/tls.crt
     keyFile=/pulsar/certs/tls.key
 
-    {{- if or .Values.secrets .Values.createCertificates.selfSigned}}
+    {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}
     caFile=/pulsar/certs/ca.crt
     {{- else }}
     caFile={{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}
