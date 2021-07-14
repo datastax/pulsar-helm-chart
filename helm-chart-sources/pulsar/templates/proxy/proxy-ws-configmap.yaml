@@ -58,16 +58,18 @@ data:
   authorizationEnabled: "true"
   superUserRoles: "{{ .Values.superUserRoles }}"
   {{- end }}
-{{- if and .Values.enableTls .Values.tls.websocket.enabled }}
+{{- if and .Values.enableTls }}
   webServicePortTls: "{{ .Values.proxy.wsProxyPortTls }}"
   tlsEnabled: "true"
-  brokerClientTlsEnabled: "true"
   tlsCertificateFilePath: /pulsar/certs/tls.crt
   tlsKeyFilePath: /pulsar/tls-pk8.key
+  {{- if .Values.tls.websocket.enabled }}
+  brokerClientTlsEnabled: "true"
   {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}
   tlsTrustCertsFilePath: /pulsar/certs/ca.crt
   {{- else }}
   tlsTrustCertsFilePath: "{{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}"
+  {{- end }}
   {{- end }}
 {{- end }}
 {{ toYaml .Values.proxy.configData | indent 2 }}
