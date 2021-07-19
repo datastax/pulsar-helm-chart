@@ -1109,6 +1109,10 @@ pulsarSQL:
       bookkeeperThrottleValue: "0"
       managedLedgerCacheSizeMB: "0"
 
+# Envoy proxy for Kafka-on-Pulsar
+envoy:
+  enabled: false
+
 # Tardigrade S3 gateway
 #
 # Configure the S3 gateway according to instructions here:

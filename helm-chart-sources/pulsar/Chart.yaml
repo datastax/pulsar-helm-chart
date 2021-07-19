@@ -32,3 +32,7 @@ dependencies:
   version: v1.1.x
   repository: https://charts.jetstack.io
   condition: cert-manager.enabled
+- name: envoy
+  version: 0.0.7
+  repository: https://slamdev.github.io/helm-charts
+  condition: envoy.enabled
