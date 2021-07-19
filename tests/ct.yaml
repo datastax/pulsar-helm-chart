@@ -16,6 +16,7 @@
 #
 
 remote: origin
+check-version-increment: false
 target-branch: release
 helm-extra-args: "--timeout 600s"
 chart-dirs:
