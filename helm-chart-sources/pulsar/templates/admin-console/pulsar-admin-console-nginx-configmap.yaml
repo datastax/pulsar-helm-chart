@@ -73,6 +73,12 @@ data:
         server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8964;
       }
 
+      {{- if .Values.keycloak.enabled }}
+      upstream {{ .Release.Name }}-keycloak {
+        server {{ .Release.Name }}-keycloak:80;
+      }
+      {{- end }}
+
       server {
 
             location /ruok {
@@ -144,6 +150,13 @@ data:
               rewrite ^/api/v1/{{ template "pulsar.fullname" . }}/(.*)$ /admin/v2/$1 break;
               proxy_pass http://http-pulsar-proxy$uri$is_args$args;
             }
+
+            {{- if .Values.keycloak.enabled }}
+            location ^~ /api/v1/auth/token {
+              rewrite  ^.*$ /auth/realms/{{ .Values.keycloakRealm }}/protocol/openid-connect/token break;
+              proxy_pass http://{{ .Release.Name }}-keycloak$uri$is_args$args;
+            }
+            {{- end }}
 
             listen 8080 default_server;
             {{- if .Values.tlsEnabled }}

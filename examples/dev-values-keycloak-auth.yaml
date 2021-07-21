@@ -1,0 +1,130 @@
+#
+#  Copyright 2021 DataStax, Inc.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+#
+
+enableAntiAffinity: false
+# TLS is not included in this example. It is recommended to use TLS to ensure the authenticity and security of tokens.
+enableTls: false
+enableTokenAuth: true
+restartOnConfigMapChange:
+  enabled: true
+extra:
+  function: true
+  burnell: true
+  burnellLogCollector: true
+  pulsarHeartbeat: true
+  pulsarAdminConsole: true
+
+keycloak:
+  enabled: true
+  auth:
+    adminUser: "admin"
+    adminPassword: "F3LVqnxqMmkCQkvyPdJiwXodqQncK@"
+
+zookeeper:
+  replicaCount: 1
+  resources:
+    requests:
+      memory: 300Mi
+      cpu: 0.3
+  configData:
+    PULSAR_MEM: "\"-Xms300m -Xmx300m -Djute.maxbuffer=10485760 -XX:+ExitOnOutOfMemoryError\""
+
+bookkeeper:
+  replicaCount: 1
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 0.3
+  configData:
+    BOOKIE_MEM: "\"-Xms312m -Xmx312m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError\""
+
+broker:
+  component: broker
+  replicaCount: 1
+  ledger:
+    defaultEnsembleSize: 1
+    defaultAckQuorum: 1
+    defaultWriteQuorum: 1
+  resources:
+    requests:
+      memory: 600Mi
+      cpu: 0.3
+  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID"
+  configData:
+    PULSAR_MEM: "\"-Xms400m -Xmx400m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError\""
+    # Note that the realm is created after deployment, and should match the realm that will be created for clients/users
+    PULSAR_PREFIX_openIDAllowedTokenIssuers: "http://test-keycloak/auth/realms/pulsar"
+
+autoRecovery:
+  enableProvisionContainer: true
+  resources:
+    requests:
+      memory: 300Mi
+      cpu: 0.3
+
+function:
+  replicaCount: 1
+  functionReplicaCount: 1
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 0.3
+  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
+  configData:
+    PULSAR_MEM: "\"-Xms312m -Xmx312m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError\""
+    PF_openIDAllowedTokenIssuers: "http://test-keycloak/auth/realms/pulsar"
+
+proxy:
+  replicaCount: 1
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 0.3
+  wsResources:
+    requests:
+      memory: 512Mi
+      cpu: 0.3
+  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID"
+  wsAuthenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
+  configData:
+    PULSAR_MEM: "\"-Xms400m -Xmx400m -XX:MaxDirectMemorySize=112m\""
+    # Note that the realm is created after deployment, and should match the realm that will be created for clients/users
+    PULSAR_PREFIX_openIDAllowedTokenIssuers: "http://test-keycloak/auth/realms/pulsar"
+  autoPortAssign:
+    enablePlainTextWithTLS: true
+  service:
+    autoPortAssign:
+      enabled: true
+
+grafanaDashboards:
+  enabled: true
+
+imagePullSecrets:
+  - name: "regcred"
+
+pulsarAdminConsole:
+  replicaCount: 1
+  authMode: openidconnect
+
+kube-prometheus-stack:
+  enabled: true
+  prometheusOperator:
+    enabled: true
+  grafana:
+    enabled: true
+    adminPassword: e9JYtk83*4#PM8
+

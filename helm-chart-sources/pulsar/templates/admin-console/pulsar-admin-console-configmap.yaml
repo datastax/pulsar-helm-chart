@@ -81,6 +81,7 @@ data:
         "running_env": "k8s",
         "use_token_list": "false",
         "auth_mode": "{{ .Values.pulsarAdminConsole.authMode }}",
+        "oauth_client_id": "superuser-client",
         "host_overrides": {
             {{- if .Values.pulsarAdminConsole.codeSampleUrl.useDnsName }}
             "pulsar": "pulsar+ssl://{{ .Values.dnsName }}:6651",
