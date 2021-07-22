@@ -77,6 +77,7 @@ data:
   PULSAR_PREFIX_protocolHandlerDirectory: "./protocols"
   PULSAR_PREFIX_messagingProtocols: "kafka"
   PULSAR_PREFIX_brokerDeleteInactiveTopicsEnabled: "false"
+  PULSAR_PREFIX_kafkaListeners: "PLAINTEXT://localhost:9092"
   allowAutoTopicCreationType: "partitioned"
   {{- range $key, $val := .Values.broker.kafkaOnPulsar }}
   {{ $key }}: {{ $val | quote }}
