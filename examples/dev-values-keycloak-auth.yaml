@@ -15,6 +15,38 @@
 #
 #
 
+# Must use an image with the AuthenticationProvider Jar for broker, function, and proxy
+image:
+  broker:
+    repository: datastax/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.1
+  function:
+    repository: datastax/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.1
+  proxy:
+    repository: datastax/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.1
+  zookeeper:
+    repository: datastax/lunastreaming
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.1
+  bookkeeper:
+    repository: datastax/lunastreaming
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.1
+  bastion:
+    repository: datastax/lunastreaming
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.1
+  pulsarSQL:
+    repository: datastax/lunastreaming
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.1
+  # TODO add in the updated Pulsar Admin Console when it is released
+
 enableAntiAffinity: false
 # TLS is not included in this example. It is recommended to use TLS to ensure the authenticity and security of tokens.
 enableTls: false
