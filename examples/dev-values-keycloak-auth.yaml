@@ -145,9 +145,6 @@ proxy:
 grafanaDashboards:
   enabled: true
 
-imagePullSecrets:
-  - name: "regcred"
-
 pulsarAdminConsole:
   replicaCount: 1
   authMode: openidconnect
