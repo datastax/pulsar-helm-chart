@@ -133,10 +133,6 @@ broker:
   configData:
     PULSAR_MEM: "\"-Xms400m -Xmx400m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError\""
   kafkaOnPulsarEnabled: true
-  kafkaOnPulsar:
-    kafkaListeners: "PLAINTEXT://0.0.0.0:9092"
-    kafkaAdvertisedListeners: "PLAINTEXT://127.0.0.1:19092"
-    brokerEntryMetadataInterceptors: "org.apache.pulsar.common.intercept.AppendIndexMetadataInterceptor,org.apache.pulsar.common.intercept.AppendBrokerTimestampMetadataInterceptor"
 
 # Envoy proxy for Kafka-on-Pulsar
 # all parameters: https://github.com/slamdev/helm-charts/blob/master/charts/envoy/values.yaml

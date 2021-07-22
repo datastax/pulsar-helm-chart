@@ -232,6 +232,9 @@ spec:
         command: ["sh", "-c"]
         args:
         - >
+          {{- if .Values.broker.kafkaOnPulsarEnabled }}
+          export PULSAR_PREFIX_kafkaAdvertisedListeners="PLAINTEXT://${advertisedAddress}:9092" &&
+          {{- end }}
           bin/apply-config-from-env.py conf/broker.conf &&
           bin/apply-config-from-env.py conf/client.conf &&
           bin/gen-yml-from-env.py conf/functions_worker.yml &&
