@@ -25,7 +25,7 @@ maintainers:
 version: 1.0.9
 dependencies:
 - name: kube-prometheus-stack
-  version: 12.x.x
+  version: 16.x.x
   repository: https://prometheus-community.github.io/helm-charts
   condition: kube-prometheus-stack.enabled
 - name: cert-manager
