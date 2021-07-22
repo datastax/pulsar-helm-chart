@@ -151,6 +151,8 @@ imagePullSecrets:
 pulsarAdminConsole:
   replicaCount: 1
   authMode: openidconnect
+  # The client id used when authenticating with keycloak
+  oauthClientId: "pulsar-admin-console"
 
 kube-prometheus-stack:
   enabled: true
