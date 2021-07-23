@@ -32,7 +32,7 @@ data:
   {{- if .Values.enableTokenAuth }}
   authorizationEnabled: "true"
   authenticationEnabled: "true"
-  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
+  authenticationProviders: "{{ .Values.function.authenticationProviders }}"
   superUserRoles: "{{ .Values.superUserRoles }}"
   tokenPublicKey: "file:///pulsar/token-public-key/{{ .Values.tokenPublicKeyFile }}"
   brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"

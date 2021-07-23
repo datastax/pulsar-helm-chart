@@ -102,7 +102,7 @@ data:
   {{- if .Values.broker.extraAuthProvider }}
   authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken,{{ .Values.broker.extraAuthProvider }}"
   {{- else }}
-  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
+  authenticationProviders: "{{ .Values.broker.authenticationProviders }}"
   {{- end }}
   {{- end }}
 {{- if .Values.enableTls }}

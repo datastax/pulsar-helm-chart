@@ -53,7 +53,7 @@ data:
   brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
   brokerClientAuthenticationParameters: "file:///pulsar/token-websocket/websocket.jwt"
   authenticationEnabled: "true"
-  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
+  authenticationProviders: "{{ .Values.proxy.wsAuthenticationProviders }}"
   tokenPublicKey: "file:///pulsar/token-public-key/{{ .Values.tokenPublicKeyFile }}"
   authorizationEnabled: "true"
   superUserRoles: "{{ .Values.superUserRoles }}"
