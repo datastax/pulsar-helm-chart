@@ -45,7 +45,6 @@ image:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
     tag: 2.8.0_1.1.1
-  # TODO add in the updated Pulsar Admin Console when it is released
 
 enableAntiAffinity: false
 # TLS is not included in this example. It is recommended to use TLS to ensure the authenticity and security of tokens.
@@ -98,8 +97,6 @@ broker:
   authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID"
   configData:
     PULSAR_MEM: "\"-Xms400m -Xmx400m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError\""
-    # Note that the realm is created after deployment, and should match the realm that will be created for clients/users
-    PULSAR_PREFIX_openIDAllowedTokenIssuers: "http://test-keycloak/auth/realms/pulsar"
 
 autoRecovery:
   enableProvisionContainer: true
@@ -118,7 +115,6 @@ function:
   authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
   configData:
     PULSAR_MEM: "\"-Xms312m -Xmx312m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError\""
-    PF_openIDAllowedTokenIssuers: "http://test-keycloak/auth/realms/pulsar"
 
 proxy:
   replicaCount: 1
@@ -134,8 +130,6 @@ proxy:
   wsAuthenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
   configData:
     PULSAR_MEM: "\"-Xms400m -Xmx400m -XX:MaxDirectMemorySize=112m\""
-    # Note that the realm is created after deployment, and should match the realm that will be created for clients/users
-    PULSAR_PREFIX_openIDAllowedTokenIssuers: "http://test-keycloak/auth/realms/pulsar"
   autoPortAssign:
     enablePlainTextWithTLS: true
   service:

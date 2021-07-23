@@ -57,6 +57,9 @@ data:
   tokenPublicKey: "file:///pulsar/token-public-key/{{ .Values.tokenPublicKeyFile }}"
   authorizationEnabled: "true"
   superUserRoles: "{{ .Values.superUserRoles }}"
+  {{- if .Values.keycloak.enabled }}
+  PULSAR_PREFIX_openIDAllowedTokenIssuers: "{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}/auth/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}/auth/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}.svc.cluster.local/auth/realms/{{ .Values.keycloak.realm }}"
+  {{- end }}
   {{- end }}
 {{- if and .Values.enableTls }}
   webServicePortTls: "{{ .Values.proxy.wsProxyPortTls }}"

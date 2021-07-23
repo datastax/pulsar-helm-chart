@@ -104,6 +104,9 @@ data:
   {{- else }}
   authenticationProviders: "{{ .Values.brokerSts.authenticationProviders }}"
   {{- end }}
+  {{- if .Values.keycloak.enabled }}
+  PULSAR_PREFIX_openIDAllowedTokenIssuers: "{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}/auth/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}/auth/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}.svc.cluster.local/auth/realms/{{ .Values.keycloak.realm }}"
+  {{- end }}
   {{- end }}
 {{- if .Values.enableTls }}
   tlsEnabled: "true"

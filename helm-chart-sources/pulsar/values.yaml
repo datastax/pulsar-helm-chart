@@ -1383,7 +1383,7 @@ autoRecovery:
 pulsarAdminConsole:
   component: adminconsole
   defaultTenant: public
-  # authMode: none or k8s
+  # authMode: none, k8s, openidconnect
   authMode: none
   serverLogLevel: info
   createUserSecret:
@@ -1564,9 +1564,8 @@ pulsarHeartbeat:
 # Deploy Keycloak
 keycloak:
   enabled: false
-
-# The realm to use when the Pulsar Admin Console calls Keycloak (this configures nginx)
-keycloakRealm: "pulsar"
+  # The realm to use when the Pulsar Admin Console calls Keycloak (this configures nginx)
+  realm: "pulsar"
 
 # Deploy cert-manager
 cert-manager:
