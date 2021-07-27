@@ -32,11 +32,14 @@ data:
   {{- if .Values.enableTokenAuth }}
   authorizationEnabled: "true"
   authenticationEnabled: "true"
-  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
+  authenticationProviders: "{{ .Values.function.authenticationProviders }}"
   superUserRoles: "{{ .Values.superUserRoles }}"
   tokenPublicKey: "file:///pulsar/token-public-key/{{ .Values.tokenPublicKeyFile }}"
   brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
   brokerClientAuthenticationParameters: "file:///pulsar/token-superuser/superuser.jwt"
+  {{- if .Values.keycloak.enabled }}
+  PF_openIDAllowedTokenIssuers: "{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}/auth/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}/auth/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}.svc.cluster.local/auth/realms/{{ .Values.keycloak.realm }}"
+  {{- end }}
   {{- end }}
 {{ toYaml .Values.function.configData | indent 2 }}
   # Workaround for double-quoted values in old values files

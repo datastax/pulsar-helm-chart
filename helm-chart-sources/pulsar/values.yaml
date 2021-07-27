@@ -352,7 +352,7 @@ image:
   pulsarAdminConsole:
     repository: datastax/pulsar-admin-console
     pullPolicy: IfNotPresent
-    tag: 1.0.0
+    tag: 1.1.0
 
 ## Tiered Storage
 ##
@@ -794,6 +794,10 @@ broker:
   #   command: ["cp", "-r", "/pulsar-libs", "/jars" ]
   #   emptyDirPath: "/jars"
 
+  # Comma delimited list of authentication providers
+  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
+  # extraAuthProvider: this is now a deprecated field, use the `.Values.broker.authenticationProviders` field instead
+
   ## Broker configmap
   ## templates/broker-configmap.yaml
   ##
@@ -899,6 +903,10 @@ brokerSts:
   #   pullPolicy: IfNotPresent
   #   command: ["cp", "-r", "/pulsar-libs", "/jars" ]
   #   emptyDirPath: "/jars"
+
+  # Comma delimited list of authentication providers
+  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
+  # extraAuthProvider: this is now a deprecated field, use the `.Values.brokerSts.authenticationProviders` field instead
 
   ## Broker configmap
   ## templates/broker-configmap.yaml
@@ -1024,6 +1032,8 @@ function:
   #   command: ["cp", "-r", "/pulsar-connectors", "/connectors" ]
   #   emptyDirPath: "/connectors"
   #   mainContainerStartupCmd: "cp -f /connectors/pulsar-connectors/* /pulsar/connectors"
+
+  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
 
   ## Function configmap
   ## templates/function-configmap.yaml
@@ -1188,6 +1198,13 @@ proxy:
   #   pullPolicy: IfNotPresent
   #   command: ["cp", "-r", "/pulsar-libs", "/jars" ]
   #   emptyDirPath: "/jars"
+
+  # Comma delimited list of authentication providers
+  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
+  # extraAuthProvider: this is now a deprecated field, use the `.Values.proxy.authenticationProviders` field instead
+  # Configure the wsAuthenticationProviders using .Values.proxy.configData
+  wsAuthenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
+
   ## Proxy configmap
   ## templates/proxy-configmap.yaml
   ##
@@ -1366,7 +1383,7 @@ autoRecovery:
 pulsarAdminConsole:
   component: adminconsole
   defaultTenant: public
-  # authMode: none or k8s
+  # authMode: none, k8s, openidconnect
   authMode: none
   serverLogLevel: info
   createUserSecret:
@@ -1543,6 +1560,24 @@ pulsarHeartbeat:
     latencyTest:
       intervalSeconds: 60
   service: {}
+
+# Deploy Keycloak
+keycloak:
+  enabled: false
+  # https://www.keycloak.org/docs/latest/server_admin/#_export_import
+  extraStartupArgs: "-Dkeycloak.migration.action=import -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.file=/realm/pulsar-realm.json -Dkeycloak.migration.strategy=IGNORE_EXISTING"
+  extraVolumes: |
+    - name: realm-config
+      configMap:
+        name: realm-config
+  extraVolumeMounts: |
+    - name: realm-config
+      mountPath: "/realm/"
+      readOnly: true
+  # Config specific to this helm chart
+  # The realm to use when the Pulsar Admin Console calls Keycloak (this configures nginx)
+  # Note that this is the realm in the pre-configured realm that ships with this helm chart
+  realm: "pulsar"
 
 # Deploy cert-manager
 cert-manager:

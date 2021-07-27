@@ -25,6 +25,34 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 
 {{/*
+Necessary to make proper names for keycloak services (note that it is important that
+the .Chart.Name for the keycloak dependent chart does not change.)
+*/}}
+{{- define "pulsar.keycloak.fullname" -}}
+{{- if .Values.keycloak.fullnameOverride -}}
+{{- .Values.keycloak.fullnameOverride | trunc 20 | trimSuffix "-" -}}
+{{- else -}}
+{{- $name := default "keycloak" .Values.keycloak.nameOverride -}}
+{{- if contains $name .Release.Name -}}
+{{- .Release.Name | trunc 20 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" .Release.Name $name | trunc 20 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Get the right protocol depending on whether or not tls is enabled.
+*/}}
+{{- define "pulsar.get.http.or.https" -}}
+{{- if .Values.enableTls -}}
+{{- print "https://" -}}
+{{- else -}}
+{{- print "http://" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "pulsar.chart" -}}

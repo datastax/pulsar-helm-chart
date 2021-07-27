@@ -100,9 +100,12 @@ data:
   brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
   brokerClientAuthenticationParameters: "file:///pulsar/token-superuser/superuser.jwt"
   {{- if .Values.brokerSts.extraAuthProvider }}
-  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken,{{ .Values.brokerSts.extraAuthProvider }}"
+  authenticationProviders: "{{ .Values.brokerSts.authenticationProviders }},{{ .Values.brokerSts.extraAuthProvider }}"
   {{- else }}
-  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
+  authenticationProviders: "{{ .Values.brokerSts.authenticationProviders }}"
+  {{- end }}
+  {{- if .Values.keycloak.enabled }}
+  PULSAR_PREFIX_openIDAllowedTokenIssuers: "{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}/auth/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}/auth/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}.svc.cluster.local/auth/realms/{{ .Values.keycloak.realm }}"
   {{- end }}
   {{- end }}
 {{- if .Values.enableTls }}
