@@ -114,7 +114,7 @@ data:
     authenticationEnabled: "true"
     authorizationEnabled: "true"
     authorizationProvider: "org.apache.pulsar.broker.authorization.PulsarAuthorizationProvider"
-    authenticationProviders: [org.apache.pulsar.broker.authentication.AuthenticationProviderToken, org.apache.pulsar.broker.authentication.AuthenticationProviderTls]
+    authenticationProviders: [{{.Values.function.authenticationProviders}}]
     properties:
       tokenPublicKey: "file:///pulsar/token-public-key/{{ .Values.tokenPublicKeyFile }}"
     clientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
