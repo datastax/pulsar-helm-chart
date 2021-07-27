@@ -345,6 +345,7 @@ Note: With message/state persistence disabled, the cluster will not survive a re
 
 * dev-values-persistence. Same as above, but persistence is enabled. This will allow for the cluster to survive the restarts of the pods, but requires persistent volume claims (PVC) to be supported by the Kubernetes environment. 
 * dev-values-auth.yaml. A development environment with authentication enabled. New keys and tokens from those keys are automatically generated and stored in Kubernetes secrets. You can retrieve the superuser token from the admin console (Credentials menu) or from the secret `token-superuser`.
+* dev-values-keycloak-auth.yaml. A deployment environment with authentication enabled along with a running keycloak server that can create additional tokens. Like the `dev-values-auth.yaml`, it will create a superuser token for use by pulsar components.
 
 ```helm install pulsar -f dev-values-auth.yaml datastax-pulsar/pulsar```
 
@@ -429,12 +430,13 @@ public key retrieval enables support for key rotation and multiple authenticatio
 multiple allowed token issuers. It also means that token secret keys will not be stored in Kubernetes secrets.
 
 In order to simplify deployment for Pulsar cluster components, the plugin provides the option to use Keycloak in
-conjunction with Pulsar's basic token based authentication. See the [plugin project]((https://github.com/datastax/pulsar-openid-connect-plugin))
+conjunction with Pulsar's basic token based authentication. See the [plugin project](https://github.com/datastax/pulsar-openid-connect-plugin)
 for information about configuration.
 
 Here is an example helm [values file](./examples/dev-values-keycloak-auth.yaml) for deploying a working cluster that
-integrates with keycloak. In order to make the tokens created by Keycloak work, you will need to configure the Keycloak
-instance. The configuration for the auth plugin goes in the `.Values.<component>.configData` maps.
+integrates with keycloak. By default, the helm chart creates a `pulsar` realm within keycloak and sets up the client
+used by the Pulsar Admin Console as well as a sample client and some sample groups. The configuration for the broker
+side auth plugin should be placed in the `.Values.<component>.configData` maps.
 
 #### Configuring Keycloak for Token Generation
 First deploy the cluster:
@@ -461,15 +463,13 @@ keycloak:
     adminPassword: "F3LVqnxqMmkCQkvyPdJiwXodqQncK@"
 ```
 
-Once in to the keycloak UI, you can follow the instructions from [keycloak](https://www.keycloak.org/docs/latest/getting_started/#logging-into-the-admin-console)
-to login and create the `pulsar` realm. The realm name should match the configured realm name located at
-`.Values.keycloakRealm`. If you do override the realm name, the configured `openIDAllowedTokenIssuers` fields for the
-broker, brokerSts, proxy, and function configurations will need to be updated, as the realm name is part of the issuer
-claim, which must be an exact match in order for the token to pass validation.
+Once in to the keycloak UI, you can view the `pulsar` realm. Note that the realm name must match the configured realm
+name (`.Values.keycloak.realm`) for the OpenID Connect plugin to work properly.
 
 The OpenID Connect plugin uses the `sub` (subject) claim from the JWT as the role used for authorization within Pulsar.
 In order to get Keycloak to generate the JWT for a client with the right `sub`, you can create a special "mapper" that
-is a "Hardcoded claim" mapping claim name `sub` to a claim value that is the disired role, like `superuser`.
+is a "Hardcoded claim" mapping claim name `sub` to a claim value that is the disired role, like `superuser`. The default
+config installed by this helm chart provides examples of how to add custom mapper protocols to clients.
 
 #### Retrieving and Using a token from Keycloak with Pulsar Admin CLI
 After creating your realm and client, you can retrieve a token. In order to generate a token that will have an allowed
