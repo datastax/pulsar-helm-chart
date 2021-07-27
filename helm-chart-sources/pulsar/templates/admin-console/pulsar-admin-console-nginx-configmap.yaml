@@ -75,7 +75,11 @@ data:
 
       {{- if .Values.keycloak.enabled }}
       upstream {{ .Release.Name }}-keycloak {
-        server {{ .Release.Name }}-keycloak:80;
+         {{- if .Values.enableTls }}
+         server {{ .Release.Name }}-keycloak:443;
+         {{- else }}
+         server {{ .Release.Name }}-keycloak:80;
+         {{- end }}
       }
       {{- end }}
 
