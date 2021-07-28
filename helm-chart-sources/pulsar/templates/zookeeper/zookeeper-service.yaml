@@ -35,7 +35,7 @@ metadata:
     {{- end }}
 spec:
   ports:
-  {{- if and .Values.tlsEnabled .Values.tls.zookeeper.enabled }}
+  {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
     - name: client-tls
       port: 2281
   {{- end }}
@@ -65,7 +65,7 @@ metadata:
     {{- end }}
 spec:
   ports:
-  {{- if and .Values.tlsEnabled .Values.tls.zookeeper.enabled }}
+  {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
     - name: client-tls
       port: 2281
   {{- end }}
