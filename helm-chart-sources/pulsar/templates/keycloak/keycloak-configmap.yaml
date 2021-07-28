@@ -29,5 +29,5 @@ metadata:
     cluster: {{ template "pulsar.fullname" . }}
 data:
   pulsar-realm.json: |-
-{{ .Files.Get "pulsar-realms/pulsar-realm.json" | indent 4 }}
+{{ .Files.Get "keycloak-realms/pulsar-realm.json" | indent 4 }}
 {{- end }}
