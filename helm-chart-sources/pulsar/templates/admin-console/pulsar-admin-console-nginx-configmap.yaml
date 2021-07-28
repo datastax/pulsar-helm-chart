@@ -164,7 +164,7 @@ data:
             {{- end }}
 
             listen 8080 default_server;
-            {{- if .Values.tlsEnabled }}
+            {{- if .Values.enableTls }}
             listen 8443 ssl;
             ssl_certificate /certs/tls.crt;
             ssl_certificate_key /certs/tls.key;
