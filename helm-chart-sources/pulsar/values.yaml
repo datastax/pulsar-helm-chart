@@ -1133,8 +1133,11 @@ envoy:
 #
 tardigrade:
   access: access-key-generated-with-uplink
-  accessKey: 2J7EJY4xTK6uHKqnCE4nAhdGfXqy
-  secretKey: 4YeYwYdsoFFpvtNFuncWcTVqSTPL
+  # Specify and access and secret key that can be used to connect to the local
+  # tardigrade gateway. This will be used for both the gateway and the offload configuration. 
+  # 
+  # accessKey: 
+  # secretKey: 
   service:
     port: 7777
     type: ClusterIP
@@ -1797,7 +1800,8 @@ kube-prometheus-stack:
     testFramework:
       enabled: false
     defaultDashboardsEnabled: true
-    adminPassword: ZhF9sS8B7PQSTR
+    # Configure to set a default admin password for Grafana
+    adminPassword: 
     service:
       type: LoadBalancer
       port: 3000
