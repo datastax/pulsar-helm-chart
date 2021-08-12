@@ -56,19 +56,22 @@ Get the right protocol depending on whether or not tls is enabled.
 Get the colon and port number for the allow listed token issuers from Keycloak
 or return the empty string if the port is 80 or 443, as these won't be
 part of the issuer URL returned by keycloak in the JWT iss claim.
+We print the port number before checking for equality because the numbers are actually floats.
 */}}
 {{- define "pulsar.keycloak.issuer.port" -}}
 {{- if .Values.enableTls -}}
-{{- if eq .Values.keycloak.service.httpsPort 443 -}}
+{{- $port := printf "%v" .Values.keycloak.service.httpsPort -}}
+{{- if eq $port "443" -}}
 {{- print "" -}}
 {{- else -}}
-{{- printf ":%s" .Values.keycloak.service.httpsPort -}}
+{{- printf ":%v" .Values.keycloak.service.httpsPort -}}
 {{- end -}}
 {{- else -}}
-{{- if eq .Values.keycloak.service.port 80 -}}
+{{- $port := printf "%v" .Values.keycloak.service.port -}}
+{{- if eq $port "80" -}}
 {{- print "" -}}
 {{- else -}}
-{{- printf ":%s" .Values.keycloak.service.port -}}
+{{- printf ":%v" .Values.keycloak.service.port -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
