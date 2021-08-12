@@ -64,6 +64,8 @@ keycloak:
   auth:
     adminUser: "admin"
     adminPassword: "F3LVqnxqMmkCQkvyPdJiwXodqQncK@"
+  postgresql:
+    postgresqlPassword: "xinf-2-doHTG._sMJi3*kZgQAabuet"
 
 zookeeper:
   replicaCount: 1
