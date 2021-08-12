@@ -53,6 +53,27 @@ Get the right protocol depending on whether or not tls is enabled.
 {{- end -}}
 
 {{/*
+Get the colon and port number for the allow listed token issuers from Keycloak
+or return the empty string if the port is 80 or 443, as these won't be
+part of the issuer URL returned by keycloak in the JWT iss claim.
+*/}}
+{{- define "pulsar.keycloak.issuer.port" -}}
+{{- if .Values.enableTls -}}
+{{- if eq .Values.keycloak.service.httpsPort 443 -}}
+{{- print "" -}}
+{{- else -}}
+{{- printf ":%s" .Values.keycloak.service.httpsPort -}}
+{{- end -}}
+{{- else -}}
+{{- if eq .Values.keycloak.service.port 80 -}}
+{{- print "" -}}
+{{- else -}}
+{{- printf ":%s" .Values.keycloak.service.port -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Create chart name and version as used by the chart label.
 */}}
 {{- define "pulsar.chart" -}}
