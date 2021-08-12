@@ -76,9 +76,9 @@ data:
       {{- if .Values.keycloak.enabled }}
       upstream {{ .Release.Name }}-keycloak {
          {{- if .Values.enableTls }}
-         server {{ .Release.Name }}-keycloak:443;
+         server {{ template "pulsar.keycloak.fullname" . }}:{{ .Values.keycloak.service.httpsPort }};
          {{- else }}
-         server {{ .Release.Name }}-keycloak:80;
+         server {{ template "pulsar.keycloak.fullname" . }}:{{ .Values.keycloak.service.port }};
          {{- end }}
       }
       {{- end }}
