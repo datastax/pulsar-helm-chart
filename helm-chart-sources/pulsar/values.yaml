@@ -1429,8 +1429,12 @@ pulsarAdminConsole:
     annotations: {}
     type: LoadBalancer
     ports:
-    - name: server
-      port: 3100
+    - name: http
+      port: 80
+      targetPort: "nginx"
+    - name: https
+      port: 443
+      targetPort: "nginx-tls"
 
 ## Pulsar Component: Zoonavigator
 ## templates/zoonavigator-deployment.yaml
