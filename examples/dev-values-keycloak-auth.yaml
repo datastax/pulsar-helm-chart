@@ -52,6 +52,8 @@ enableTls: false
 enableTokenAuth: true
 restartOnConfigMapChange:
   enabled: true
+fixRootlessPermissions:
+  enabled: true
 extra:
   function: true
   burnell: true
@@ -112,7 +114,8 @@ function:
     requests:
       memory: 512Mi
       cpu: 0.3
-  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
+#  Cannot use the OpenID provider until this PR is merged https://github.com/apache/pulsar/pull/11468
+#  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
   configData:
     PULSAR_MEM: "\"-Xms312m -Xmx312m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError\""
 
