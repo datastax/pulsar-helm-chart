@@ -70,4 +70,39 @@ spec:
   {{- end }}
   issuerRef:
     name: "{{ template "pulsar.fullname" . }}-ca-issuer"
+## TODO HOW TO MANAGE?
+{{- if .Values.keycloak.enabled }}
+  keystores:
+    jks:
+      create: true
+      # This password is created by the keycloak helm chart
+      passwordSecretRef:
+        name: "{{ template "pulsar.keycloak.fullname" . }}"
+        key: tls-keystore-password
+---
+# Self-signed certificate
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-keycloak-tls"
+  namespace: {{ .Release.Namespace }}
+spec:
+  secretName: "keycloak-{{ .Values.tlsSecretName }}"
+  dnsNames:
+    - "{{ template "pulsar.keycloak.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local"
+    - "{{ template "pulsar.keycloak.fullname" . }}.{{ .Release.Namespace }}"
+    - "{{ template "pulsar.keycloak.fullname" . }}"
+  {{- if .Values.createCertificates.selfSigned.includeDns }}
+    - "keycloak.{{ .Values.dnsName}}"
+  {{- end }}
+  keystores:
+    jks:
+      create: true
+      # This password is created by the keycloak helm chart
+      passwordSecretRef:
+        name: "{{ template "pulsar.keycloak.fullname" . }}"
+        key: tls-keystore-password
+  issuerRef:
+    name: "{{ template "pulsar.fullname" . }}-ca-issuer"
+{{- end }}
 {{- end }}

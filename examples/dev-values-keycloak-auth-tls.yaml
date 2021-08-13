@@ -1,0 +1,195 @@
+#
+#  Copyright 2021 DataStax, Inc.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+#
+
+# Must use an image with the AuthenticationProvider Jar for broker, function, and proxy
+image:
+  broker:
+    repository: datastax/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.1
+  function:
+    repository: datastax/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.1
+  proxy:
+    repository: datastax/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.1
+  zookeeper:
+    repository: datastax/lunastreaming
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.1
+  bookkeeper:
+    repository: datastax/lunastreaming
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.1
+  bastion:
+    repository: datastax/lunastreaming
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.1
+  pulsarSQL:
+    repository: datastax/lunastreaming
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.1
+
+fixRootlessPermissions:
+  enabled: true
+enableAntiAffinity: false
+enableTls: true
+#tls:
+#  zookeeper:
+#    enabled: true
+enableTokenAuth: true
+restartOnConfigMapChange:
+  enabled: true
+extra:
+  function: false
+  burnell: true
+  burnellLogCollector: false
+  pulsarHeartbeat: true
+  pulsarAdminConsole: true
+
+cert-manager:
+  enabled: true
+
+createCertificates:
+  selfSigned:
+    enabled: true
+
+keycloak:
+  enabled: true
+  replicaCount: 2
+  # Required for > 1 replica
+  serviceDiscovery:
+    enabled: true
+  # Required for service discovery
+  rbac:
+    create: true
+  auth:
+    adminUser: "admin"
+    adminPassword: "F3LVqnxqMmkCQkvyPdJiwXodqQncK@"
+    tls:
+      enabled: true
+      # Must match the "keycloak-{{ .Values.tlsSecretName }}"
+      # When using Cert Manager, we generate a separate keystore.jks for keycloak than for the rest of pulsar.
+      # They are all share the same root ca cert mounted as the truststore.jks ensuring that the rest of the
+      # pulsar components trust Keycloak's cert chain.:ke:
+      jksSecret: "keycloak-pulsar-tls"
+      # These must be the same because the cert manager will use the keystorePassword to protect both
+      # the keystore.jks and the truststore.jks.
+      truststorePassword: "kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR"
+      keystorePassword: "kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR"
+      truststoreFilename: "truststore.jks"
+      keystoreFilename: "keystore.jks"
+  service:
+    port: 80
+    httpsPort: 443
+# TODO make this work; made keylcoak fail this way
+#  postgresql:
+#    postgresqlPassword: "xinf-2-doHTG._sMJi3*kZgQAabuet"
+
+zookeeper:
+  replicaCount: 1
+  resources:
+    requests:
+      memory: 300Mi
+      cpu: 0.3
+  configData:
+    PULSAR_MEM: "\"-Xms300m -Xmx300m -Djute.maxbuffer=10485760 -XX:+ExitOnOutOfMemoryError\""
+
+bookkeeper:
+  replicaCount: 1
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 0.3
+  configData:
+    BOOKIE_MEM: "\"-Xms312m -Xmx312m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError\""
+
+broker:
+  component: broker
+  replicaCount: 1
+  ledger:
+    defaultEnsembleSize: 1
+    defaultAckQuorum: 1
+    defaultWriteQuorum: 1
+  resources:
+    requests:
+      memory: 600Mi
+      cpu: 0.3
+  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID"
+  configData:
+    PULSAR_MEM: "\"-Xms400m -Xmx400m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError\""
+    PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info -Djavax.net.ssl.keyStore=/pulsar/certs/keystore.jks -Djavax.net.ssl.trustStore=/pulsar/certs/truststore.jks -Djavax.net.ssl.trustStorePassword=kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR -Djavax.net.ssl.keyStorePassword=kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR"
+
+autoRecovery:
+  enableProvisionContainer: true
+  resources:
+    requests:
+      memory: 300Mi
+      cpu: 0.3
+
+function:
+  replicaCount: 1
+  functionReplicaCount: 1
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 0.3
+  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
+  configData:
+    PULSAR_MEM: "\"-Xms312m -Xmx312m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError\""
+    PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info -Djavax.net.ssl.keyStore=/pulsar/certs/keystore.jks -Djavax.net.ssl.trustStore=/pulsar/certs/truststore.jks -Djavax.net.ssl.trustStorePassword=kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR -Djavax.net.ssl.keyStorePassword=kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR"
+
+proxy:
+  replicaCount: 1
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 0.3
+  wsResources:
+    requests:
+      memory: 512Mi
+      cpu: 0.3
+  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID"
+  wsAuthenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
+  configData:
+    PULSAR_MEM: "\"-Xms400m -Xmx400m -XX:MaxDirectMemorySize=112m\""
+    PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info -Djavax.net.ssl.keyStore=/pulsar/certs/keystore.jks -Djavax.net.ssl.trustStore=/pulsar/certs/truststore.jks -Djavax.net.ssl.trustStorePassword=kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR -Djavax.net.ssl.keyStorePassword=kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR"
+  autoPortAssign:
+    enablePlainTextWithTLS: true
+  service:
+    autoPortAssign:
+      enabled: true
+
+grafanaDashboards:
+  enabled: true
+
+pulsarAdminConsole:
+  replicaCount: 1
+  authMode: openidconnect
+  # The client id used when authenticating with keycloak
+  oauthClientId: "pulsar-admin-console"
+
+kube-prometheus-stack:
+  enabled: true
+  prometheusOperator:
+    enabled: true
+  grafana:
+    enabled: true
+    adminPassword: e9JYtk83*4#PM8
+

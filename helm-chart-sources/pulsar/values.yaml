@@ -1577,6 +1577,7 @@ pulsarHeartbeat:
 # Deploy Keycloak
 keycloak:
   enabled: false
+  # This block sets up an example Pulsar Realm
   # https://www.keycloak.org/docs/latest/server_admin/#_export_import
   extraStartupArgs: "-Dkeycloak.migration.action=import -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.file=/realm/pulsar-realm.json -Dkeycloak.migration.strategy=IGNORE_EXISTING"
   extraVolumes: |
@@ -1587,6 +1588,9 @@ keycloak:
     - name: realm-config
       mountPath: "/realm/"
       readOnly: true
+  auth:
+    tls:
+      enabled: false
   # Config specific to this helm chart
   # The realm to use when the Pulsar Admin Console calls Keycloak (this configures nginx)
   # Note that this is the realm in the pre-configured realm that ships with this helm chart
