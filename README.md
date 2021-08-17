@@ -353,7 +353,7 @@ Note: With message/state persistence disabled, the cluster will not survive a re
 
 ```
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.crds.yaml
-helm install pulsar -f dev-values-auth.yaml datastax-pulsar/pulsar
+helm install pulsar -f dev-values-tls.yaml datastax-pulsar/pulsar
 ```
 
 
