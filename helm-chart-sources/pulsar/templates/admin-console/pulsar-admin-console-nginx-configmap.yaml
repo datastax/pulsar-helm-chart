@@ -73,6 +73,14 @@ data:
         server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8964;
       }
 
+      upstream ws-pulsar-proxy {
+      {{- if .Values.enableTls }}
+        server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8000;
+      {{- else }}
+        server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8001;
+      {{- end }}
+      }
+
       {{- if .Values.keycloak.enabled }}
       upstream {{ .Release.Name }}-keycloak {
          {{- if .Values.enableTls }}
@@ -100,9 +108,9 @@ data:
 
             location /ws/ {
               {{- if .Values.enableTls }}
-              proxy_pass https://pulsar-burnell;
+              proxy_pass https://ws-pulsar-proxy;
               {{- else }}
-              proxy_pass http://pulsar-burnell;
+              proxy_pass http://ws-pulsar-proxy;
               {{- end }}
               proxy_http_version 1.1;
               proxy_set_header Upgrade $http_upgrade;
