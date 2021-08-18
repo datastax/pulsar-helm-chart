@@ -75,9 +75,9 @@ data:
 
       upstream ws-pulsar-proxy {
       {{- if .Values.enableTls }}
-        server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8000;
-      {{- else }}
         server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8001;
+      {{- else }}
+        server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8000;
       {{- end }}
       }
 
