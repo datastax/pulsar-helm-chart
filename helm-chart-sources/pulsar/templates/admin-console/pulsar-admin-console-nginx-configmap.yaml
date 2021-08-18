@@ -47,7 +47,7 @@ data:
               'remote_addr:$remote_addr\t'
               'time_local:$time_local\t'
               'method:$request_method\t'
-              'uri:$request_uri\t'
+              'uri:$uri\t'
               'host:$host\t'
               'status:$status\t'
               'bytes_sent:$body_bytes_sent\t'
