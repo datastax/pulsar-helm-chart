@@ -150,8 +150,7 @@ function:
     requests:
       memory: 512Mi
       cpu: 0.3
-# This is dependent on https://github.com/apache/pulsar/pull/11468
-#  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
+  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
   configData:
     PULSAR_MEM: "\"-Xms312m -Xmx312m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError\""
     PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info -Djavax.net.ssl.keyStore=/pulsar/certs/keystore.jks -Djavax.net.ssl.trustStore=/pulsar/certs/truststore.jks -Djavax.net.ssl.trustStorePassword=kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR -Djavax.net.ssl.keyStorePassword=kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR"
