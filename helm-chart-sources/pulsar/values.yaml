@@ -1035,6 +1035,12 @@ function:
 
   authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
 
+  ## When adding custom properties to configure a function worker, the values must be supplied here. Normal config
+  ## is read in to the WorkerConfig fields. Custom configuration (for fields that are not in the WorkerConfig class)
+  ## should be added here. Then, when pulsar calls config.get("my-custom-field"), the fields are in the config's
+  ## properties map. For example, you might use this map to configure the openid-connect plugin.
+  # customProperties: {}
+
   ## Function configmap
   ## templates/function-configmap.yaml
   ##
