@@ -66,6 +66,10 @@ keycloak:
   auth:
     adminUser: "admin"
     adminPassword: "F3LVqnxqMmkCQkvyPdJiwXodqQncK@"
+  # It is recommended to override this password, as the dependent chart uses a default
+  # Here is an issue requesting that the default be removed: https://github.com/bitnami/charts/issues/7279.
+  postgresql:
+    postgresqlPassword: "xinf-2-doHTG._sMJi3*kZgQAabuet"
 
 zookeeper:
   replicaCount: 1
