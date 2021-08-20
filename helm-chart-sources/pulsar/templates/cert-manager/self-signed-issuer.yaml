@@ -70,12 +70,12 @@ spec:
   {{- end }}
   issuerRef:
     name: "{{ template "pulsar.fullname" . }}-ca-issuer"
-## TODO HOW TO MANAGE?
 {{- if .Values.keycloak.enabled }}
   keystores:
     jks:
       create: true
       # This password is created by the keycloak helm chart
+      ## TODO It'd probably be better to use a different password here.
       passwordSecretRef:
         name: "{{ template "pulsar.keycloak.fullname" . }}"
         key: tls-keystore-password
