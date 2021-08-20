@@ -20,31 +20,31 @@ image:
   broker:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.1
+    tag: 2.8.0_1.1.3
   function:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.1
+    tag: 2.8.0_1.1.3
   proxy:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.1
+    tag: 2.8.0_1.1.3
   zookeeper:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.1
+    tag: 2.8.0_1.1.3
   bookkeeper:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.1
+    tag: 2.8.0_1.1.3
   bastion:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.1
+    tag: 2.8.0_1.1.3
   pulsarSQL:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.1
+    tag: 2.8.0_1.1.3
 
 fixRootlessPermissions:
   enabled: true
