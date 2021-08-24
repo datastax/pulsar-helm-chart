@@ -3,6 +3,36 @@ entries:
   pulsar:
   - apiVersion: v2
     appVersion: 2.7.2
+    created: "2021-08-24T21:50:53.200684388Z"
+    dependencies:
+    - condition: kube-prometheus-stack.enabled
+      name: kube-prometheus-stack
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 12.x.x
+    - condition: cert-manager.enabled
+      name: cert-manager
+      repository: https://charts.jetstack.io
+      version: v1.1.x
+    - condition: envoy.enabled
+      name: envoy
+      repository: https://slamdev.github.io/helm-charts
+      version: 0.0.7
+    - condition: keycloak.enabled
+      name: keycloak
+      repository: https://charts.bitnami.com/bitnami
+      version: 5.0.1
+    description: Apache Pulsar Helm chart for Kubernetes
+    digest: 7aa8ffc1420fa4715733ec52ddf6a7bb84d011bf2b9d94ec576799e6f117cf41
+    maintainers:
+    - name: zzzming
+    - name: cdbartholomew
+    - name: lhotari
+    name: pulsar
+    urls:
+    - https://github.com/datastax/pulsar-helm-chart/releases/download/pulsar-1.1.0/pulsar-1.1.0.tgz
+    version: 1.1.0
+  - apiVersion: v2
+    appVersion: 2.7.2
     created: "2021-07-14T21:40:36.109753618Z"
     dependencies:
     - condition: kube-prometheus-stack.enabled
