@@ -47,7 +47,7 @@ data:
               'remote_addr:$remote_addr\t'
               'time_local:$time_local\t'
               'method:$request_method\t'
-              'uri:$request_uri\t'
+              'uri:$uri\t'
               'host:$host\t'
               'status:$status\t'
               'bytes_sent:$body_bytes_sent\t'
@@ -73,6 +73,24 @@ data:
         server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8964;
       }
 
+      upstream ws-pulsar-proxy {
+      {{- if .Values.enableTls }}
+        server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8001;
+      {{- else }}
+        server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8000;
+      {{- end }}
+      }
+
+      {{- if .Values.keycloak.enabled }}
+      upstream {{ .Release.Name }}-keycloak {
+         {{- if .Values.enableTls }}
+         server {{ template "pulsar.keycloak.fullname" . }}:{{ .Values.keycloak.service.httpsPort }};
+         {{- else }}
+         server {{ template "pulsar.keycloak.fullname" . }}:{{ .Values.keycloak.service.port }};
+         {{- end }}
+      }
+      {{- end }}
+
       server {
 
             location /ruok {
@@ -90,9 +108,9 @@ data:
 
             location /ws/ {
               {{- if .Values.enableTls }}
-              proxy_pass https://pulsar-burnell;
+              proxy_pass https://ws-pulsar-proxy;
               {{- else }}
-              proxy_pass http://pulsar-burnell;
+              proxy_pass http://ws-pulsar-proxy;
               {{- end }}
               proxy_http_version 1.1;
               proxy_set_header Upgrade $http_upgrade;
@@ -145,8 +163,16 @@ data:
               proxy_pass http://http-pulsar-proxy$uri$is_args$args;
             }
 
+            # For use when keycloak is the authentication/identity provider
+            {{- if .Values.keycloak.enabled }}
+            location ^~ /api/v1/auth/token {
+              rewrite  ^.*$ /auth/realms/{{ .Values.keycloak.realm }}/protocol/openid-connect/token break;
+              proxy_pass {{ template "pulsar.get.http.or.https" . }}{{ .Release.Name }}-keycloak$uri$is_args$args;
+            }
+            {{- end }}
+
             listen 8080 default_server;
-            {{- if .Values.tlsEnabled }}
+            {{- if .Values.enableTls }}
             listen 8443 ssl;
             ssl_certificate /certs/tls.crt;
             ssl_certificate_key /certs/tls.key;

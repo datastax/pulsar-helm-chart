@@ -114,9 +114,15 @@ data:
     authenticationEnabled: "true"
     authorizationEnabled: "true"
     authorizationProvider: "org.apache.pulsar.broker.authorization.PulsarAuthorizationProvider"
-    authenticationProviders: [org.apache.pulsar.broker.authentication.AuthenticationProviderToken, org.apache.pulsar.broker.authentication.AuthenticationProviderTls]
+    authenticationProviders: [{{.Values.function.authenticationProviders}}]
     properties:
       tokenPublicKey: "file:///pulsar/token-public-key/{{ .Values.tokenPublicKeyFile }}"
+      {{- if .Values.keycloak.enabled }}
+      openIDAllowedTokenIssuers: "{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}{{ template "pulsar.keycloak.issuer.port" .}}/auth/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}{{ template "pulsar.keycloak.issuer.port" .}}/auth/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}.svc.cluster.local{{ template "pulsar.keycloak.issuer.port" .}}/auth/realms/{{ .Values.keycloak.realm }}"
+      {{- end }}
+      {{- if .Values.function.customProperties }}
+{{ toYaml .Values.function.customProperties | indent 6 }}
+      {{- end }}
     clientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
     clientAuthenticationParameters: "file:///pulsar/token-superuser/superuser.jwt"
     superUserRoles:

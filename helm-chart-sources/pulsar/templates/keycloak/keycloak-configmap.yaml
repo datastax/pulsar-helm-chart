@@ -15,13 +15,19 @@
 #
 #
 
-remote: origin
-check-version-increment: false
-target-branch: release
-helm-extra-args: "--timeout 600s"
-chart-dirs:
-  - helm-chart-sources
-chart-repos:
-  - kube-prometheus-stack=https://prometheus-community.github.io/helm-charts
-  - cert-manager=https://charts.jetstack.io
-  - envoy=https://slamdev.github.io/helm-charts
+{{- if .Values.keycloak.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "realm-config"
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    cluster: {{ template "pulsar.fullname" . }}
+data:
+  pulsar-realm.json: |-
+{{ .Files.Get "keycloak-realms/pulsar-realm.json" | indent 4 }}
+{{- end }}

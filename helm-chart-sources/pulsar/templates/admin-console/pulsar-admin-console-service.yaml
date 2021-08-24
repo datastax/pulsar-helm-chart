@@ -33,10 +33,7 @@ metadata:
 spec:
   type: {{ .Values.pulsarAdminConsole.service.type }}
   ports:
-  - name: http
-    port: 8080
-  - name: https
-    port: 8443
+{{ toYaml .Values.pulsarAdminConsole.service.ports | indent 2 }}
   selector:
     app: {{ template "pulsar.name" . }}
     release: {{ .Release.Name }}

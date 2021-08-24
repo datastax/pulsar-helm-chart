@@ -22,7 +22,7 @@ maintainers:
   - name: zzzming
   - name: cdbartholomew
   - name: lhotari
-version: 1.0.8
+version: 1.1.0
 dependencies:
 - name: kube-prometheus-stack
   version: 12.x.x
@@ -32,3 +32,11 @@ dependencies:
   version: v1.1.x
   repository: https://charts.jetstack.io
   condition: cert-manager.enabled
+- name: envoy
+  version: 0.0.7
+  repository: https://slamdev.github.io/helm-charts
+  condition: envoy.enabled
+- name: keycloak
+  version: 5.0.1
+  repository: https://charts.bitnami.com/bitnami
+  condition: keycloak.enabled
