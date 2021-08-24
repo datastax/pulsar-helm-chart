@@ -69,7 +69,23 @@ data:
   {{- if .Values.brokerSts.webSocketServiceEnabled }}
   webSocketServiceEnabled: "true"
   {{- end }}
+  {{- if .Values.brokerSts.kafkaOnPulsarEnabled }}
+  # enabling Kafka-on-Pulsar
+  protocolHandlerDirectory: "./protocols"
+  messagingProtocols: "kafka"
+  brokerDeleteInactiveTopicsEnabled: "false"
+  PULSAR_PREFIX_protocolHandlerDirectory: "./protocols"
+  PULSAR_PREFIX_messagingProtocols: "kafka"
+  PULSAR_PREFIX_brokerDeleteInactiveTopicsEnabled: "false"
+  allowAutoTopicCreationType: "partitioned"
+  {{- range $key, $val := .Values.brokerSts.kafkaOnPulsar }}
+  {{ $key }}: {{ $val | quote }}
+  {{ printf "PULSAR_PREFIX_%s" $key }}: {{ $val | quote }}
+  {{- end }}
+  # end of Kafka-on-Pulsar configs
+  {{ else }}
   allowAutoTopicCreationType: "non-partitioned"
+  {{- end }}
   {{- if .Values.enableTokenAuth }}
   PF_clientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
   PF_clientAuthenticationParameters: "file:///pulsar/token-superuser/superuser.jwt"
@@ -84,9 +100,12 @@ data:
   brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
   brokerClientAuthenticationParameters: "file:///pulsar/token-superuser/superuser.jwt"
   {{- if .Values.brokerSts.extraAuthProvider }}
-  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken,{{ .Values.brokerSts.extraAuthProvider }}"
+  authenticationProviders: "{{ .Values.brokerSts.authenticationProviders }},{{ .Values.brokerSts.extraAuthProvider }}"
   {{- else }}
-  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
+  authenticationProviders: "{{ .Values.brokerSts.authenticationProviders }}"
+  {{- end }}
+  {{- if .Values.keycloak.enabled }}
+  PULSAR_PREFIX_openIDAllowedTokenIssuers: "{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}{{ template "pulsar.keycloak.issuer.port" .}}/auth/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}{{ template "pulsar.keycloak.issuer.port" .}}/auth/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}.svc.cluster.local{{ template "pulsar.keycloak.issuer.port" .}}/auth/realms/{{ .Values.keycloak.realm }}"
   {{- end }}
   {{- end }}
 {{- if .Values.enableTls }}

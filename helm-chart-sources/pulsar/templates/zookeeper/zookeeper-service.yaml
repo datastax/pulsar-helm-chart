@@ -35,9 +35,9 @@ metadata:
     {{- end }}
 spec:
   ports:
-  {{- if and .Values.tlsEnabled .Values.tls.zookeeper.enabled }}
-    - name: client-tls
-      port: 2281
+  {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
+  - name: client-tls
+    port: 2281
   {{- end }}
 {{ toYaml .Values.zookeeper.service.ports | indent 2 }}
   clusterIP: None
@@ -65,9 +65,9 @@ metadata:
     {{- end }}
 spec:
   ports:
-  {{- if and .Values.tlsEnabled .Values.tls.zookeeper.enabled }}
-    - name: client-tls
-      port: 2281
+  {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
+  - name: client-tls
+    port: 2281
   {{- end }}
 {{ toYaml .Values.zookeeper.service.ports | indent 2 }}
   selector:

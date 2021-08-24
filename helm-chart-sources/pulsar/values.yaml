@@ -304,7 +304,7 @@ image:
     # If not using tiered storage, you can use the smaller pulsar image for the broker
     repository: datastax/pulsar-all
     pullPolicy: IfNotPresent
-    tag: 2.7.2_1.1.0
+    tag: 2.8.0_1.0.0
   function:
     repository: datastax/pulsar-all
     pullPolicy: IfNotPresent
@@ -332,7 +332,7 @@ image:
   burnell:
     repository: datastax/burnell
     pullPolicy: Always
-    tag: 1.0.0
+    tag: 1.0.2
   burnellLogCollector:
     repository: datastax/burnell
     pullPolicy: IfNotPresent
@@ -348,11 +348,11 @@ image:
   pulsarHeartbeat:
     repository: datastax/pulsar-heartbeat
     pullPolicy: IfNotPresent
-    tag: 1.0.2
+    tag: 1.0.6
   pulsarAdminConsole:
     repository: datastax/pulsar-admin-console
     pullPolicy: IfNotPresent
-    tag: 1.0.0
+    tag: 1.1.1
 
 ## Tiered Storage
 ##
@@ -757,6 +757,21 @@ broker:
   # These can also be enabled as standalone services
   # See extra section above
   functionsWorkerEnabled: false
+  # enable Kafka-on-Pulsar protocol handler
+  # Enabling this will set
+  #    protocolHandlerDirectory: "./protocols"
+  #    messagingProtocols: "kafka"
+  #    allowAutoTopicCreationType: "partitioned"
+  #    brokerDeleteInactiveTopicsEnabled: "false"
+  # and all Kafka-on-Pulsar parameters listed in kafkaOnPulsar below
+  # the rest of the KoP parameters documented at
+  # https://github.com/datastax/kop
+  kafkaOnPulsarEnabled: false
+  kafkaOnPulsar:
+    kafkaListeners: "PLAINTEXT://localhost:9092"
+    kafkaAdvertisedListeners: "PLAINTEXT://localhost:9092"
+    brokerEntryMetadataInterceptors: "org.apache.pulsar.common.intercept.AppendIndexMetadataInterceptor,org.apache.pulsar.common.intercept.AppendBrokerTimestampMetadataInterceptor"
+
   webSocketServiceEnabled: false
   probe:
     enabled: true
@@ -778,6 +793,10 @@ broker:
   #   pullPolicy: IfNotPresent
   #   command: ["cp", "-r", "/pulsar-libs", "/jars" ]
   #   emptyDirPath: "/jars"
+
+  # Comma delimited list of authentication providers
+  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
+  # extraAuthProvider: this is now a deprecated field, use the `.Values.broker.authenticationProviders` field instead
 
   ## Broker configmap
   ## templates/broker-configmap.yaml
@@ -884,6 +903,10 @@ brokerSts:
   #   pullPolicy: IfNotPresent
   #   command: ["cp", "-r", "/pulsar-libs", "/jars" ]
   #   emptyDirPath: "/jars"
+
+  # Comma delimited list of authentication providers
+  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
+  # extraAuthProvider: this is now a deprecated field, use the `.Values.brokerSts.authenticationProviders` field instead
 
   ## Broker configmap
   ## templates/broker-configmap.yaml
@@ -1010,6 +1033,14 @@ function:
   #   emptyDirPath: "/connectors"
   #   mainContainerStartupCmd: "cp -f /connectors/pulsar-connectors/* /pulsar/connectors"
 
+  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
+
+  ## When adding custom properties to configure a function worker, the values must be supplied here. Normal config
+  ## is read in to the WorkerConfig fields. Custom configuration (for fields that are not in the WorkerConfig class)
+  ## should be added here. Then, when pulsar calls config.getProperty("my-custom-field"), the fields are in the config's
+  ## properties map. For example, you might use this map to configure the openid-connect plugin.
+  # customProperties: {}
+
   ## Function configmap
   ## templates/function-configmap.yaml
   ##
@@ -1094,6 +1125,10 @@ pulsarSQL:
       bookkeeperThrottleValue: "0"
       managedLedgerCacheSizeMB: "0"
 
+# Envoy proxy for Kafka-on-Pulsar
+envoy:
+  enabled: false
+
 # Tardigrade S3 gateway
 #
 # Configure the S3 gateway according to instructions here:
@@ -1104,8 +1139,11 @@ pulsarSQL:
 #
 tardigrade:
   access: access-key-generated-with-uplink
-  accessKey: 2J7EJY4xTK6uHKqnCE4nAhdGfXqy
-  secretKey: 4YeYwYdsoFFpvtNFuncWcTVqSTPL
+  # Specify and access and secret key that can be used to connect to the local
+  # tardigrade gateway. This will be used for both the gateway and the offload configuration.
+  #
+  # accessKey:
+  # secretKey:
   service:
     port: 7777
     type: ClusterIP
@@ -1169,6 +1207,13 @@ proxy:
   #   pullPolicy: IfNotPresent
   #   command: ["cp", "-r", "/pulsar-libs", "/jars" ]
   #   emptyDirPath: "/jars"
+
+  # Comma delimited list of authentication providers
+  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
+  # extraAuthProvider: this is now a deprecated field, use the `.Values.proxy.authenticationProviders` field instead
+  # Configure the wsAuthenticationProviders using .Values.proxy.configData
+  wsAuthenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
+
   ## Proxy configmap
   ## templates/proxy-configmap.yaml
   ##
@@ -1347,7 +1392,7 @@ autoRecovery:
 pulsarAdminConsole:
   component: adminconsole
   defaultTenant: public
-  # authMode: none or k8s
+  # authMode: none, k8s, openidconnect
   authMode: none
   serverLogLevel: info
   createUserSecret:
@@ -1390,8 +1435,12 @@ pulsarAdminConsole:
     annotations: {}
     type: LoadBalancer
     ports:
-    - name: server
-      port: 3100
+    - name: http
+      port: 80
+      targetPort: "nginx"
+    - name: https
+      port: 443
+      targetPort: "nginx-tls"
 
 ## Pulsar Component: Zoonavigator
 ## templates/zoonavigator-deployment.yaml
@@ -1524,6 +1573,28 @@ pulsarHeartbeat:
     latencyTest:
       intervalSeconds: 60
   service: {}
+
+# Deploy Keycloak
+keycloak:
+  enabled: false
+  # This block sets up an example Pulsar Realm
+  # https://www.keycloak.org/docs/latest/server_admin/#_export_import
+  extraStartupArgs: "-Dkeycloak.migration.action=import -Dkeycloak.migration.provider=singleFile -Dkeycloak.migration.file=/realm/pulsar-realm.json -Dkeycloak.migration.strategy=IGNORE_EXISTING"
+  extraVolumes: |
+    - name: realm-config
+      configMap:
+        name: realm-config
+  extraVolumeMounts: |
+    - name: realm-config
+      mountPath: "/realm/"
+      readOnly: true
+  auth:
+    tls:
+      enabled: false
+  # Config specific to this helm chart
+  # The realm to use when the Pulsar Admin Console calls Keycloak (this configures nginx)
+  # Note that this is the realm in the pre-configured realm that ships with this helm chart
+  realm: "pulsar"
 
 # Deploy cert-manager
 cert-manager:
@@ -1743,7 +1814,8 @@ kube-prometheus-stack:
     testFramework:
       enabled: false
     defaultDashboardsEnabled: true
-    adminPassword: ZhF9sS8B7PQSTR
+    # Configure to set a default admin password for Grafana
+    adminPassword:
     service:
       type: LoadBalancer
       port: 3000
