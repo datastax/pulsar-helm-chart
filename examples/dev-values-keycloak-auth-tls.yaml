@@ -46,13 +46,15 @@ image:
     pullPolicy: IfNotPresent
     tag: 2.8.0_1.1.3
 
+fixRootlessPermissions:
+  enabled: true
 enableAntiAffinity: false
-# TLS is not included in this example. It is recommended to use TLS to ensure the authenticity and security of tokens.
-enableTls: false
+enableTls: true
+#tls:
+#  zookeeper:
+#    enabled: true
 enableTokenAuth: true
 restartOnConfigMapChange:
-  enabled: true
-fixRootlessPermissions:
   enabled: true
 extra:
   function: true
@@ -61,11 +63,41 @@ extra:
   pulsarHeartbeat: true
   pulsarAdminConsole: true
 
+cert-manager:
+  enabled: true
+
+createCertificates:
+  selfSigned:
+    enabled: true
+
 keycloak:
   enabled: true
+  replicaCount: 2
+  # Required for > 1 replica
+  serviceDiscovery:
+    enabled: true
+  # Required for service discovery
+  rbac:
+    create: true
   auth:
     adminUser: "admin"
     adminPassword: "F3LVqnxqMmkCQkvyPdJiwXodqQncK@"
+    tls:
+      enabled: true
+      # Must match the "keycloak-{{ .Values.tlsSecretName }}"
+      # When using Cert Manager, we generate a separate keystore.jks for keycloak than for the rest of pulsar.
+      # They are all share the same root ca cert mounted as the truststore.jks ensuring that the rest of the
+      # pulsar components trust Keycloak's cert chain.:ke:
+      jksSecret: "keycloak-pulsar-tls"
+      # These must be the same because the cert manager will use the keystorePassword to protect both
+      # the keystore.jks and the truststore.jks.
+      truststorePassword: "kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR"
+      keystorePassword: "kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR"
+      truststoreFilename: "truststore.jks"
+      keystoreFilename: "keystore.jks"
+  service:
+    port: 80
+    httpsPort: 443
   # It is recommended to override this password, as the dependent chart uses a default
   # Here is an issue requesting that the default be removed: https://github.com/bitnami/charts/issues/7279.
   postgresql:
@@ -103,6 +135,7 @@ broker:
   authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID"
   configData:
     PULSAR_MEM: "\"-Xms400m -Xmx400m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError\""
+    PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info -Djavax.net.ssl.keyStore=/pulsar/certs/keystore.jks -Djavax.net.ssl.trustStore=/pulsar/certs/truststore.jks -Djavax.net.ssl.trustStorePassword=kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR -Djavax.net.ssl.keyStorePassword=kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR"
 
 autoRecovery:
   enableProvisionContainer: true
@@ -121,6 +154,7 @@ function:
   authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
   configData:
     PULSAR_MEM: "\"-Xms312m -Xmx312m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError\""
+    PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info -Djavax.net.ssl.keyStore=/pulsar/certs/keystore.jks -Djavax.net.ssl.trustStore=/pulsar/certs/truststore.jks -Djavax.net.ssl.trustStorePassword=kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR -Djavax.net.ssl.keyStorePassword=kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR"
 
 proxy:
   replicaCount: 1
@@ -136,6 +170,7 @@ proxy:
   wsAuthenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
   configData:
     PULSAR_MEM: "\"-Xms400m -Xmx400m -XX:MaxDirectMemorySize=112m\""
+    PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info -Djavax.net.ssl.keyStore=/pulsar/certs/keystore.jks -Djavax.net.ssl.trustStore=/pulsar/certs/truststore.jks -Djavax.net.ssl.trustStorePassword=kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR -Djavax.net.ssl.keyStorePassword=kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR"
   autoPortAssign:
     enablePlainTextWithTLS: true
   service:
@@ -150,6 +185,12 @@ pulsarAdminConsole:
   authMode: openidconnect
   # The client id used when authenticating with keycloak
   oauthClientId: "pulsar-admin-console"
+  service:
+    # Only expose the secure port
+    ports:
+      - name: https
+        port: 443
+        targetPort: "nginx-tls"
 
 kube-prometheus-stack:
   enabled: true

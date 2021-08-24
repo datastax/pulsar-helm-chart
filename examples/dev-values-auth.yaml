@@ -18,6 +18,8 @@
 enableAntiAffinity: false
 enableTls: false
 enableTokenAuth: true
+fixRootlessPermissions:
+  enabled: true
 restartOnConfigMapChange:
   enabled: true
 extra:
