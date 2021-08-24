@@ -25,6 +25,7 @@ restartOnConfigMapChange:
   enabled: true
 extra:
   autoRecovery: false
+  function: true
   burnell: true
   pulsarHeartbeat: true
   pulsarAdminConsole: true
