@@ -1179,6 +1179,10 @@ proxy:
   #         values:
   #         - pulsar
   gracePeriod: 60
+  kafkaOnPulsarEnabled: false
+  kafkaOnPulsar:
+    kafkaListeners: "PLAINTEXT://localhost:9092"
+    kafkaAdvertisedListeners: "PLAINTEXT://localhost:9092"
   probe:
     enabled: true
     initial: 10
@@ -1286,6 +1290,12 @@ proxy:
     - name: ws
       port: 8000
       protocol: TCP
+    - name: kafkaplaintext
+      port: 9092
+      protocol: TCP
+    - name: kafkassl
+      port: 9093
+      protocol: TCP
 
   # For creating and extra service pointing to the proxy
   extraService:
@@ -1303,6 +1313,12 @@ proxy:
       protocol: TCP
     - name: ws
       port: 8000
+      protocol: TCP
+    - name: kafkaplaintext
+      port: 9092
+      protocol: TCP
+    - name: kafkassl
+      port: 9093
       protocol: TCP
 
   ingress:

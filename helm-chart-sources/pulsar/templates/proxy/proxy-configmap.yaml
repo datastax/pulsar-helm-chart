@@ -122,3 +122,15 @@ data:
   PULSAR_MEM: {{ .Values.proxy.configData.PULSAR_MEM }}
   PULSAR_GC: {{ .Values.proxy.configData.PULSAR_GC }}
 {{- end }}
+{{- if .Values.proxy.kafkaOnPulsarEnabled }}
+  # enabling Kafka-on-Pulsar
+  proxyProtocolHandlerDirectory: "./proxyprotocols"
+  proxyMessagingProtocols: "kafka"  
+  PULSAR_PREFIX_proxyProtocolHandlerDirectory: "./proxyprotocols"
+  PULSAR_PREFIX_proxyMessagingProtocols: "kafka"  
+  {{- range $key, $val := .Values.proxy.kafkaOnPulsar }}
+  {{ $key }}: {{ $val | quote }}
+  {{ printf "PULSAR_PREFIX_%s" $key }}: {{ $val | quote }}
+  {{- end }}
+  # end of Kafka-on-Pulsar configs
+{{- end }}
