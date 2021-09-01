@@ -295,6 +295,10 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
+        {{- if .Values.broker.kafkaOnPulsarEnabled }}
+        - name: PULSAR_PREFIX_kafkaAdvertisedListeners
+          value: "PLAINTEXT://$(advertisedAddress):9092"
+        {{- end }}
         {{- if .Values.broker.ledger }}
         - name: managedLedgerDefaultAckQuorum
           value: "{{ .Values.broker.ledger.defaultAckQuorum }}"

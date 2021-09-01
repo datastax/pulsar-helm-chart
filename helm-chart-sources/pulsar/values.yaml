@@ -768,8 +768,7 @@ broker:
   # https://github.com/datastax/kop
   kafkaOnPulsarEnabled: false
   kafkaOnPulsar:
-    kafkaListeners: "PLAINTEXT://localhost:9092"
-    kafkaAdvertisedListeners: "PLAINTEXT://localhost:9092"
+    kafkaListeners: "PLAINTEXT://0.0.0.0:9092"
     brokerEntryMetadataInterceptors: "org.apache.pulsar.common.intercept.AppendIndexMetadataInterceptor,org.apache.pulsar.common.intercept.AppendBrokerTimestampMetadataInterceptor"
 
   webSocketServiceEnabled: false
