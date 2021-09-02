@@ -194,6 +194,12 @@ spec:
             port: {{ .Values.function.probe.port }}
           initialDelaySeconds: {{ .Values.function.probe.initial }}
           periodSeconds:  {{ .Values.function.probe.period }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.function.probe.metricsPath | default "/metrics" }}
+            port: {{ .Values.function.probe.port }}
+          initialDelaySeconds: {{ .Values.function.probe.initial }}
+          timeoutSeconds: {{ .Values.function.probe.period }}
         {{- end }}
         {{- if .Values.function.resources }}
         resources:
