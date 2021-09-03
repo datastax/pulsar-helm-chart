@@ -1178,10 +1178,32 @@ proxy:
   #         values:
   #         - pulsar
   gracePeriod: 60
-  kafkaOnPulsarEnabled: false
-  kafkaOnPulsar:
-    kafkaListeners: "PLAINTEXT://localhost:9092"
-    kafkaAdvertisedListeners: "PLAINTEXT://localhost:9092"
+  ## Protocol handlers can be configured via the configData map located in this
+  ## section of the values file: .Values.proxy.configData
+  ## Some configuration options are provided here to simplify deployment
+  protocolHandlers:
+    enabled: true
+    proxyProtocolHandlerDirectory: "./proxyprotocols"
+    ## Comma separated list of protocols used by the protocol handler
+    proxyMessagingProtocols: ""
+    ## Ports to open on the proxy container for protocol handler traffic
+    ## Kafka on Pulsar is used as an example
+    containerPorts: []
+    #- name: kafkaplaintext
+    #  containerPort: 9092
+    #- name: kafkassl
+    #  containerPort: 9093
+    ## Ports to open on the proxy service for protocol handler traffic
+    ## Kafka on Pulsar is used as an example
+    servicePorts: []
+    #- name: kafkaplaintext
+    #  port: 9092
+    #  protocol: TCP
+    #  targetPort: kafkaplaintext
+    #- name: kafkassl
+    #  port: 9093
+    #  protocol: TCP
+    #  targetPort: kafkassl
   probe:
     enabled: true
     initial: 10
@@ -1289,12 +1311,6 @@ proxy:
     - name: ws
       port: 8000
       protocol: TCP
-    - name: kafkaplaintext
-      port: 9092
-      protocol: TCP
-    - name: kafkassl
-      port: 9093
-      protocol: TCP
 
   # For creating and extra service pointing to the proxy
   extraService:
@@ -1312,12 +1328,6 @@ proxy:
       protocol: TCP
     - name: ws
       port: 8000
-      protocol: TCP
-    - name: kafkaplaintext
-      port: 9092
-      protocol: TCP
-    - name: kafkassl
-      port: 9093
       protocol: TCP
 
   ingress:

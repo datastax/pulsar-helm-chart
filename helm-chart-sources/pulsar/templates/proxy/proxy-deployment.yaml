@@ -260,11 +260,8 @@ spec:
         ports:
         - name: wss
           containerPort: 8001
-        {{- if .Values.proxy.kafkaOnPulsarEnabled }}
-        - name: kafkaplaintext
-          containerPort: 9092
-        - name: kafkassl
-          containerPort: 9093
+        {{- if and .Values.proxy.protocolHandlers.enabled .Values.proxy.protocolHandlers.containerPorts }}
+{{ toYaml .Values.proxy.protocolHandlers.containerPorts | indent 8 }}
         {{- end }}
         volumeMounts:
           - name: health
