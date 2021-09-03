@@ -1189,21 +1189,21 @@ proxy:
     ## Ports to open on the proxy container for protocol handler traffic
     ## Kafka on Pulsar is used as an example
     containerPorts: []
-    #- name: kafkaplaintext
-    #  containerPort: 9092
-    #- name: kafkassl
-    #  containerPort: 9093
+    # - name: kafkaplaintext
+    #   containerPort: 9092
+    # - name: kafkassl
+    #   containerPort: 9093
     ## Ports to open on the proxy service for protocol handler traffic
     ## Kafka on Pulsar is used as an example
     servicePorts: []
-    #- name: kafkaplaintext
-    #  port: 9092
-    #  protocol: TCP
-    #  targetPort: kafkaplaintext
-    #- name: kafkassl
-    #  port: 9093
-    #  protocol: TCP
-    #  targetPort: kafkassl
+    # - name: kafkaplaintext
+    #   port: 9092
+    #   protocol: TCP
+    #   targetPort: kafkaplaintext
+    # - name: kafkassl
+    #   port: 9093
+    #   protocol: TCP
+    #   targetPort: kafkassl
   probe:
     enabled: true
     initial: 10
