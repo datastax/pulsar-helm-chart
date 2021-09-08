@@ -123,8 +123,6 @@ data:
   PULSAR_GC: {{ .Values.proxy.configData.PULSAR_GC }}
 {{- end }}
 {{- if .Values.proxy.protocolHandlers.enabled }}
-  proxyProtocolHandlerDirectory: "{{ .Values.proxy.protocolHandlers.proxyProtocolHandlerDirectory }}"
-  proxyMessagingProtocols: "{{ .Values.proxy.protocolHandlers.protocols }}"
   PULSAR_PREFIX_proxyProtocolHandlerDirectory: "{{ .Values.proxy.protocolHandlers.proxyProtocolHandlerDirectory }}"
   PULSAR_PREFIX_proxyMessagingProtocols: "{{ .Values.proxy.protocolHandlers.protocols }}"
 {{- end }}
