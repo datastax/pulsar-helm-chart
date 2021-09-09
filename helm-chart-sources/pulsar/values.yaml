@@ -1182,7 +1182,7 @@ proxy:
   ## section of the values file: .Values.proxy.configData
   ## Some configuration options are provided here to simplify deployment
   protocolHandlers:
-    enabled: true
+    enabled: false
     proxyProtocolHandlerDirectory: "./proxyprotocols"
     ## Comma separated list of protocols used by the protocol handler
     proxyMessagingProtocols: ""

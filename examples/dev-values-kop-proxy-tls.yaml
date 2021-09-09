@@ -121,17 +121,32 @@ proxy:
       cpu: 0.3
   configData:
     PULSAR_MEM: "\"-Xms400m -Xmx400m -XX:MaxDirectMemorySize=112m\""
+    PULSARPREFIX_kafkaListeners: "SASL_PLAINTEXT://0.0.0.0:9092,SASL_SSL://0.0.0.0:9093"
+    PULSARPREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://127.0.0.1:9092,SASL_SSL://127.0.0.1:9093"
+    PULSARPREFIX_saslAllowedMechanisms: PLAIN
   autoPortAssign:
     enablePlainTextWithTLS: true
   service:
     type: ClusterIP
     autoPortAssign:
       enabled: true
-  kafkaOnPulsarEnabled: true
-  kafkaOnPulsar:
-    kafkaListeners: "SASL_PLAINTEXT://0.0.0.0:9092,SASL_SSL://0.0.0.0:9093"
-    kafkaAdvertisedListeners: "SASL_PLAINTEXT://127.0.0.1:9092,SASL_SSL://127.0.0.1:9093"
-    saslAllowedMechanisms: PLAIN
+  protocolHandlers:
+    enabled: true
+    proxyMessagingProtocols: "kafka"
+    containerPorts:
+      - name: kafkaplaintext
+        containerPort: 9092
+      - name: kafkassl
+        containerPort: 9093
+    servicePorts:
+     - name: kafkaplaintext
+       port: 9092
+       protocol: TCP
+       targetPort: kafkaplaintext
+     - name: kafkassl
+       port: 9093
+       protocol: TCP
+       targetPort: kafkassl      
 pulsarAdminConsole:
   replicaCount: 1
   service:
