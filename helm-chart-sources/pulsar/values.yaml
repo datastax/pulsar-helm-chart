@@ -1185,7 +1185,7 @@ proxy:
     enabled: false
     proxyProtocolHandlerDirectory: "./proxyprotocols"
     ## Comma separated list of protocols used by the protocol handler
-    proxyMessagingProtocols: ""
+    protocols: ""
     ## Ports to open on the proxy container for protocol handler traffic
     ## Kafka on Pulsar is used as an example
     containerPorts: []

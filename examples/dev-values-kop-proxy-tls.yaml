@@ -16,9 +16,6 @@
 #
 
 # Please note that this example works only with Luna Streaming 2.8.0.1.1.5+
-
-# Customize the value of kafkaAdvertisedListeners in order to reflect the actual advertised name for your Proxy service
-
 enableAntiAffinity: false
 enableTls: true
 enableTokenAuth: true
@@ -121,9 +118,10 @@ proxy:
       cpu: 0.3
   configData:
     PULSAR_MEM: "\"-Xms400m -Xmx400m -XX:MaxDirectMemorySize=112m\""
-    PULSARPREFIX_kafkaListeners: "SASL_PLAINTEXT://0.0.0.0:9092,SASL_SSL://0.0.0.0:9093"
-    PULSARPREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://127.0.0.1:9092,SASL_SSL://127.0.0.1:9093"
-    PULSARPREFIX_saslAllowedMechanisms: PLAIN
+    PULSAR_PREFIX_kafkaListeners: "SASL_PLAINTEXT://0.0.0.0:9092,SASL_SSL://0.0.0.0:9093"
+    PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://127.0.0.1:9092,SASL_SSL://127.0.0.1:9093"
+    PULSAR_PREFIX_saslAllowedMechanisms: PLAIN
+    PULSAR_PREFIX_kafkaProxySuperUserRole: superuser
   autoPortAssign:
     enablePlainTextWithTLS: true
   service:
@@ -132,7 +130,7 @@ proxy:
       enabled: true
   protocolHandlers:
     enabled: true
-    proxyMessagingProtocols: "kafka"
+    protocols: "kafka"
     containerPorts:
       - name: kafkaplaintext
         containerPort: 9092
