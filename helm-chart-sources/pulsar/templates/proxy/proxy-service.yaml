@@ -47,6 +47,9 @@ spec:
   {{- else }}
 {{ toYaml .Values.proxy.service.ports | indent 2 }}
   {{- end }}
+  {{- if and .Values.proxy.protocolHandlers.enabled .Values.proxy.protocolHandlers.servicePorts }}
+{{ toYaml .Values.proxy.protocolHandlers.servicePorts | indent 2 }}
+  {{- end }}
   selector:
     app: {{ template "pulsar.name" . }}
     release: {{ .Release.Name }}

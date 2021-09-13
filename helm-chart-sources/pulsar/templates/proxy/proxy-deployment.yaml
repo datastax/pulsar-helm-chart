@@ -260,6 +260,9 @@ spec:
         ports:
         - name: wss
           containerPort: 8001
+        {{- if and .Values.proxy.protocolHandlers.enabled .Values.proxy.protocolHandlers.containerPorts }}
+{{ toYaml .Values.proxy.protocolHandlers.containerPorts | indent 8 }}
+        {{- end }}
         volumeMounts:
           - name: health
             mountPath: /pulsar/health

@@ -122,3 +122,7 @@ data:
   PULSAR_MEM: {{ .Values.proxy.configData.PULSAR_MEM }}
   PULSAR_GC: {{ .Values.proxy.configData.PULSAR_GC }}
 {{- end }}
+{{- if .Values.proxy.protocolHandlers.enabled }}
+  PULSAR_PREFIX_proxyProtocolHandlerDirectory: "{{ .Values.proxy.protocolHandlers.proxyProtocolHandlerDirectory }}"
+  PULSAR_PREFIX_proxyMessagingProtocols: "{{ .Values.proxy.protocolHandlers.protocols }}"
+{{- end }}

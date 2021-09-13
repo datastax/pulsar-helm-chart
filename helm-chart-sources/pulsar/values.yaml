@@ -768,8 +768,7 @@ broker:
   # https://github.com/datastax/kop
   kafkaOnPulsarEnabled: false
   kafkaOnPulsar:
-    kafkaListeners: "PLAINTEXT://localhost:9092"
-    kafkaAdvertisedListeners: "PLAINTEXT://localhost:9092"
+    kafkaListeners: "PLAINTEXT://0.0.0.0:9092"
     brokerEntryMetadataInterceptors: "org.apache.pulsar.common.intercept.AppendIndexMetadataInterceptor,org.apache.pulsar.common.intercept.AppendBrokerTimestampMetadataInterceptor"
 
   webSocketServiceEnabled: false
@@ -1179,6 +1178,32 @@ proxy:
   #         values:
   #         - pulsar
   gracePeriod: 60
+  ## Protocol handlers can be configured via the configData map located in this
+  ## section of the values file: .Values.proxy.configData
+  ## Some configuration options are provided here to simplify deployment
+  protocolHandlers:
+    enabled: false
+    proxyProtocolHandlerDirectory: "./proxyprotocols"
+    ## Comma separated list of protocols used by the protocol handler
+    protocols: ""
+    ## Ports to open on the proxy container for protocol handler traffic
+    ## Kafka on Pulsar is used as an example
+    containerPorts: []
+    # - name: kafkaplaintext
+    #   containerPort: 9092
+    # - name: kafkassl
+    #   containerPort: 9093
+    ## Ports to open on the proxy service for protocol handler traffic
+    ## Kafka on Pulsar is used as an example
+    servicePorts: []
+    # - name: kafkaplaintext
+    #   port: 9092
+    #   protocol: TCP
+    #   targetPort: kafkaplaintext
+    # - name: kafkassl
+    #   port: 9093
+    #   protocol: TCP
+    #   targetPort: kafkassl
   probe:
     enabled: true
     initial: 10

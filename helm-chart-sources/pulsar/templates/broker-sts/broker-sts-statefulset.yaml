@@ -289,6 +289,14 @@ spec:
             name: "{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}"
         {{- if .Values.brokerSts.ledger }}
         env:
+        - name: advertisedAddress
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        {{- if .Values.broker.kafkaOnPulsarEnabled }}
+        - name: PULSAR_PREFIX_kafkaAdvertisedListeners
+          value: "PLAINTEXT://$(advertisedAddress):9092"
+        {{- end }}
         - name: managedLedgerDefaultAckQuorum
           value: "{{ .Values.brokerSts.ledger.defaultAckQuorum }}"
         - name: managedLedgerDefaultEnsembleSize
