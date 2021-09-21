@@ -32,6 +32,7 @@ storageOffload:
   driver: google-cloud-storage
   gcsServiceAccountSecret: pulsar-gcp-sa-secret # pragma: allowlist secret
   gcsServiceAccountJsonFile: account-223201-f12856532197.json
+  gcsServiceAccountJsonFileContent: <must be passed from env variable in Helm command line> # this should be a base64-encoded string $(cat <gcsServiceAccountJsonFile> | base64)
   bucket: kesque-tired-storage-test
   region: us
   # General Storage Offload Setting
