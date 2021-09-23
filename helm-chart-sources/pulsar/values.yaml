@@ -414,8 +414,8 @@ storageOffload: {}
   ##      * Set storageOffload.gcsServiceAccountJsonFileContent to the
   ##        base64-encoded content of the JSON file:
   ##            helm install pulsar \
-  ##	            --set storageOffload.gcsServiceAccountJsonFile=account-223201-f12856532197.json \
-  ##	            --set storageOffload.gcsServiceAccountJsonFileContent=$(cat account-223201-f12856532197.json | base64) .
+  ##            --set storageOffload.gcsServiceAccountJsonFile=account-223201-f12856532197.json \
+  ##            --set storageOffload.gcsServiceAccountJsonFileContent=$(cat account-223201-f12856532197.json | base64) .
   ##        This method is totally equivalent to the previous one.
   ##         In fact, it would generate the same secret.
   # driver: google-cloud-storage
