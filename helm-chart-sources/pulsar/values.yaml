@@ -394,6 +394,15 @@ storageOffload: {}
   #
   # driver: aws-s3
 
+  # For Azure Blob
+  # =================
+  # Need to create an Azure storage account and a blob containter (bucket)
+  # To retrieve key, see https://docs.microsoft.com/en-us/azure/storage/common/storage-account-keys-manage?tabs=azure-portal#code-try-1
+  #
+  # driver: azureblob
+  # storageAccount: <account name>
+  # storageAccountKey: <account key>
+
   ## For Google Cloud Storage
   ## ====================
   ## You must create a service account that has access to the objects in GCP buckets
