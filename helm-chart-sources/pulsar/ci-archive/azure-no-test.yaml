@@ -1,0 +1,82 @@
+#
+#  Copyright 2021 DataStax, Inc.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+#
+
+persistence: false
+enableTests: true
+extra:
+  autoRecovery: false
+  bastion: true
+  proxy: false
+  pulsarHeartbeat: false
+
+image:
+  broker:
+    # If using tiered storage, use pulsar-all image for broker
+    repository: datastax/pulsar-all
+
+storageOffload:
+
+  bucket: kesque-helm-chart-ci-test
+  region: us-east-1
+  maxBlockSizeInBytes: "6400000"
+  readBufferSizeInBytes: "100000"
+  ## The following are default values for the cluster. They can be changed
+  ## on each namespace.
+  managedLedgerOffloadDeletionLagMs: "1000"
+  managedLedgerOffloadAutoTriggerSizeThresholdBytes: "1000"
+
+  # For Azure
+  # ======
+  # You must create a storage account
+  #
+  driver: azureblob
+  storageAccount: <must be passed from env variable in Helm command line>
+  storageAccountKey: <must be passed from env variable in Helm command line> # pragma: allowlist secret
+  ## For s3 compatible services, need to specify the endpoint but
+  ## not needed for AWS
+  #serviceEndpoint: http://127.0.0.1:7777
+
+zookeeper:
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 0.3
+  configData:
+    PULSAR_MEM: "\"-Xms512m -Xmx512m -Dcom.sun.management.jmxremote -Djute.maxbuffer=10485760 -XX:+ParallelRefProcEnabled -XX:+UnlockExperimentalVMOptions -XX:+AggressiveOpts -XX:+DoEscapeAnalysis -XX:+DisableExplicitGC -XX:+PerfDisableSharedMem -Dzookeeper.forceSync=no\""
+
+bookkeeper:
+  replicaCount: 2
+  resources:
+    requests:
+      memory: 512Mi
+      cpu: 0.3
+  configData:
+    BOOKIE_MEM: "-Xms512m -Xmx512m -XX:MaxDirectMemorySize=512m -XX:+ExitOnOutOfMemoryError"
+    BOOKIE_GC: "\"-XX:+UseG1GC -XX:MaxGCPauseMillis=10\""
+
+broker:
+  component: broker
+  replicaCount: 1
+  resources:
+    requests:
+      memory: 1000Mi
+      cpu: 0.3
+  configData:
+    PULSAR_MEM: "\"-Xms512m -Xmx1000m -XX:MaxDirectMemorySize=1000m -XX:+ExitOnOutOfMemoryError\""
+    managedLedgerMaxEntriesPerLedger: "5000"
+    managedLedgerMinLedgerRolloverTimeMinutes: "1"
+    managedLedgerMaxLedgerRolloverTimeMinutes: "2"
