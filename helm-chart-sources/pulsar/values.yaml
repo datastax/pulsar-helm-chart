@@ -357,7 +357,8 @@ image:
 ## Tiered Storage
 ##
 
-storageOffload: {}
+storageOffload:
+  driver: ""
   ## General
   ## =======
   # bucket: <bucket>
