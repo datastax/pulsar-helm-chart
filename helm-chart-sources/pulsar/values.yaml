@@ -777,7 +777,7 @@ broker:
   functionsWorkerEnabled: false
   # enable Kafka-on-Pulsar protocol handler
   # Enabling this will set
-  #    protocolHandlerDirectory: "./protocols"
+  #    protoc olHandlerDirectory: "./protocols"
   #    messagingProtocols: "kafka"
   #    allowAutoTopicCreationType: "partitioned"
   #    brokerDeleteInactiveTopicsEnabled: "false"
@@ -1196,12 +1196,12 @@ proxy:
   #         values:
   #         - pulsar
   gracePeriod: 60
-  ## Protocol handlers can be configured via the configData map located in this
+  ## Proxy extensions can be configured via the configData map located in this
   ## section of the values file: .Values.proxy.configData
   ## Some configuration options are provided here to simplify deployment
-  protocolHandlers:
+  extensions:
     enabled: false
-    proxyProtocolHandlerDirectory: "./proxyprotocols"
+    directory: "./proxyextensions"
     ## Comma separated list of protocols used by the protocol handler
     protocols: ""
     ## Ports to open on the proxy container for protocol handler traffic
