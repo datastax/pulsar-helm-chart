@@ -777,7 +777,7 @@ broker:
   functionsWorkerEnabled: false
   # enable Kafka-on-Pulsar protocol handler
   # Enabling this will set
-  #    protoc olHandlerDirectory: "./protocols"
+  #    protocolHandlerDirectory: "./protocols"
   #    messagingProtocols: "kafka"
   #    allowAutoTopicCreationType: "partitioned"
   #    brokerDeleteInactiveTopicsEnabled: "false"
