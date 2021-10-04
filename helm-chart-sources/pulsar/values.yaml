@@ -1196,16 +1196,17 @@ proxy:
   #         values:
   #         - pulsar
   gracePeriod: 60
-  ## Protocol handlers can be configured via the configData map located in this
+  ## Proxy extensions can be configured via the configData map located in this
   ## section of the values file: .Values.proxy.configData
   ## Some configuration options are provided here to simplify deployment
-  protocolHandlers:
+  extensions:
     enabled: false
-    proxyProtocolHandlerDirectory: "./proxyprotocols"
-    ## Comma separated list of protocols used by the protocol handler
-    protocols: ""
-    ## Ports to open on the proxy container for protocol handler traffic
+    directory: "./proxyextensions"
+    ## Comma separated list of extensions
     ## Kafka on Pulsar is used as an example
+    ## extensions: "kafka"
+    extensions: ""
+    ## Ports to open on the proxy container for network traffic
     containerPorts: []
     # - name: kafkaplaintext
     #   containerPort: 9092

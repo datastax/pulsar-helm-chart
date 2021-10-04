@@ -128,9 +128,9 @@ proxy:
     type: ClusterIP
     autoPortAssign:
       enabled: true
-  protocolHandlers:
+  extensions:
     enabled: true
-    protocols: "kafka"
+    extensions: "kafka"
     containerPorts:
       - name: kafkaplaintext
         containerPort: 9092
