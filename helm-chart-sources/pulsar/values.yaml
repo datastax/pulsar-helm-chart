@@ -1202,10 +1202,11 @@ proxy:
   extensions:
     enabled: false
     directory: "./proxyextensions"
-    ## Comma separated list of protocols used by the protocol handler
-    protocols: ""
-    ## Ports to open on the proxy container for protocol handler traffic
+    ## Comma separated list of extensions
     ## Kafka on Pulsar is used as an example
+    ## extensions: "kafka"
+    extensions: ""
+    ## Ports to open on the proxy container for network traffic
     containerPorts: []
     # - name: kafkaplaintext
     #   containerPort: 9092

@@ -130,7 +130,7 @@ proxy:
       enabled: true
   extensions:
     enabled: true
-    protocols: "kafka"
+    extensions: "kafka"
     containerPorts:
       - name: kafkaplaintext
         containerPort: 9092
