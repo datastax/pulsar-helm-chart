@@ -87,6 +87,7 @@ broker:
   kafkaOnPulsar:    
     saslAllowedMechanisms: PLAIN
     brokerEntryMetadataInterceptors: "org.apache.pulsar.common.intercept.AppendIndexMetadataInterceptor,org.apache.pulsar.common.intercept.AppendBrokerTimestampMetadataInterceptor"
+    kopSchemaRegistryEnable: true
 
 autoRecovery:
   enableProvisionContainer: yes
@@ -122,6 +123,9 @@ proxy:
     PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://127.0.0.1:9092,SASL_SSL://127.0.0.1:9093"
     PULSAR_PREFIX_saslAllowedMechanisms: PLAIN
     PULSAR_PREFIX_kafkaProxySuperUserRole: superuser
+    PULSAR_PREFIX_kopSchemaRegistryProxyEnableTls: "false"
+    PULSAR_PREFIX_kopSchemaRegistryEnable: "true"
+    PULSAR_PREFIX_kopSchemaRegistryProxyPort: "8003"
   autoPortAssign:
     enablePlainTextWithTLS: true
   service:
