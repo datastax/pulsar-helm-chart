@@ -78,12 +78,7 @@ install_charts() {
 }
 
 pull_and_cache_docker_images() {
-    if ! [ -x "$(command -v yq)" ]; then
-        echo 'Installing yq...'
-        curl -Lo ./yq https://github.com/mikefarah/yq/releases/download/v4.9.8/yq_linux_amd64
-        chmod +x ./yq
-        sudo mv yq /usr/local/bin/
-    fi
+    apt-get upgrade yq
 
     # kind cluster worker nodes as comma separated list
     nodes=$(kind get nodes --name "$CLUSTER_NAME" -q | grep worker | tr '\n' ',' | sed 's/,$//')
