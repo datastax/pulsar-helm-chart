@@ -78,7 +78,7 @@ install_charts() {
 }
 
 pull_and_cache_docker_images() {
-    apt-get upgrade yq
+    sudo apt-get upgrade yq
 
     # kind cluster worker nodes as comma separated list
     nodes=$(kind get nodes --name "$CLUSTER_NAME" -q | grep worker | tr '\n' ',' | sed 's/,$//')
