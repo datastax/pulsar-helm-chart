@@ -15,7 +15,7 @@
 #
 #
 
-# Please note that this example works only with Luna Streaming 2.8.0.1.1.5+
+# Please note that this example works only with Luna Streaming 2.8.0.1.1.6+
 enableAntiAffinity: false
 enableTls: true
 enableTokenAuth: true
