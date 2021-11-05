@@ -96,8 +96,8 @@ proxy:
     repository: ubuntu
     tag: latest
     pullPolicy: IfNotPresent
-    command: ["touch",  "/pulsar/protocols/hellofile" ]
-    emptyDirPath: "/pulsar/protocols"
+    command: ["/bin/bash", "-c", "apt-get update && apt-get install -y wget && wget -O /pulsar/proxyprotocols/rabbitmq.nar https://github.com/datastax/starlight-for-rabbitmq/releases/download/v1.0.0/starlight-rabbitmq-1.0.0.nar"]
+    emptyDirPath: "/pulsar/proxyprotocols"
 
 grafanaDashboards:
   enabled: true
