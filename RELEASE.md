@@ -30,7 +30,9 @@ git commit -m "Updating versions"
 git push origin release
 ```
 
-The chart-releaser tool will handle the packaging of the new version, will push it to the Github repo as a new [release](https://github.com/datastax/pulsar-helm-chart/releases). It will update the index.yaml file for the Helm repo and commit it to **master** since this is where the GitHub pages are hosted. 
+The chart-releaser tool will handle the packaging of the new version, will push it to the Github repo as a new [release](https://github.com/datastax/pulsar-helm-chart/releases). Then you have to manually edit the release adding the release notes by clicking on the `Auto-generate release notes` button. 
+
+Later it will update the index.yaml file for the Helm repo and commit it to **master** since this is where the GitHub pages are hosted. 
 
 If you see an error like this from the release script:
 
