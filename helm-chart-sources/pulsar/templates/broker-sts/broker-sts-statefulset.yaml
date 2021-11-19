@@ -252,6 +252,8 @@ spec:
           containerPort: 9092
         - name: kafkassl
           containerPort: 9093
+        - name: kafkaschemareg
+          containerPort: 8001
         {{- end }}
         volumeMounts:
           - name: health
