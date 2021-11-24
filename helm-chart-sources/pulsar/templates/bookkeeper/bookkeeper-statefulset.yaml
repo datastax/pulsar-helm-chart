@@ -180,12 +180,14 @@ spec:
             port: 8000
           initialDelaySeconds: {{ .Values.bookkeeper.probe.initial }}
           periodSeconds:  {{ .Values.bookkeeper.probe.period }}
+          timeoutSeconds:  {{ .Values.bookkeeper.probe.timeout }}
         livenessProbe:
           httpGet:
             path: /api/v1/bookie/is_ready
             port: 8000
           initialDelaySeconds: {{ .Values.bookkeeper.probe.initial }}
           periodSeconds:  {{ .Values.bookkeeper.probe.period }}
+          timeoutSeconds:  {{ .Values.bookkeeper.probe.timeout }}
         {{- end }}
       {{- if .Values.bookkeeper.resources }}
         resources:
