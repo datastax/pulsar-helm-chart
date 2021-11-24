@@ -155,13 +155,15 @@ spec:
             command:
             - "bin/pulsar-zookeeper-ruok.sh"
           initialDelaySeconds: {{ .Values.zookeepernp.probe.initial }}
-          timeoutSeconds: {{ .Values.zookeepernp.probe.period }}
+          periodSeconds: {{ .Values.zookeepernp.probe.period }}
+          timeoutSeconds: {{ .Values.zookeepernp.probe.timeout }}
         livenessProbe:
           exec:
             command:
             - "bin/pulsar-zookeeper-ruok.sh"
           initialDelaySeconds: {{ .Values.zookeepernp.probe.initial }}
-          timeoutSeconds: {{ .Values.zookeepernp.probe.period }}
+          periodSeconds: {{ .Values.zookeepernp.probe.period }}
+          timeoutSeconds: {{ .Values.zookeepernp.probe.timeout }}
         {{- end }}
         volumeMounts:
         {{- if and .Values.enableTls .Values.tls.zookeeper.enabled}}
