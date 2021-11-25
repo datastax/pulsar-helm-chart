@@ -11,23 +11,19 @@ CircleCI is being used to release a new version of the DataStax Pulsar Helm Char
 
 # How to Release a new Version
 
-The release process is automated using CircleCI. It uses the [chart-releaser](https://github.com/helm/chart-releaser) tool.
-
-For a new Helm Chart release the version of the Helm Chart needs to be updated in the *Chart.yaml*. Do this for each chart that has changed and commit to **release**. This is important. If you don't change the version and the chart has changed, the release process will fail.
-
-To trigger a release:
-```
-git fetch
-git checkout release
-git merge origin/master
-```
-
-Now update the versions in the *Chart.yaml* for each chart that has changed. Then push the change to origin:
-
+Before releasing the new version, update the version in the *Chart.yaml* for each chart that has changed. Push the changes to the master branch.
 ```
 git add .
 git commit -m "Updating versions"
-git push origin release
+git push origin master
+```
+
+The release process is automated using CircleCI. It uses the [chart-releaser](https://github.com/helm/chart-releaser) tool.
+
+To trigger a release, "force push" the current master branch to the release branch:
+```
+git fetch
+git push -f origin origin/master:release
 ```
 
 The chart-releaser tool will handle the packaging of the new version, will push it to the Github repo as a new [release](https://github.com/datastax/pulsar-helm-chart/releases). Then you have to manually edit the release adding the release notes by clicking on the `Auto-generate release notes` button. 
