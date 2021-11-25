@@ -3,7 +3,6 @@
 ### Running locally
 
 ```
-export SKIP_YQ_INSTALL=1
 ./tests/e2e-kind.sh
 ```
 
