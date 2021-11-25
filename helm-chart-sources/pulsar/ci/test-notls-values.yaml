@@ -30,6 +30,14 @@ extra:
   pulsarHeartbeat: true
   pulsarAdminConsole: true
 
+# After https://github.com/apache/pulsar/pull/9413 Pulsar seems to load
+# all connector classes to memory. This causes OOM at OS level (error code 143)
+# Mitigate the issue by using a container image without the connectors.
+image:
+  function:
+    repository: datastax/lunastreaming
+
+
 autoRecovery:
   enableProvisionContainer: true
 
