@@ -37,6 +37,6 @@ dependencies:
   repository: https://slamdev.github.io/helm-charts
   condition: envoy.enabled
 - name: keycloak
-  version: 5.0.1
+  version: 5.x.x
   repository: https://charts.bitnami.com/bitnami
   condition: keycloak.enabled
