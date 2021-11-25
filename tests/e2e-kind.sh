@@ -47,7 +47,12 @@ create_kind_cluster() {
     export KUBECONFIG=/tmp/kind_kube_config$$
     if [ "$node_count" -eq 0 ]; then
         kind create cluster --name "$CLUSTER_NAME" --config tests/kind-config.yaml --image "kindest/node:$K8S_VERSION" --wait 60s
-        pull_and_cache_docker_images
+        # caching docker images is useful only when there are multiple workers or when running outside of CI
+        local worker_count
+        worker_count=$(kind get nodes --name "$CLUSTER_NAME" -q | grep -c worker)
+        if [[ $CI == "false" || $worker_count -gt 1 ]]; then
+            pull_and_cache_docker_images
+        fi
     else
         kind export kubeconfig --name "$CLUSTER_NAME"
     fi
