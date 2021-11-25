@@ -40,7 +40,7 @@ zookeeper:
       memory: 300Mi
       cpu: 0.3
   configData:
-    PULSAR_MEM: "\"-Xms64m -Xmx300m -Djute.maxbuffer=10485760 -XX:+ExitOnOutOfMemoryError\""
+    PULSAR_MEM: "\"-Xms64m -Xmx128m -Djute.maxbuffer=10485760 -XX:+ExitOnOutOfMemoryError\""
 
 bookkeeper:
   replicaCount: 1
@@ -49,7 +49,7 @@ bookkeeper:
       memory: 400Mi
       cpu: 0.3
   configData:
-    BOOKIE_MEM: "-Xms64m -Xmx512m -XX:MaxDirectMemorySize=256m -XX:+ExitOnOutOfMemoryError"
+    BOOKIE_MEM: "-Xms64m -Xmx256m -XX:MaxDirectMemorySize=256m -XX:+ExitOnOutOfMemoryError"
     BOOKIE_GC: "-XX:+UseG1GC -XX:MaxGCPauseMillis=10"
 
 broker:
@@ -64,7 +64,7 @@ broker:
       memory: 400Mi
       cpu: 0.3
   configData:
-    PULSAR_MEM: "-Xms64m -Xmx400m -XX:MaxDirectMemorySize=256m -XX:+ExitOnOutOfMemoryError"
+    PULSAR_MEM: "-Xms64m -Xmx256m -XX:MaxDirectMemorySize=256m -XX:+ExitOnOutOfMemoryError"
 
 function:
   replicaCount: 1
@@ -74,7 +74,7 @@ function:
       memory: 400Mi
       cpu: 0.3
   configData:
-    PULSAR_MEM: "-Xms64m -Xmx400m -XX:MaxDirectMemorySize=256m -Dio.netty.leakDetectionLevel=disabled -Dio.netty.recycler.linkCapacity=1024 -XX:+ParallelRefProcEnabled -XX:+DisableExplicitGC -XX:+ExitOnOutOfMemoryError -XX:+PerfDisableSharedMem"
+    PULSAR_MEM: "-Xms64m -Xmx256m -XX:MaxDirectMemorySize=256m -Dio.netty.leakDetectionLevel=disabled -Dio.netty.recycler.linkCapacity=1024 -XX:+ParallelRefProcEnabled -XX:+DisableExplicitGC -XX:+ExitOnOutOfMemoryError -XX:+PerfDisableSharedMem"
 
 proxy:
   replicaCount: 1
@@ -87,7 +87,7 @@ proxy:
       memory: 400Mi
       cpu: 0.3
   configData:
-    PULSAR_MEM: "\"-Xms64m -Xmx400m -XX:MaxDirectMemorySize=112m\""
+    PULSAR_MEM: "\"-Xms64m -Xmx64m -XX:MaxDirectMemorySize=64m\""
   autoPortAssign:
     enablePlainTextWithTLS: true
   service:
