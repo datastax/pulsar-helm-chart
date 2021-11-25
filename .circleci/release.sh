@@ -68,7 +68,7 @@ find_latest_tag() {
 
 package_chart() {
     local chart="$1"
-    helm dependency update "$chart"
+    helm dependency build "$chart"
     helm package "$chart" --destination .cr-release-packages 
 }
 
