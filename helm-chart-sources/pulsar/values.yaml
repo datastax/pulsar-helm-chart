@@ -500,7 +500,7 @@ zookeeper:
     PULSAR_GC: "-XX:+UseG1GC"
     PULSAR_LOG_LEVEL: "info"
     PULSAR_LOG_ROOT_LEVEL: "info"
-    PULSAR_EXTRA_OPTS: "-Dzookeeper.tcpKeepAlive=true -Dpulsar.log.root.level=info"
+    PULSAR_EXTRA_OPTS: "-Dzookeeper.tcpKeepAlive=true -Dzookeeper.clientTcpKeepAlive=true -Dpulsar.log.root.level=info"
   ## Zookeeper service
   ## templates/zookeeper-service.yaml
   ##
@@ -571,7 +571,7 @@ zookeepernp:
     PULSAR_GC: "-XX:+UseG1GC"
     PULSAR_LOG_LEVEL: "info"
     PULSAR_LOG_ROOT_LEVEL: "info"
-    PULSAR_EXTRA_OPTS: "-Dzookeeper.tcpKeepAlive=true -Dpulsar.log.root.level=info"
+    PULSAR_EXTRA_OPTS: "-Dzookeeper.tcpKeepAlive=true -Dzookeeper.clientTcpKeepAlive=true -Dpulsar.log.root.level=info"
   ## Zookeeper service
   ## templates/zookeepernp-service.yaml
   ##
