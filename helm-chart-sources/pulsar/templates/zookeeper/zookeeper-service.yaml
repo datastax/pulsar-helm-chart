@@ -28,7 +28,6 @@ metadata:
     component: {{ .Values.zookeeper.component }}
     cluster: {{ template "pulsar.fullname" . }}
   annotations:
-    publishNotReadyAddresses: "true"
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
     {{- if .Values.zookeeper.service.annotations }}
 {{ toYaml .Values.zookeeper.service.annotations | indent 4 }}
@@ -41,6 +40,7 @@ spec:
   {{- end }}
 {{ toYaml .Values.zookeeper.service.ports | indent 2 }}
   clusterIP: None
+  publishNotReadyAddresses: true
   selector:
     app: {{ template "pulsar.name" . }}
     release: {{ .Release.Name }}
