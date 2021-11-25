@@ -232,12 +232,14 @@ spec:
             - "/pulsar/health/proxy_health_check.sh"
           initialDelaySeconds: {{ .Values.proxy.probe.initial }}
           periodSeconds:  {{ .Values.proxy.probe.period }}
+          timeoutSeconds:  {{ .Values.proxy.probe.timeout }}
         livenessProbe:
           exec:
             command:
             - "/pulsar/health/proxy_health_check.sh"
           initialDelaySeconds: {{ .Values.proxy.probe.initial }}
           periodSeconds: {{ .Values.proxy.probe.period }}
+          timeoutSeconds: {{ .Values.proxy.probe.timeout }}
         {{- end }}
       {{- if .Values.proxy.resources }}
         resources:

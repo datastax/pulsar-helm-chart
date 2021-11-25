@@ -461,6 +461,7 @@ zookeeper:
     enabled: true
     initial: 10
     period: 30
+    timeout: 5
   resources:
     requests:
       memory: 1Gi
@@ -550,6 +551,7 @@ zookeepernp:
     enabled: true
     initial: 10
     period: 30
+    timeout: 5
   resources:
     requests:
       memory: 1Gi
@@ -627,6 +629,7 @@ bookkeeper:
     port: 3181
     initial: 10
     period: 30
+    timeout: 5
   gracePeriod: 60
   resources:
     requests:
@@ -795,6 +798,7 @@ broker:
     port: 8080
     initial: 10
     period: 30
+    timeout: 5
   resources:
     requests:
       memory: 2Gi
@@ -905,6 +909,7 @@ brokerSts:
     port: 8080
     initial: 10
     period: 30
+    timeout: 5
   resources:
     requests:
       memory: 2Gi
@@ -984,6 +989,7 @@ function:
     port: 6750
     initial: 10
     period: 30
+    timeout: 5
   # Only the process runtime has been tested with this chart
   runtime: "process"
   k8sMinResources:
@@ -1227,6 +1233,7 @@ proxy:
     enabled: true
     initial: 10
     period: 30
+    timeout: 5
   # Resources for the main Pulsar proxy
   resources:
     requests:
