@@ -33,7 +33,7 @@ dependencies:
   repository: https://charts.jetstack.io
   condition: cert-manager.enabled
 - name: envoy
-  version: 0.0.7
+  version: x.x.x
   repository: https://slamdev.github.io/helm-charts
   condition: envoy.enabled
 - name: keycloak
