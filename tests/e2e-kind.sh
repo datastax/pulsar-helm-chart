@@ -92,7 +92,7 @@ pull_and_cache_docker_images() {
     images=$(yq e '.image | .[] |= ([.repository, .tag] | join(":")) | to_entries | .[] | .value' "$SCRIPT_DIR"/../helm-chart-sources/pulsar/values.yaml | sort | uniq)
     for image in $images; do
         docker pull "$image"
-        kind load docker-image --name "$CLUSTER_NAME" --nodes "$nodes" "$image"
+        kind load docker-image -v 1 --name "$CLUSTER_NAME" --nodes "$nodes" "$image"
     done
 }
 
