@@ -1,0 +1,15 @@
+dependencies:
+- name: kube-prometheus-stack
+  repository: https://prometheus-community.github.io/helm-charts
+  version: 12.12.2
+- name: cert-manager
+  repository: https://charts.jetstack.io
+  version: v1.1.1
+- name: envoy
+  repository: https://slamdev.github.io/helm-charts
+  version: 0.0.7
+- name: keycloak
+  repository: https://charts.bitnami.com/bitnami
+  version: 5.0.1
+digest: sha256:9c8e272fe937fd7250d353b1c8b1a1faa0a1bd4cb906b61d1669467915e29c30
+generated: "2021-11-25T14:07:33.960587743+02:00"
