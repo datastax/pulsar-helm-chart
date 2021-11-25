@@ -200,7 +200,8 @@ spec:
             path: {{ .Values.function.probe.metricsPath | default "/metrics" }}
             port: {{ .Values.function.probe.port }}
           initialDelaySeconds: {{ .Values.function.probe.initial }}
-          timeoutSeconds: {{ .Values.function.probe.period }}
+          periodSeconds:  {{ .Values.function.probe.period }}
+          timeoutSeconds:  {{ .Values.function.probe.timeout }}
         {{- end }}
         {{- if .Values.function.resources }}
         resources:
