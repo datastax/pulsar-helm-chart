@@ -30,6 +30,14 @@ extra:
   pulsarHeartbeat: true
   pulsarAdminConsole: true
 
+# After https://github.com/apache/pulsar/pull/9413 Pulsar seems to load
+# all connector classes to memory. This causes OOM at OS level (error code 143)
+# Mitigate the issue by using a container image without the connectors.
+image:
+  function:
+    repository: datastax/lunastreaming
+
+
 autoRecovery:
   enableProvisionContainer: true
 
@@ -38,19 +46,20 @@ zookeeper:
   resources:
     requests:
       memory: 300Mi
-      cpu: 0.3
+      cpu: 100m
   configData:
-    PULSAR_MEM: "\"-Xms200m -Xmx300m -Djute.maxbuffer=10485760 -XX:+ExitOnOutOfMemoryError\""
+    PULSAR_MEM: "\"-Xms64m -Xmx128m -Djute.maxbuffer=10485760 -XX:+ExitOnOutOfMemoryError\""
 
 bookkeeper:
   replicaCount: 1
   resources:
     requests:
       memory: 400Mi
-      cpu: 0.3
+      cpu: 100m
   configData:
-    BOOKIE_MEM: "-Xms256m -Xmx512m -XX:MaxDirectMemorySize=512m -XX:+ExitOnOutOfMemoryError"
+    BOOKIE_MEM: "-Xms64m -Xmx256m -XX:MaxDirectMemorySize=256m -XX:+ExitOnOutOfMemoryError"
     BOOKIE_GC: "-XX:+UseG1GC -XX:MaxGCPauseMillis=10"
+    diskUsageThreshold: "0.99"
 
 broker:
   component: broker
@@ -62,9 +71,9 @@ broker:
   resources:
     requests:
       memory: 400Mi
-      cpu: 0.3
+      cpu: 100m
   configData:
-    PULSAR_MEM: "-Xms256m -Xmx400m -XX:MaxDirectMemorySize=400m -XX:+ExitOnOutOfMemoryError"
+    PULSAR_MEM: "-Xms64m -Xmx256m -XX:MaxDirectMemorySize=256m -XX:+ExitOnOutOfMemoryError"
 
 function:
   replicaCount: 1
@@ -72,22 +81,22 @@ function:
   resources:
     requests:
       memory: 400Mi
-      cpu: 0.3
+      cpu: 100m
   configData:
-    PULSAR_MEM: "-Xms256m -Xmx400m -XX:MaxDirectMemorySize=400m -Dio.netty.leakDetectionLevel=disabled -Dio.netty.recycler.linkCapacity=1024 -XX:+ParallelRefProcEnabled -XX:+DisableExplicitGC -XX:+ExitOnOutOfMemoryError -XX:+PerfDisableSharedMem"
+    PULSAR_MEM: "-Xms64m -Xmx256m -XX:MaxDirectMemorySize=256m -Dio.netty.leakDetectionLevel=disabled -Dio.netty.recycler.linkCapacity=1024 -XX:+ParallelRefProcEnabled -XX:+DisableExplicitGC -XX:+ExitOnOutOfMemoryError -XX:+PerfDisableSharedMem"
 
 proxy:
   replicaCount: 1
   resources:
     requests:
       memory: 400Mi
-      cpu: 0.3
+      cpu: 100m
   wsResources:
     requests:
       memory: 400Mi
-      cpu: 0.3
+      cpu: 100m
   configData:
-    PULSAR_MEM: "\"-Xms400m -Xmx400m -XX:MaxDirectMemorySize=112m\""
+    PULSAR_MEM: "\"-Xms64m -Xmx64m -XX:MaxDirectMemorySize=64m\""
   autoPortAssign:
     enablePlainTextWithTLS: true
   service:
