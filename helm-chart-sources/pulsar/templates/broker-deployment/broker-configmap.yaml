@@ -69,23 +69,7 @@ data:
   {{- if .Values.broker.webSocketServiceEnabled }}
   webSocketServiceEnabled: "true"
   {{- end }}
-  {{- if .Values.broker.kafkaOnPulsarEnabled }}
-  # enabling Kafka-on-Pulsar
-  protocolHandlerDirectory: "./protocols"
-  messagingProtocols: "kafka"
-  brokerDeleteInactiveTopicsEnabled: "false"
-  PULSAR_PREFIX_protocolHandlerDirectory: "./protocols"
-  PULSAR_PREFIX_messagingProtocols: "kafka"
-  PULSAR_PREFIX_brokerDeleteInactiveTopicsEnabled: "false"
-  allowAutoTopicCreationType: "partitioned"
-  {{- range $key, $val := .Values.broker.kafkaOnPulsar }}
-  {{ $key }}: {{ $val | quote }}
-  {{ printf "PULSAR_PREFIX_%s" $key }}: {{ $val | quote }}
-  {{- end }}
-  # end of Kafka-on-Pulsar configs
-  {{ else }}
   allowAutoTopicCreationType: "non-partitioned"
-  {{- end }}
   {{- if .Values.enableTokenAuth }}
   PF_clientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
   PF_clientAuthenticationParameters: "file:///pulsar/token-superuser/superuser.jwt"
