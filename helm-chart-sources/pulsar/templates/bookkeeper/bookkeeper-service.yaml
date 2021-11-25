@@ -28,7 +28,6 @@ metadata:
     component: {{ .Values.bookkeeper.component }}
     cluster: {{ template "pulsar.fullname" . }}
   annotations:
-    publishNotReadyAddresses: "true"
     service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
     {{- if .Values.bookkeeper.service.annotations }}
 {{ toYaml .Values.bookkeeper.service.annotations | indent 4 }}
@@ -43,6 +42,7 @@ spec:
   {{- end }}
 {{ toYaml .Values.bookkeeper.service.ports | indent 2 }}
   clusterIP: None
+  publishNotReadyAddresses: true
   selector:
     app: {{ template "pulsar.name" . }}
     release: {{ .Release.Name }}
