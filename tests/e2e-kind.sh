@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
-
+CI="${CI:-false}"
 set -o errexit
 set -o nounset
 set -o pipefail
@@ -78,10 +78,12 @@ install_charts() {
 }
 
 pull_and_cache_docker_images() {
-    echo 'Installing yq...'
-    curl -Lo ./yq https://github.com/mikefarah/yq/releases/download/v4.9.8/yq_linux_amd64
-    chmod +x ./yq
-    sudo mv yq /usr/local/bin/
+    if [[ $CI == "true" ]]; then
+        echo 'Installing yq...'
+        curl -Lo ./yq https://github.com/mikefarah/yq/releases/download/v4.9.8/yq_linux_amd64
+        chmod +x ./yq
+        sudo mv yq /usr/local/bin/
+    fi
     echo 'Printing yq version'
     yq --version
 
