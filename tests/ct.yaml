@@ -24,4 +24,3 @@ chart-dirs:
 chart-repos:
   - kube-prometheus-stack=https://prometheus-community.github.io/helm-charts
   - cert-manager=https://charts.jetstack.io
-  - envoy=https://slamdev.github.io/helm-charts
