@@ -16,9 +16,40 @@
 #
 
 # Please note that this example works only with Luna Streaming 2.8.0.1.1.5+
+
+image:
+  broker:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: latest-280
+  brokerSts:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: latest-280
+  function:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: latest-280
+  zookeeper:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: latest-280
+  bookkeeper:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: latest-280
+  proxy:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: latest-280
+  bastion:
+    repository: harbor.sjc.dsinternal.org/pulsar/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: latest-280
+
 enableAntiAffinity: false
-enableTls: true
-enableTokenAuth: true
+enableTls: false
+enableTokenAuth: false
 restartOnConfigMapChange:
   enabled: true
 extra:
@@ -29,11 +60,11 @@ extra:
   pulsarAdminConsole: true
 
 cert-manager:
-  enabled: true
+  enabled: false
 
 createCertificates:
   selfSigned:
-    enabled: true
+    enabled: false
 
 zookeeper:
   replicaCount: 1
@@ -72,7 +103,9 @@ broker:
       port: 9092
     - name: kafkassl
       port: 9093
-  replicaCount: 3
+    - name: kafkaschemareg
+      port: 8001
+  replicaCount: 2
   ledger:
     defaultEnsembleSize: 1
     defaultAckQuorum: 1
@@ -119,15 +152,13 @@ proxy:
       cpu: 0.3
   configData:
     PULSAR_MEM: "\"-Xms400m -Xmx400m -XX:MaxDirectMemorySize=112m\""
-    PULSAR_PREFIX_kafkaListeners: "SASL_PLAINTEXT://0.0.0.0:9092,SASL_SSL://0.0.0.0:9093"
-# here you have to customize the advertised name if you want to access
-# KOP from outside the kube    
-    PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://pulsar-proxy:9092,SASL_SSL://pulsar-proxy:9093"
+    PULSAR_PREFIX_kafkaListeners: "SASL_PLAINTEXT://0.0.0.0:9092"
+    PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://pulsar-proxy:9092"
     PULSAR_PREFIX_saslAllowedMechanisms: PLAIN
     PULSAR_PREFIX_kafkaProxySuperUserRole: superuser
     PULSAR_PREFIX_kopSchemaRegistryProxyEnableTls: "false"
     PULSAR_PREFIX_kopSchemaRegistryEnable: "true"
-    PULSAR_PREFIX_kopSchemaRegistryProxyPort: "8003"
+    PULSAR_PREFIX_kopSchemaRegistryProxyPort: "8081"
   autoPortAssign:
     enablePlainTextWithTLS: true
   service:
@@ -142,6 +173,8 @@ proxy:
         containerPort: 9092
       - name: kafkassl
         containerPort: 9093
+      - name: kafkaschemareg
+        containerPort: 8081
     servicePorts:
      - name: kafkaplaintext
        port: 9092
@@ -151,6 +184,10 @@ proxy:
        port: 9093
        protocol: TCP
        targetPort: kafkassl      
+     - name: kafkaschemareg
+       port: 8081
+       protocol: TCP
+       targetPort: kafkaschemareg
 pulsarAdminConsole:
   replicaCount: 1
   service:
@@ -162,9 +199,9 @@ pulsar_manager:
   service: #ASF Helm Chart
     type: ClusterIP
 kube-prometheus-stack:
-  enabled: false
+  enabled: true
   prometheusOperator:
-    enabled: false
+    enabled: true
   grafana:
-    enabled: false
+    enabled: true
     adminPassword: e9JYtk83*4#PM8    
