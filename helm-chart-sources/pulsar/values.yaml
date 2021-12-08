@@ -30,7 +30,7 @@ rbac:
   create: true
   # use ClusterRole and ClusterRoleBinding resources when set to true
   # use namespaced Role and RoleBinding resources when set to false
-  clusterRoles: true
+  clusterRoles: false
 # Global node selector
 # If set, this will apply to all components
 # Individual components can be set to a different node
