@@ -42,3 +42,11 @@ data:
     {{- else }}
     curl -s --max-time {{ .Values.broker.probe.timeout }} --fail http://localhost:8080/admin/v2/brokers/health
     {{- end }}
+
+  function_worker_health_check.sh: |
+    #!/bin/bash
+    {{- if .Values.enableTokenAuth }}
+    curl -s --max-time {{ .Values.proxy.probe.timeout }} --fail -H "Authorization: Bearer $(cat /pulsar/token-superuser/superuser.jwt | tr -d '\r')" http://localhost:{{ .Values.function.probe.port }}/metrics/ > /dev/null
+    {{- else }}
+    curl -s --max-time {{ .Values.proxy.probe.timeout }} --fail http://localhost:{{ .Values.function.probe.port }}/metrics/ > /dev/null
+    {{- end }}
