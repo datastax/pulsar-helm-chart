@@ -48,7 +48,6 @@ data:
     http-server.http.port={{ .Values.pulsarSQL.server.config.http.port }}
     query.max-memory={{ .Values.pulsarSQL.server.config.query.maxMemory }}
     query.max-memory-per-node={{ .Values.pulsarSQL.server.config.query.maxMemoryPerNode }}
-    discovery-server.enabled=true
     discovery.uri=http://{{ template "pulsar.fullname" . }}-{{ .Values.pulsarSQL.component }}:{{ .Values.pulsarSQL.server.config.http.port }}
     catalog.config-dir=/pulsar/conf/presto/catalog
 
