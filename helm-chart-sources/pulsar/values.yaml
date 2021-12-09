@@ -30,7 +30,7 @@ rbac:
   create: true
   # use ClusterRole and ClusterRoleBinding resources when set to true
   # use namespaced Role and RoleBinding resources when set to false
-  clusterRoles: true
+  clusterRoles: false
 # Global node selector
 # If set, this will apply to all components
 # Individual components can be set to a different node
@@ -299,32 +299,32 @@ image:
     # If not using tiered storage, you can use the smaller pulsar image for the broker
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.6
+    tag: 2.8.0_1.1.7
   brokerSts:
     # If not using tiered storage, you can use the smaller pulsar image for the broker
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.6
+    tag: 2.8.0_1.1.7
   function:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.6
+    tag: 2.8.0_1.1.7
   zookeeper:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.6
+    tag: 2.8.0_1.1.7
   bookkeeper:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.6
+    tag: 2.8.0_1.1.7
   proxy:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.6
+    tag: 2.8.0_1.1.7
   bastion:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.6
+    tag: 2.8.0_1.1.7
   pulsarBeam:
     repository: kesque/pulsar-beam
     pullPolicy: IfNotPresent
@@ -339,7 +339,7 @@ image:
     tag: logcollector_latest
   pulsarSQL:
     repository: datastax/lunastreaming-all
-    tag: 2.8.0_1.1.6
+    tag: 2.8.0_1.1.7
     pullPolicy: IfNotPresent
   tardigrade:
     repository: storjlabs/gateway

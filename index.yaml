@@ -3,6 +3,58 @@ entries:
   pulsar:
   - apiVersion: v2
     appVersion: 2.8.0
+    created: "2021-12-08T15:19:49.23814716Z"
+    dependencies:
+    - condition: kube-prometheus-stack.enabled
+      name: kube-prometheus-stack
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 12.x.x
+    - condition: cert-manager.enabled
+      name: cert-manager
+      repository: https://charts.jetstack.io
+      version: v1.1.x
+    - condition: keycloak.enabled
+      name: keycloak
+      repository: https://charts.bitnami.com/bitnami
+      version: 5.0.1
+    description: Apache Pulsar Helm chart for Kubernetes
+    digest: cf99148f503d7fd1d079be0ce8638ec1faa79fe177a7734353ca27cac4cea91c
+    maintainers:
+    - name: zzzming
+    - name: cdbartholomew
+    - name: lhotari
+    name: pulsar
+    urls:
+    - https://github.com/datastax/pulsar-helm-chart/releases/download/pulsar-2.0.4/pulsar-2.0.4.tgz
+    version: 2.0.4
+  - apiVersion: v2
+    appVersion: 2.8.0
+    created: "2021-12-08T14:48:41.785109258Z"
+    dependencies:
+    - condition: kube-prometheus-stack.enabled
+      name: kube-prometheus-stack
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 12.x.x
+    - condition: cert-manager.enabled
+      name: cert-manager
+      repository: https://charts.jetstack.io
+      version: v1.1.x
+    - condition: keycloak.enabled
+      name: keycloak
+      repository: https://charts.bitnami.com/bitnami
+      version: 5.0.1
+    description: Apache Pulsar Helm chart for Kubernetes
+    digest: 8bef536afb8176f7cf4775e1da6485dfe841060a7f3eb8e5d17ec8b220367504
+    maintainers:
+    - name: zzzming
+    - name: cdbartholomew
+    - name: lhotari
+    name: pulsar
+    urls:
+    - https://github.com/datastax/pulsar-helm-chart/releases/download/pulsar-2.0.3/pulsar-2.0.3.tgz
+    version: 2.0.3
+  - apiVersion: v2
+    appVersion: 2.8.0
     created: "2021-12-01T15:34:42.214601198Z"
     dependencies:
     - condition: kube-prometheus-stack.enabled
@@ -278,4 +330,4 @@ entries:
     urls:
     - https://github.com/datastax/pulsar-helm-chart/releases/download/pulsar-1.0.3/pulsar-1.0.3.tgz
     version: 1.0.3
-generated: "2021-12-01T15:34:42.214742713Z"
+generated: "2021-12-08T15:19:49.238285669Z"

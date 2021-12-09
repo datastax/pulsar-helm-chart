@@ -30,6 +30,10 @@ rules:
   verbs: ["list"]
 - apiGroups: [""]
   resources:
+  - secrets
+  verbs: ["*"]
+- apiGroups: [""]
+  resources:
   - services
   verbs: ["get", "create", "delete"]
 - apiGroups: ["apps"]

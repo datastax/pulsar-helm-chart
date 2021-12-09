@@ -180,17 +180,12 @@ Once you have your storage settings in the values file, install the chart like t
 helm install pulsar datastax-pulsar/pulsar --namespace pulsar --values storage_values.yaml --create-namespace
 ```
 
-## Using namespace scoped RBAC resources
+## Using namespace scoped or cluster level RBAC resources
 
-By default, the Helm deployment uses `ClusterRole` and `ClusterRoleBinding` resources for defining access for service accounts. These resources get created outside of the namespace defined for deployment.
+Up to Helm chart version 2.0.3, the Helm deployment uses `ClusterRole` and `ClusterRoleBinding` resources for defining access for service accounts by default. These resources get created outside of the namespace defined for deployment.
+Since version 2.0.4, namespace scoped `Role` and `RoleBinding` resources are used by default.
 
-It is possible to use namespace scoped `Role` and `RoleBinding` resources by setting `rbac.clusterRoles` to `false`.
-
-```
-rbac:
-  # use namespaces Role and RoleBinding resources
-  clusterRoles: false
-```
+It is possible to revert to use the legacy behavior by setting `rbac.clusterRoles` to `true`.
 
 ## Installing Pulsar for development
 
