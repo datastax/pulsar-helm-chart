@@ -144,7 +144,7 @@ spec:
               {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
               /pulsar/tools/certconverter.sh &&
               {{- end }}
-              bin/pulsar sql-worker run \
+              OPTS="${OPTS} -Dlog4j2.formatMsgNoLookups=true" exec bin/pulsar sql-worker run \
                 --etc-dir=/pulsar/conf/presto \
                 --data-dir=/pulsar/data;
           ports:

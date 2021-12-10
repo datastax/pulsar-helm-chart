@@ -151,7 +151,7 @@ spec:
           {{- else }}
           bin/generate-zookeeper-config.sh conf/zookeeper.conf &&
           {{- end }}
-          exec bin/pulsar zookeeper
+          OPTS="${OPTS} -Dlog4j2.formatMsgNoLookups=true" exec bin/pulsar zookeeper
         ports:
         - name: client
           containerPort: 2181

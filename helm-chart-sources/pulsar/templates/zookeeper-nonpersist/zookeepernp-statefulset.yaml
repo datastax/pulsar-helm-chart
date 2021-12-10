@@ -134,7 +134,7 @@ spec:
           /pulsar/tools/certconverter.sh &&
           {{- end }}
           /pulsar/zookeeper-config/generate-zookeeper-config-mixed.sh conf/zookeeper.conf &&
-          exec bin/pulsar zookeeper
+          OPTS="${OPTS} -Dlog4j2.formatMsgNoLookups=true" exec bin/pulsar zookeeper
         ports:
         - name: client
           containerPort: 2181
