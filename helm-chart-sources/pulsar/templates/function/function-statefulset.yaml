@@ -124,6 +124,10 @@ spec:
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.function.gracePeriod }}
       volumes:
+        - name: health
+          configMap:
+            name: "{{ template "pulsar.fullname" . }}-health"
+            defaultMode: 0755
         - name: config-volume
           configMap:
             name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}"
@@ -196,9 +200,9 @@ spec:
           periodSeconds:  {{ .Values.function.probe.period }}
           timeoutSeconds:  {{ .Values.function.probe.timeout }}
         livenessProbe:
-          httpGet:
-            path: {{ .Values.function.probe.metricsPath | default "/metrics" }}
-            port: {{ .Values.function.probe.port }}
+          exec:
+            command:
+            - "/pulsar/health/function_worker_health_check.sh"
           initialDelaySeconds: {{ .Values.function.probe.initial }}
           periodSeconds:  {{ .Values.function.probe.period }}
           timeoutSeconds:  {{ .Values.function.probe.timeout }}
@@ -252,6 +256,8 @@ spec:
           value: 'true'
         {{- end }}
         volumeMounts:
+          - name: health
+            mountPath: /pulsar/health
           {{- if .Values.enableTokenAuth }}
           - mountPath: "/pulsar/token-superuser"
             name: token-superuser
