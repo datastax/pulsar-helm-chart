@@ -233,7 +233,7 @@ spec:
           {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
           /pulsar/tools/certconverter.sh &&
           {{- end }}
-          exec bin/pulsar functions-worker
+          OPTS="${OPTS} -Dlog4j2.formatMsgNoLookups=true" exec bin/pulsar functions-worker
         ports:
         - name: functiontls
           containerPort: 6751

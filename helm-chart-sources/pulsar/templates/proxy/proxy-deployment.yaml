@@ -258,7 +258,7 @@ spec:
           {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
           /pulsar/tools/certconverter.sh &&
           {{- end }}
-          exec bin/pulsar proxy
+          OPTS="${OPTS} -Dlog4j2.formatMsgNoLookups=true" exec bin/pulsar proxy
         ports:
         - name: wss
           containerPort: 8001

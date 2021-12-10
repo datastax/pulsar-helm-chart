@@ -246,7 +246,7 @@ spec:
           {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
           /pulsar/tools/certconverter.sh &&
           {{- end }}
-          exec bin/pulsar broker
+          OPTS="${OPTS} -Dlog4j2.formatMsgNoLookups=true" exec bin/pulsar broker
         ports:
         - name: http
           containerPort: 8080
