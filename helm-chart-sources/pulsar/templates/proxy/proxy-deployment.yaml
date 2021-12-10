@@ -316,7 +316,7 @@ spec:
           {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
           /pulsar/tools/certconverter.sh &&
           {{- end }}
-          bin/pulsar websocket
+          OPTS="${OPTS} -Dlog4j2.formatMsgNoLookups=true" exec bin/pulsar websocket
         ports:
         - name: http
           containerPort: 8080
