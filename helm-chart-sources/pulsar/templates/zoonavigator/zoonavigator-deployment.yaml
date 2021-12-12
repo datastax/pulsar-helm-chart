@@ -78,6 +78,8 @@ spec:
         - name: http
           containerPort: 8001
         env:
+        - name: LOG4J_FORMAT_MSG_NO_LOOKUPS
+          value: "true"
         - name: API_HOST
           value: "localhost"
         - name: API_PORT
@@ -104,6 +106,8 @@ spec:
         - name: api
           containerPort: 9001
         env:
+        - name: LOG4J_FORMAT_MSG_NO_LOOKUPS
+          value: "true"
         - name: API_HTTP_PORT
           value: "9001"
 {{- end }}

@@ -175,6 +175,8 @@ spec:
         ports:
         volumeMounts:
         env:
+          - name: LOG4J_FORMAT_MSG_NO_LOOKUPS
+            value: "true"
           - name: ClusterName
             value: "{{ template "pulsar.fullname" . }}"
           - name: SuperRoles
@@ -212,6 +214,9 @@ spec:
         - name: certconverter
           mountPath: /pulsar/tools
         {{- end }}
+        env:
+        - name: LOG4J_FORMAT_MSG_NO_LOOKUPS
+          value: "true"
         envFrom:
         - configMapRef:
             name: "{{ template "pulsar.fullname" . }}-{{ .Values.autoRecovery.component }}"

@@ -178,6 +178,8 @@ spec:
         - configMapRef:
             name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarBeam.component }}"
         env:
+          - name: LOG4J_FORMAT_MSG_NO_LOOKUPS
+            value: "true"
           - name: ProcessMode
             value: "broker"
           - name: PORT

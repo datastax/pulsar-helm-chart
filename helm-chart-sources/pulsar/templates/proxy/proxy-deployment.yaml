@@ -292,6 +292,9 @@ spec:
           - name: lib-data
             mountPath: {{ .Values.proxy.initContainer.emptyDirPath }}
           {{- end }}
+        env:
+        - name: LOG4J_FORMAT_MSG_NO_LOOKUPS
+          value: "true"
         envFrom:
         - configMapRef:
             name: "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}"
@@ -343,6 +346,9 @@ spec:
             name: token-websocket
             readOnly: true
           {{- end }}
+        env:
+        - name: LOG4J_FORMAT_MSG_NO_LOOKUPS
+          value: "true"
         envFrom:
         - configMapRef:
             name: "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}-ws"
@@ -363,6 +369,8 @@ spec:
             readOnly: true
             mountPath: /pulsar/certs
         env:
+          - name: LOG4J_FORMAT_MSG_NO_LOOKUPS
+            value: "true"
           - name: PORT
             value: "8500"
           - name: CA_PATH
@@ -400,6 +408,8 @@ spec:
             name: token-public-key
             readOnly: true
         env:
+          - name: LOG4J_FORMAT_MSG_NO_LOOKUPS
+            value: "true"
           - name: ROLES
             value: {{ .Values.tokenServer.allowedRoles }}
 {{- end }}
@@ -430,6 +440,8 @@ spec:
           {{- end }}
         args: ["-mode", "http"]
         env:
+          - name: LOG4J_FORMAT_MSG_NO_LOOKUPS
+            value: "true"
           - name: ProcessMode
             value: "http"
           - name: PORT
@@ -506,6 +518,8 @@ spec:
             readOnly: true
           {{- end }}
         env:
+          - name: LOG4J_FORMAT_MSG_NO_LOOKUPS
+            value: "true"
           - name: PORT
             value: "8964"
           - name: ClusterName

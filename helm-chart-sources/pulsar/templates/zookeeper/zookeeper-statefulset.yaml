@@ -160,6 +160,8 @@ spec:
         - name: leader-election
           containerPort: 3888
         env:
+        - name: LOG4J_FORMAT_MSG_NO_LOOKUPS
+          value: "true"
         - name: ZOOKEEPER_SERVERS
           value:
             {{- if .Values.extra.zookeepernp }}

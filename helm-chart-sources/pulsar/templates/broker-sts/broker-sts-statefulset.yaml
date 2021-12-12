@@ -285,6 +285,8 @@ spec:
             name: "{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}"
         {{- if .Values.brokerSts.ledger }}
         env:
+        - name: LOG4J_FORMAT_MSG_NO_LOOKUPS
+          value: "true"
         - name: advertisedAddress
           valueFrom:
             fieldRef:

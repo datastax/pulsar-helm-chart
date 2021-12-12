@@ -243,6 +243,8 @@ spec:
         - configMapRef:
             name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-extra"
         env:
+        - name: LOG4J_FORMAT_MSG_NO_LOOKUPS
+          value: "true"
         - name: workerHostname
           valueFrom:
             fieldRef:
@@ -296,6 +298,8 @@ spec:
         - name: burnelllog
           containerPort: 4040
         env:
+          - name: LOG4J_FORMAT_MSG_NO_LOOKUPS
+            value: "true"
           - name: LogServerPort
             value: ":4040"
           - name: FunctionLogPathPrefix

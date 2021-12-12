@@ -59,6 +59,8 @@ spec:
         - name: config-props
           mountPath: /configmap
         env:
+        - name: LOG4J_FORMAT_MSG_NO_LOOKUPS
+          value: "true"
         - name: CONF_PATH
           value: "/config"
         ports:

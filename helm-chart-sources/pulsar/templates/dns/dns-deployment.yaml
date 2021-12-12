@@ -80,6 +80,8 @@ spec:
         {{- end }}
         {{- if eq .Values.dns.provider "digitalocean" }}
         env:
+        - name: LOG4J_FORMAT_MSG_NO_LOOKUPS
+          value: "true"
         - name: DO_TOKEN
           value: "{{ .Values.dns.digitalOceanApiKey}}"
         {{- end  }}

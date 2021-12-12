@@ -119,6 +119,8 @@ spec:
             readOnly: true
           {{- end }}
         env:
+          - name: LOG4J_FORMAT_MSG_NO_LOOKUPS
+            value: "true"
           {{- if .Values.enableTokenAuth }}
           - name: token_path
             value: "/pulsar/token-superuser/superuser.jwt"

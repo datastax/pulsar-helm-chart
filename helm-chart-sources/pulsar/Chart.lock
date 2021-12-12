@@ -5,11 +5,8 @@ dependencies:
 - name: cert-manager
   repository: https://charts.jetstack.io
   version: v1.1.1
-- name: envoy
-  repository: https://slamdev.github.io/helm-charts
-  version: 0.0.7
 - name: keycloak
   repository: https://charts.bitnami.com/bitnami
   version: 5.0.1
-digest: sha256:9c8e272fe937fd7250d353b1c8b1a1faa0a1bd4cb906b61d1669467915e29c30
-generated: "2021-11-25T14:07:33.960587743+02:00"
+digest: sha256:47cdf1a3ab65803006e6e3037043de119a5f27ef1d763aeda76881394415341a
+generated: "2021-12-12T17:56:37.452676318+02:00"

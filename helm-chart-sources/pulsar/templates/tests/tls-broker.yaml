@@ -48,6 +48,8 @@ spec:
   - name: "{{ template "pulsar.fullname" . }}-test-client-broker-tls"
     image: "{{ .Values.image.bastion.repository }}:{{ .Values.image.bastion.tag }}"
     env:
+    - name: LOG4J_FORMAT_MSG_NO_LOOKUPS
+      value: "true"
       {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}
       - name: tlsTrustCertsFilePath
         value: /pulsar/certs/ca.crt

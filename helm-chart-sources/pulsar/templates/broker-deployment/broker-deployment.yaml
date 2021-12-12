@@ -287,6 +287,8 @@ spec:
         - configMapRef:
             name: "{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}"
         env:
+        - name: LOG4J_FORMAT_MSG_NO_LOOKUPS
+          value: "true"
         - name: advertisedAddress
           valueFrom:
             fieldRef:

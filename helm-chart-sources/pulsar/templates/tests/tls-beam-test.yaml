@@ -82,6 +82,8 @@ spec:
           bin/apply-config-from-env.py conf/client.conf &&
           /pulsar/tests/test.sh
     env:
+    - name: LOG4J_FORMAT_MSG_NO_LOOKUPS
+      value: "true"
     - name: webServiceUrl
       value: https://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8443/
     - name: brokerServiceUrl

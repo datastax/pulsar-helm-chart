@@ -81,6 +81,8 @@ spec:
           {{- if .Values.storageOffload.driver }}
           {{- if eq .Values.storageOffload.driver "aws-s3" }}
           env:
+          - name: LOG4J_FORMAT_MSG_NO_LOOKUPS
+            value: "true"
           - name: AWS_ACCESS_KEY_ID
             value: {{ .Values.storageOffload.accessKey }}
           - name: AWS_SECRET_ACCESS_KEY
