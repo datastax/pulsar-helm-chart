@@ -95,6 +95,8 @@ proxy:
       enabled: true
 
 pulsarSQL:
+  server:
+    workers: 1
   resources:
     requests:
       memory: 512Mi
