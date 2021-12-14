@@ -147,28 +147,20 @@ spec:
               OPTS="${OPTS} -Dlog4j2.formatMsgNoLookups=true" exec bin/pulsar sql-worker run \
                 --etc-dir=/pulsar/conf/presto \
                 --data-dir=/pulsar/data;
-          ports:
-            - name: http-coord
-              containerPort: {{ .Values.pulsarSQL.server.config.http.port }}
-              protocol: TCP
           livenessProbe:
-            httpGet:
-              path: /v1/service/presto
-              port: http-coord
+            exec:
+              command:
+                - /bin/bash
+                - /pulsar/conf/presto/health_check.sh
             initialDelaySeconds: 10
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 3
-            failureThreshold: 4
+            periodSeconds: 25
           readinessProbe:
-            httpGet:
-              path: /v1/service/presto
-              port: http-coord
-            initialDelaySeconds: 10
+            exec:
+              command:
+                - /bin/bash
+                - /pulsar/conf/presto/health_check.sh
+            initialDelaySeconds: 5
             periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 3
-            failureThreshold: 4
           resources:
 {{ toYaml .Values.pulsarSQL.resources | indent 12 }}
     {{- with .Values.pulsarSQL.nodeSelector }}
