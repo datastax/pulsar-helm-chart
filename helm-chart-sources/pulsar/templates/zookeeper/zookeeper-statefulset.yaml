@@ -117,6 +117,9 @@ spec:
         {{- end }}
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.zookeeper.gracePeriod }}
+      securityContext:
+        fsGroup: 0
+        fsGroupChangePolicy: "OnRootMismatch"
       containers:
       - name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}"
         image: "{{ .Values.image.zookeeper.repository }}:{{ .Values.image.zookeeper.tag }}"

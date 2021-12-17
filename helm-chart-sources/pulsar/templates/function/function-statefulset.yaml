@@ -175,6 +175,9 @@ spec:
           - name: extra-data
             mountPath: {{ .Values.function.initContainer.emptyDirPath }}
       {{- end }}
+      securityContext:
+        fsGroup: 0
+        fsGroupChangePolicy: "OnRootMismatch"
       containers:
       - name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}"
         image: "{{ .Values.image.function.repository }}:{{ .Values.image.function.tag }}"

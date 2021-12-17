@@ -46,8 +46,6 @@ image:
     pullPolicy: IfNotPresent
     tag: 2.8.0_1.1.3
 
-fixRootlessPermissions:
-  enabled: true
 enableAntiAffinity: false
 enableTls: true
 #tls:
