@@ -55,9 +55,11 @@ spec:
         command: ["sh", "-c"]
         args:
           - >-
-            until nslookup {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-{{ add (.Values.zookeeper.replicaCount | int) -1 }}.{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}.{{ .Release.Namespace }}; do
+            until [ "$(echo ruok | nc {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-{{ add (.Values.zookeeper.replicaCount | int) -1 }}.{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}.{{ .Release.Namespace }} 2181)" = "imok" ]; do
+              echo Zookeeper not yet ready. Will try again after 3 seconds.
               sleep 3;
             done;
+            echo Zookeeper is ready.
       containers:
       - name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeperMetadata.component }}"
         image: "{{ .Values.image.zookeeper.repository }}:{{ .Values.image.zookeeper.tag }}"
@@ -78,6 +80,6 @@ spec:
               --broker-service-url-tls pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}:6651/ \
               {{- end }}
               --web-service-url http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}:8080/ \
-              --broker-service-url pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}:6650/ || true;
+              --broker-service-url pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}:6650/;
       restartPolicy: Never
 {{- end }}
