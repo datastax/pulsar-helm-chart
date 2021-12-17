@@ -118,32 +118,6 @@ spec:
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.bookkeeper.gracePeriod }}
       initContainers:
-      {{- if .Values.fixRootlessPermissions.enabled }}
-      # This init container will make sure permissions are set correctly for the rootless container
-      - name: fix-rootless-permissions
-        image: {{ .Values.fixRootlessPermissions.containerImage }}
-        imagePullPolicy: IfNotPresent
-        command: ["sh", "-c"]
-        volumeMounts:
-        {{- if and .Values.bookkeeper.volumes.oneDisk}}
-        - name: "{{ .Values.bookkeeper.pvcPrefix}}{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-{{ .Values.bookkeeper.volumes.oneDisk.name }}"
-          mountPath: /pulsar/data
-        {{- else }}
-        - name: "{{ .Values.bookkeeper.pvcPrefix}}{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-{{ .Values.bookkeeper.volumes.journal.name }}"
-          mountPath: /pulsar/data/bookkeeper/journal
-        {{- if and .Values.bookkeeper.volumes.ranges .Values.function.enableStateStorage}}
-        {{- if not (or .Values.extra.stateStorage .Values.function.stateStorageUrlOverride) }}
-        - name: "{{ .Values.bookkeeper.pvcPrefix}}{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-{{ .Values.bookkeeper.volumes.ranges.name }}"
-          mountPath: /pulsar/data/bookkeeper/ranges
-        {{- end }}
-        {{- end }}
-        - name: "{{ .Values.bookkeeper.pvcPrefix}}{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-{{ .Values.bookkeeper.volumes.ledgers.name }}"
-          mountPath: /pulsar/data/bookkeeper/ledgers
-        {{- end }}
-        args:
-          - >
-            chown -R 10000:10001 /pulsar/data/
-      {{- end }}
       # This init container will wait for zookeeper to be ready before
       # deploying the bookies
       - name: wait-zookeeper-ready
