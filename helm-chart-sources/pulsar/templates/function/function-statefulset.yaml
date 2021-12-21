@@ -158,21 +158,8 @@ spec:
         - name: extra-data
           emptyDir: {}
       {{- end }}
-      initContainers:
-      {{- if .Values.fixRootlessPermissions.enabled }}
-      # This init container will make sure permissions are set correctly for the rootless container
-      - name: fix-rootless-permissions
-        image: {{ .Values.fixRootlessPermissions.containerImage }}
-        imagePullPolicy: IfNotPresent
-        command: [ "sh", "-c" ]
-        volumeMounts:
-        - name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-{{ .Values.function.volumes.data.name }}"
-          mountPath: /pulsar/logs
-        args:
-          - >
-            chown -R 10000:10001 /pulsar/logs
-      {{- end }}
       {{- if .Values.function.initContainer }}
+      initContainers:
       - name: add-libs
         image: "{{ .Values.function.initContainer.repository }}:{{ .Values.function.initContainer.tag }}"
         imagePullPolicy: "{{ .Values.function.initContainer.pullPolicy }}"
@@ -188,6 +175,9 @@ spec:
           - name: extra-data
             mountPath: {{ .Values.function.initContainer.emptyDirPath }}
       {{- end }}
+      securityContext:
+        fsGroup: 0
+        fsGroupChangePolicy: "OnRootMismatch"
       containers:
       - name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}"
         image: "{{ .Values.image.function.repository }}:{{ .Values.image.function.tag }}"

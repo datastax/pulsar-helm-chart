@@ -5,6 +5,7 @@
 # Helm Chart for an Apache Pulsar Cluster
 
 This Helm chart configures an Apache Pulsar cluster. It is designed for production use, but can also be used in local development environments with the proper settings.
+It requires Kubernetes version 1.18+.
 
 It includes support for:
 * [TLS](#tls)
@@ -29,23 +30,10 @@ Please refer to Helm's [documentation](https://helm.sh/docs/) to get started.
 
 ### Luna Streaming 2.7.2
 
-Starting in Luna Streaming 2.7.2, the Pulsar containers run as a non-root user for enhanced security. When upgrading files created in prior version will have root permissions and will not be readable by containers running the new version.
-
-To fix this, you can manually log into the ZooKeeper, BookKeeper, and Function Worker pods and make sure that all files in the `/pulsar/data/` and `pulsar/logs` directories are owned by UID 10000 (user pulsar). 
-The group ID of the files should also be set to GID 10001 (group pulsar). Here is an example command:
-
-```
-chown -R 10000:10001 /pulsar/data
-```
-
-Alternatively, you can enable automatic fixing of the permissions using an init container, with the following setting:
-
-```
-fixRootlessPermissions:
-  enabled: true
-```
-
-Note that this setting only needs to be enabled during the migration to the non-root user version. Once the cluster has been upgraded this setting can be disabled for future upgrades.
+For helm chart versions prior to 2.10.0, we recommended using the `fixRootlessPermissions` field in your `values.yaml`
+to make non-root docker images work correctly. In 2.10.0, we updated the chart to use the `securityContext` to ensure
+correct file system permissions. The `fixRootlessPermissions` was therefore removed in 2.10.0, since it was not
+necessary and an unused value field has no effect on deployment.
 
 ## Minikube quick start
 

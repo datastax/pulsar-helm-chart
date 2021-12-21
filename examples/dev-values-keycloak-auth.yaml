@@ -52,8 +52,6 @@ enableTls: false
 enableTokenAuth: true
 restartOnConfigMapChange:
   enabled: true
-fixRootlessPermissions:
-  enabled: true
 extra:
   function: true
   burnell: true
