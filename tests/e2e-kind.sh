@@ -78,7 +78,7 @@ create_kind_cluster() {
 
 
 install_charts() {
-    docker_exec ct install --debug --config tests/ct.yaml --helm-extra-args "--debug"
+    docker_exec ct install --debug --config tests/ct.yaml
     echo
 }
 
