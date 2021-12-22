@@ -48,7 +48,7 @@ zookeeper:
       memory: 300Mi
       cpu: 100m
   configData:
-    PULSAR_MEM: "\"-Xms64m -Xmx128m -Djute.maxbuffer=10485760 -XX:+ExitOnOutOfMemoryError\""
+    PULSAR_MEM: "-Xms64m -Xmx128m -Djute.maxbuffer=10485760 -XX:+ExitOnOutOfMemoryError"
 
 bookkeeper:
   replicaCount: 1
@@ -96,7 +96,7 @@ proxy:
       memory: 400Mi
       cpu: 100m
   configData:
-    PULSAR_MEM: "\"-Xms64m -Xmx64m -XX:MaxDirectMemorySize=64m\""
+    PULSAR_MEM: "-Xms64m -Xmx64m -XX:MaxDirectMemorySize=64m"
   autoPortAssign:
     enablePlainTextWithTLS: true
   service:
