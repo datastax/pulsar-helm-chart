@@ -35,7 +35,7 @@ zookeeper:
       memory: 300Mi
       cpu: 0.3
   configData:
-    PULSAR_MEM: "\"-Xms300m -Xmx300m -Djute.maxbuffer=10485760 -XX:+ExitOnOutOfMemoryError\""
+    PULSAR_MEM: "-Xms300m -Xmx300m -Djute.maxbuffer=10485760 -XX:+ExitOnOutOfMemoryError"
 
 bookkeeper:
   replicaCount: 1
@@ -44,7 +44,7 @@ bookkeeper:
       memory: 512Mi
       cpu: 0.3
   configData:
-    BOOKIE_MEM: "\"-Xms312m -Xmx312m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError\""
+    BOOKIE_MEM: "-Xms312m -Xmx312m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError"
 
 broker:
   component: broker
@@ -58,7 +58,7 @@ broker:
       memory: 600Mi
       cpu: 0.3
   configData:
-    PULSAR_MEM: "\"-Xms400m -Xmx400m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError\""
+    PULSAR_MEM: "-Xms400m -Xmx400m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError"
 
 autoRecovery:
   resources:
@@ -74,7 +74,7 @@ function:
       memory: 512Mi
       cpu: 0.3
   configData:
-    PULSAR_MEM: "\"-Xms312m -Xmx312m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError\""
+    PULSAR_MEM: "-Xms312m -Xmx312m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError"
 
 proxy:
   replicaCount: 1
@@ -87,7 +87,7 @@ proxy:
       memory: 512Mi
       cpu: 0.3
   configData:
-    PULSAR_MEM: "\"-Xms400m -Xmx400m -XX:MaxDirectMemorySize=112m\""
+    PULSAR_MEM: "-Xms400m -Xmx400m -XX:MaxDirectMemorySize=112m"
   autoPortAssign:
     enablePlainTextWithTLS: true
   service:

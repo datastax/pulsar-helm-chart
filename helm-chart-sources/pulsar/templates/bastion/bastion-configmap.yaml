@@ -39,7 +39,4 @@ data:
   tlsTrustCertsFilePath: "{{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}"
   {{- end }}
 {{ toYaml .Values.bastion.configData | indent 2 }}
-  # Workaround for double-quoted values in old values files
-  PULSAR_MEM: {{ .Values.bastion.configData.PULSAR_MEM }}
-  PULSAR_GC: {{ .Values.bastion.configData.PULSAR_GC }}
 {{- end }}

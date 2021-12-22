@@ -38,7 +38,4 @@ data:
   PULSAR_PREFIX_sslQuorum: "true"
   {{- end }}
 {{ toYaml .Values.zookeepernp.configData | indent 2 }}
-  # Workaround for double-quoted values in old values files
-  PULSAR_MEM: {{ .Values.zookeepernp.configData.PULSAR_MEM }}
-  PULSAR_GC: {{ .Values.zookeepernp.configData.PULSAR_GC }}
 {{- end }}

@@ -39,7 +39,4 @@ data:
   brokerClientAuthenticationParameters: "file:///pulsar/token-superuser/superuser.jwt"
   {{- end }}
 {{ toYaml .Values.function.configData | indent 2 }}
-  # Workaround for double-quoted values in old values files
-  PULSAR_MEM: {{ .Values.function.configData.PULSAR_MEM }}
-  PULSAR_GC: {{ .Values.function.configData.PULSAR_GC }}
 {{- end }}

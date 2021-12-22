@@ -76,7 +76,4 @@ data:
   {{- end }}
 {{- end }}
 {{ toYaml .Values.proxy.configData | indent 2 }}
-  # Workaround for double-quoted values in old values files
-  PULSAR_MEM: {{ .Values.proxy.configData.PULSAR_MEM }}
-  PULSAR_GC: {{ .Values.proxy.configData.PULSAR_GC }}
 {{- end }}

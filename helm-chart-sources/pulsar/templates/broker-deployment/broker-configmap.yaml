@@ -219,7 +219,4 @@ data:
 {{- end }}
 {{- end }}
 {{ toYaml .Values.broker.configData | indent 2 }}
-  # Workaround for double-quoted values in old values files
-  PULSAR_MEM: {{ .Values.broker.configData.PULSAR_MEM }}
-  PULSAR_GC: {{ .Values.broker.configData.PULSAR_GC }}
 {{- end }}
