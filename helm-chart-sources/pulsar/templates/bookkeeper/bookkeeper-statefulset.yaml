@@ -145,7 +145,6 @@ spec:
             name: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}"
       securityContext:
         fsGroup: 0
-        fsGroupChangePolicy: "OnRootMismatch"
       containers:
       - name: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}"
         image: "{{ .Values.image.bookkeeper.repository }}:{{ .Values.image.bookkeeper.tag }}"
