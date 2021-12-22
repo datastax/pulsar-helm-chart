@@ -17,7 +17,7 @@
 
 {{- if .Values.extra.brokerSts }}
 {{- if .Values.brokerSts.pdb.usePolicy }}
-apiVersion: policy/v1beta1
+apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: "{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}"
