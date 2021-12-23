@@ -82,7 +82,7 @@ data:
   {{- else }}
   tlsTrustCertsFilePath: "{{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}"
   {{- end }}
-  tlsProtocols: "TLSv1.2,TLSv1.1"
+  tlsProtocols: "TLSv1.3,TLSv1.2"
   {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}
   brokerClientTrustCertsFilePath: /pulsar/certs/ca.crt
   {{- else }}

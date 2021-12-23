@@ -176,7 +176,7 @@ data:
             listen 8443 ssl;
             ssl_certificate /certs/tls.crt;
             ssl_certificate_key /certs/tls.key;
-            ssl_protocols TLSv1.1 TLSv1.2 TLSv1.3;
+            ssl_protocols TLSv1.2 TLSv1.3;
             {{- end }}
 
       }
