@@ -68,7 +68,6 @@ data:
   PULSAR_PREFIX_bookkeeperTLSTrustCertsFilePath: "{{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}"
   {{- end }}
   {{- end }}
-{{ toYaml .Values.bookkeeper.configData | indent 2 }}
-  # Workaround for double-quoted values in old values files
-  BOOKIE_MEM: {{ .Values.bookkeeper.configData.BOOKIE_MEM }}
-  BOOKIE_GC: {{ .Values.bookkeeper.configData.BOOKIE_GC }}
+{{- range $key, $val := $.Values.bookkeeper.configData }}
+  {{ $key }}: {{ $val | replace "\"" "" | trim | quote }}
+{{- end }}
