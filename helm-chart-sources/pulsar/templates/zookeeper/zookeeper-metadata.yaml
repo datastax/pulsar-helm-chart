@@ -81,5 +81,5 @@ spec:
               {{- end }}
               --web-service-url http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}:8080/ \
               --broker-service-url pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}:6650/;
-      restartPolicy: Never
+      restartPolicy: OnFailure
 {{- end }}
