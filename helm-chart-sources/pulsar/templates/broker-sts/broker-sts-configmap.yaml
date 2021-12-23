@@ -218,8 +218,7 @@ data:
   {{- end }}
 {{- end }}
 {{- end }}
-{{ toYaml .Values.brokerSts.configData | indent 2 }}
-  # Workaround for double-quoted values in old values files
-  PULSAR_MEM: {{ .Values.brokerSts.configData.PULSAR_MEM }}
-  PULSAR_GC: {{ .Values.brokerSts.configData.PULSAR_GC }}
+{{- range $key, $val := $.Values.brokerSts.configData }}
+  {{ $key }}: {{ $val | replace "\"" "" | trim | quote }}
+{{- end }}
 {{- end }}

@@ -117,10 +117,9 @@ data:
   brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
   brokerClientAuthenticationParameters: "file:///pulsar/token-proxy/proxy.jwt"
 {{- end }}
-{{ toYaml .Values.proxy.configData | indent 2 }}
-  # Workaround for double-quoted values in old values files
-  PULSAR_MEM: {{ .Values.proxy.configData.PULSAR_MEM }}
-  PULSAR_GC: {{ .Values.proxy.configData.PULSAR_GC }}
+{{- range $key, $val := $.Values.proxy.configData }}
+  {{ $key }}: {{ $val | replace "\"" "" | trim | quote }}
+{{- end }}
 {{- end }}
 {{- if .Values.proxy.extensions.enabled }}
   PULSAR_PREFIX_proxyExtensionsDirectory: "{{ .Values.proxy.extensions.directory }}"
