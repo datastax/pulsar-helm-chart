@@ -25,7 +25,7 @@ metadata:
 spec:
   selfSigned: {}
 ---
-# CA certifcate from self-signed issuer
+# CA certificate from self-signed issuer
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
@@ -41,7 +41,7 @@ spec:
   issuerRef:
     name: "{{ template "pulsar.fullname" . }}-self-signed-issuer"
 ---
-# Issuer using the self-signed CA certficiate
+# Issuer using the self-signed CA certificate
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:

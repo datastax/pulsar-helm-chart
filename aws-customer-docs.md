@@ -166,7 +166,7 @@ It may take several minutes to generate the certificate. You can check on the pr
 kubectl describe certificate <certificate-name> -n pulsar
 ```
 
-To troubleshoot, look a the logs from the cert-manager pod:
+To troubleshoot, look at the logs from the cert-manager pod:
 
 ```
 kubectl logs cert-manager-75cf57777c-k92rq -n cert-manager

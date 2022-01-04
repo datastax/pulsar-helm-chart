@@ -62,7 +62,7 @@ default_storage:
   existingStorageClassName: default
 
 # If default_storage is set, that storage class is the default for all
-# persistent volmes created by the chart.
+# persistent volumes created by the chart.
 #
 # You can override the default_storage storage class in the
 # volumes section of each component configuration (example: zookeeper.volumes.data.storageClass)
@@ -125,11 +125,11 @@ tls:
   # Enable TLS between ZooKeeper nodes (quorum TLS), between BookKeeper and ZooKeeper, and between
   # broker and ZooKeeper.
   # Note: The configured certificate must allow for both server and client use since it is used
-  #       for mTLS. This should be in certficate:
+  #       for mTLS. This should be in certificate:
   #
   # X509v3 Extended Key Usage:
   #               TLS Web Server Authentication, TLS Web Client Authentication
-  # If using cert-manager, make sure your certficate includes:
+  # If using cert-manager, make sure your certificate includes:
   #
   zookeeper:
     enabled: false
@@ -151,15 +151,15 @@ tls:
   ## If you're using cert-manager (see below), this is unneeded, as it will create the secret for you if it is not set
   ##
   ## Note: The key should not be in PKCS 8 format even though that is the format used by Pulsar
-  ##       The format will be converted by chart to PKCS 8. This is to maintain compatability with
+  ##       The format will be converted by chart to PKCS 8. This is to maintain compatibility with
   ##       cert-manager
   # key: |
   # certificate: |
   # caCertificate: |
 
-# If you are using an external source to populate the TLS certifcate (ex cert-manager),
+# If you are using an external source to populate the TLS certificate (ex cert-manager),
 # enter the path and name to the CA cert. This is required so that the components
-# within the cluster (proxy, broker, etc) can talk to each other
+# within the cluster (proxy, broker, etc.) can talk to each other
 #
 # If you are using self-signed certs, the CA will be contained within the tlsSecretName above,
 # so use the following settings:
@@ -186,7 +186,7 @@ tokenPublicKeyFile: my-public.key
 tokenPrivateKeyFile: my-private.key
 
 # Turn on anti affinity rules so that replica pods are spread for
-# high availablity.
+# high availability.
 # In development environments (ex. Minikube) with a single node, this needs to be disabled
 enableAntiAffinity: true
 
@@ -281,7 +281,7 @@ extra:
 
 ## Which images to use
 # When upgrading a Pulsar cluster, it is recommended to upgrade the
-# components one at a time (zookeeper, bookkeeper, broker, etc).
+# components one at a time (zookeeper, bookkeeper, broker, etc.).
 # This section allows for targeted upgrades of each component.
 #
 image:
@@ -387,7 +387,7 @@ storageOffload:
 
   # For Azure Blob
   # =================
-  # Need to create an Azure storage account and a blob containter (bucket)
+  # Need to create an Azure storage account and a blob container (bucket)
   # To retrieve key, see https://docs.microsoft.com/en-us/azure/storage/common/storage-account-keys-manage?tabs=azure-portal#code-try-1
   #
   # driver: azureblob
@@ -582,9 +582,9 @@ zookeepernp:
     maxUnavailable: 1
 
 ## Pulsar Zookeeper metadata. The metadata will be deployed as
-## soon as the las zookeeper node is reachable. The deployment
+## soon as the last zookeeper node is reachable. The deployment
 ## of other components that depends on zookeeper, such as the
-## bookkeeper nodes, broker nodes, etc will only start to be
+## bookkeeper nodes, broker nodes, etc. will only start to be
 ## deployed when the zookeeper cluster is ready and with the
 ## metadata deployed
 zookeeperMetadata:
@@ -605,7 +605,7 @@ bookkeeper:
   #   requiredDuringSchedulingIgnoredDuringExecution:
   #     nodeSelectorTerms:
   #     - matchExpressions:
-  #       - key: nodeppool
+  #       - key: nodepool
   #         operator: In
   #         values:
   #         - pulsar
@@ -746,7 +746,7 @@ broker:
   #   requiredDuringSchedulingIgnoredDuringExecution:
   #     nodeSelectorTerms:
   #     - matchExpressions:
-  #       - key: nodeppool
+  #       - key: nodepool
   #         operator: In
   #         values:
   #         - pulsar
@@ -857,7 +857,7 @@ brokerSts:
   #   requiredDuringSchedulingIgnoredDuringExecution:
   #     nodeSelectorTerms:
   #     - matchExpressions:
-  #       - key: nodeppool
+  #       - key: nodepool
   #         operator: In
   #         values:
   #         - pulsar
@@ -981,7 +981,7 @@ function:
   #   requiredDuringSchedulingIgnoredDuringExecution:
   #     nodeSelectorTerms:
   #     - matchExpressions:
-  #       - key: nodeppool
+  #       - key: nodepool
   #         operator: In
   #         values:
   #         - pulsar
@@ -1129,7 +1129,7 @@ pulsarSQL:
 # Configure the S3 gateway according to instructions here:
 #     https://documentation.tardigrade.io/api-reference/s3-gateway
 # Make sure you configure an access grant. Once you have done that, you can find the values
-# for acess, accesKey, and secretKey in:
+# for access, accessKey, and secretKey in:
 #     ~/.local/share/storj/gatewayconfig.yaml
 #
 tardigrade:
@@ -1169,7 +1169,7 @@ proxy:
   #   requiredDuringSchedulingIgnoredDuringExecution:
   #     nodeSelectorTerms:
   #     - matchExpressions:
-  #       - key: nodeppool
+  #       - key: nodepool
   #         operator: In
   #         values:
   #         - pulsar
@@ -1357,7 +1357,7 @@ dns:
   #   requiredDuringSchedulingIgnoredDuringExecution:
   #     nodeSelectorTerms:
   #     - matchExpressions:
-  #       - key: nodeppool
+  #       - key: nodepool
   #         operator: In
   #         values:
   #         - pulsar
@@ -1376,7 +1376,7 @@ autoRecovery:
   #   requiredDuringSchedulingIgnoredDuringExecution:
   #     nodeSelectorTerms:
   #     - matchExpressions:
-  #       - key: nodeppool
+  #       - key: nodepool
   #         operator: In
   #         values:
   #         - pulsar
@@ -1478,7 +1478,7 @@ zoonavigator:
   #   requiredDuringSchedulingIgnoredDuringExecution:
   #     nodeSelectorTerms:
   #     - matchExpressions:
-  #       - key: nodeppool
+  #       - key: nodepool
   #         operator: In
   #         values:
   #         - pulsar
@@ -1518,7 +1518,7 @@ bastion:
   #   requiredDuringSchedulingIgnoredDuringExecution:
   #     nodeSelectorTerms:
   #     - matchExpressions:
-  #       - key: nodeppool
+  #       - key: nodepool
   #         operator: In
   #         values:
   #         - pulsar
@@ -1562,7 +1562,7 @@ pulsarBeam:
   #   requiredDuringSchedulingIgnoredDuringExecution:
   #     nodeSelectorTerms:
   #     - matchExpressions:
-  #       - key: nodeppool
+  #       - key: nodepool
   #         operator: In
   #         values:
   #         - pulsar
@@ -1671,7 +1671,7 @@ createCertificates:
       secretKey: "access-token"
 
 # Deploy Grafana dashboard for Pulsar.
-# These dashboard will be discovered by the kube-prometheus-stack
+# These dashboards will be discovered by the kube-prometheus-stack
 # if it is running the same namespace as the stack
 
 grafanaDashboards:
@@ -1688,7 +1688,7 @@ grafanaDashboards:
 #
 # The default values will enable Prometheus and
 # Grafana, but not AlertManager.
-# Scraping configs for Pulsar pods are included. By default
+# Scraping configs for Pulsar pods are included. By default,
 # pods in the namespace of the deployment will be scraped.
 #
 # The stack can add standard Kubernetes alert rules, but those

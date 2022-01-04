@@ -3,11 +3,11 @@ Helm Chart Release
 
 # Chart Releaser
 
- The [chart-releaser](https://github.com/helm/chart-releaser) is being used to enable the pulsar-helm-chart [repo](https://github.com/datastax/pulsar-helm-chart) to self-host Helm Chart releases via the use of Github pages.
+ The [chart-releaser](https://github.com/helm/chart-releaser) is being used to enable the pulsar-helm-chart [repo](https://github.com/datastax/pulsar-helm-chart) to self-host Helm Chart releases via the use of GitHub pages.
 
 # CircleCI
 
-CircleCI is being used to release a new version of the DataStax Pulsar Helm Charts. The [release script](https://github.com/datastax/pulsar-helm-chart/blob/master/.circleci/release.sh) creates a release package of the new Helm Chart version and updates the [index.yaml](https://datastax.github.io/pulsar-helm-chart/index.yaml) which in this case is hosted in a Github page. The CircleCI is triggered, when a new commit is pushed in the **release** branch.
+CircleCI is being used to release a new version of the DataStax Pulsar Helm Charts. The [release script](https://github.com/datastax/pulsar-helm-chart/blob/master/.circleci/release.sh) creates a release package of the new Helm Chart version and updates the [index.yaml](https://datastax.github.io/pulsar-helm-chart/index.yaml) which in this case is hosted in a GitHub page. The CircleCI is triggered, when a new commit is pushed in the **release** branch.
 
 # How to Release a new Version
 
@@ -26,7 +26,7 @@ git fetch
 git push -f origin origin/master:release
 ```
 
-The chart-releaser tool will handle the packaging of the new version, will push it to the Github repo as a new [release](https://github.com/datastax/pulsar-helm-chart/releases). Then you have to manually edit the release adding the release notes by clicking on the `Auto-generate release notes` button. 
+The chart-releaser tool will handle the packaging of the new version, will push it to the GitHub repo as a new [release](https://github.com/datastax/pulsar-helm-chart/releases). Then you have to manually edit the release adding the release notes by clicking on the `Auto-generate release notes` button.
 
 Later it will update the index.yaml file for the Helm repo and commit it to **master** since this is where the GitHub pages are hosted. 
 
@@ -36,7 +36,7 @@ If you see an error like this from the release script:
 Error: error creating GitHub release: POST https://api.github.com/repos/datastax/pulsar-helm-chart/releases: 422 Validation Failed [{Resource:Release Field:tag_name Code:already_exists Message:}]
 ```
 
-It is likely becuase one of the Helm charts has changed but the version number was not increased. All the changed charts will be listed in the logs of the release script. Bump the missing versions and commit to the release branch.
+It is likely because one of the Helm charts has changed but the version number was not increased. All the changed charts will be listed in the logs of the release script. Bump the missing versions and commit to the release branch.
 
 You should verify that the new chart version are present in the index.yaml:
 
@@ -48,7 +48,7 @@ Also confirm that **master** has been updated with the new versions in the Chart
 
 # How to Install a New Release
 
-The *index.yaml* is hosted in a Github page and can be accessed via https://datastax.github.io/pulsar-helm-chart/. In order to make use of a DataStax Pulsar Helm Chart specific version the DataStax Helm repo should be added first by running:
+The *index.yaml* is hosted in a GitHub page and can be accessed via https://datastax.github.io/pulsar-helm-chart/. In order to make use of a DataStax Pulsar Helm Chart specific version the DataStax Helm repo should be added first by running:
 
 ```bash
 helm repo add datastax-pulsar https://datastax.github.io/pulsar-helm-chart

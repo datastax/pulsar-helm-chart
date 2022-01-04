@@ -13,14 +13,14 @@ It includes support for:
 * WebSocket Proxy
 * Standalone Functions Workers
 * Pulsar IO Connectors
-* [Tiered Storage](#tiered-storage) including Tardigarde distributed cloud storage
+* [Tiered Storage](#tiered-storage) including Tardigrade distributed cloud storage
 * [Pulsar SQL Workers](#pulsar-sql)
 * [Admin Console](#managing-pulsar-using-admin-console) for managing the cluster
 * [Pulsar heartbeat](https://github.com/datastax/pulsar-heartbeat)
 * [Burnell](https://github.com/datastax/burnell) for API-based token generation
 * Prometheus/Grafana/Alertmanager [stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) with default Grafana dashboards and Pulsar-specific alerting rules
 * cert-manager with support for self-signed certificates as well as public certificates using ACME (for example, Let's Encrypt)
-* Ingress configuration for all HTTP ports (Admin Console, Prometheus, Grafana, etc)
+* Ingress configuration for all HTTP ports (Admin Console, Prometheus, Grafana, etc.)
 
 [Helm](https://helm.sh) must be installed and initialized to use the chart. Only Helm 3 is supported.
 Please refer to Helm's [documentation](https://helm.sh/docs/) to get started.
@@ -169,18 +169,18 @@ helm install pulsar datastax-pulsar/pulsar --namespace pulsar --values storage_v
 
 ## Using namespace scoped or cluster level RBAC resources
 
-Up to Helm chart version 2.0.3, the Helm deployment uses `ClusterRole` and `ClusterRoleBinding` resources for defining access for service accounts by default. These resources get created outside of the namespace defined for deployment.
+Up to Helm chart version 2.0.3, the Helm deployment uses `ClusterRole` and `ClusterRoleBinding` resources for defining access for service accounts by default. These resources get created outside the namespace defined for deployment.
 Since version 2.0.4, namespace scoped `Role` and `RoleBinding` resources are used by default.
 
 It is possible to revert to use the legacy behavior by setting `rbac.clusterRoles` to `true`.
 
 ## Installing Pulsar for development
 
-This chart is designed for production use, but it can be used in development enviroments. To use this chart in a development environment (ex minikube), you need to:
+This chart is designed for production use, but it can be used in development environments. To use this chart in a development environment (ex minikube), you need to:
 
 * Disable anti-affinity rules that ensure components run on different nodes
 * Reduce resource requirements
-* Disable persistence (configuration and messages are not stored so are lost on restart). If you want persistence, you will have to configure storage settings that are compatible with your development enviroment as described above.
+* Disable persistence (configuration and messages are not stored so are lost on restart). If you want persistence, you will have to configure storage settings that are compatible with your development environment as described above.
 
 For an example set of values, download this [values file](https://github.com/datastax/pulsar-helm-chart/blob/master/examples/dev-values.yaml). Use that values file or one like it to start the cluster:
 
@@ -239,7 +239,7 @@ component:
 
 It will be automatically configured to connect to the Pulsar cluster.
 
-By default, the admin console has authentication disabled. You can enabled authentication with these settings:
+By default, the admin console has authentication disabled. You can enable authentication with these settings:
 
 ```
 pulsarAdminConsole:
@@ -278,7 +278,7 @@ kubectl port-forward -n pulsar $(kubectl get pods -n pulsar -l component=adminco
 
 ### Accessing Admin Console from cloud provider
 
-To access Pulsar admin console from a cloud provider, the chart supports [Kubernetes Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/). Your Kubernetes cluster must have a running Ingress controller (ex Nginx, Traefik, etc).
+To access Pulsar admin console from a cloud provider, the chart supports [Kubernetes Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/). Your Kubernetes cluster must have a running Ingress controller (ex Nginx, Traefik, etc.).
 
 Set these values to configure the Ingress for the admin console:
 
@@ -331,7 +331,7 @@ Note: With message/state persistence disabled, the cluster will not survive a re
 
 ```helm install pulsar -f dev-values-auth.yaml datastax-pulsar/pulsar```
 
-* dev-values-tls.yaml. Development environment with self-signed certficate created by cert-manager. You need to install the cert-manager CRDs before installing the Helm chart. The chart will install the cert-manager application.
+* dev-values-tls.yaml. Development environment with self-signed certificate created by cert-manager. You need to install the cert-manager CRDs before installing the Helm chart. The chart will install the cert-manager application.
 
 ```
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.crds.yaml
@@ -343,7 +343,7 @@ helm install pulsar -f dev-values-tls.yaml datastax-pulsar/pulsar
 
 Tiered storage (offload to blob storage) can be configured in the `storageOffload` section of the `values.yaml` file. Instructions for AWS S3, Google Cloud Storage and Azure are provided in the file.
 
-In addition you can configure any S3 compatible storage. There is explicit support for [Tardigrade](https://tardigrade.io), which is a provider of secure, decentralized storage. You can enable the Tardigarde S3 gateway in the `extra` configuration. The instructions for configuring the gateway are provided in the `tardigrade` section of the `values.yaml` file.
+In addition, you can configure any S3 compatible storage. There is explicit support for [Tardigrade](https://tardigrade.io), which is a provider of secure, decentralized storage. You can enable the Tardigrade S3 gateway in the `extra` configuration. The instructions for configuring the gateway are provided in the `tardigrade` section of the `values.yaml` file.
 
 ## Pulsar SQL
 If you enable Pulsar SQL, the cluster provides [Presto](https://prestodb.io/) access to the data stored in BookKeeper (and tiered storage, if enabled). Presto is exposed on the service named `<release>-sql`.
@@ -402,7 +402,7 @@ The chart can enable two forms of token-based authentication for a Pulsar cluste
 * [Token Authentication via Keycloak Integration](#token-authentication-via-keycloak-integration)
 * [Pulsar's Token Based Authentication]
 
-Note that the chart includes tooling to automatically create the necessary secrets or you can do this manually.
+Note that the chart includes tooling to automatically create the necessary secrets, or you can do this manually.
 
 ### Token Authentication via Keycloak Integration
 In order to provide a more dynamic authentication option for Pulsar, DataStax created the
@@ -485,7 +485,7 @@ For information on token-based authentication from Apache Pulsar, go
 
 For authentication to work, the token-generation keys need to be stored in Kubernetes secrets along with some default tokens (for superuser access).
 
-The chart includes tooling to automatically create the necessary secrets or you can do this manually.
+The chart includes tooling to automatically create the necessary secrets, or you can do this manually.
 
 #### Automatic generation of secrets for token authentication
 
