@@ -43,8 +43,7 @@ data:
     {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2181
       {{- end }}
     {{- end }}
-{{ toYaml .Values.autoRecovery.configData | indent 2 }}
-  # Workaround for double-quoted values in old values files
-  BOOKIE_MEM: {{ .Values.autoRecovery.configData.BOOKIE_MEM }}
-  BOOKIE_GC: {{ .Values.autoRecovery.configData.BOOKIE_GC }}
+{{- range $key, $val := $.Values.autoRecovery.configData }}
+  {{ $key }}: {{ $val | replace "\"" "" | trim | quote }}
+{{- end }}
 {{- end }}
