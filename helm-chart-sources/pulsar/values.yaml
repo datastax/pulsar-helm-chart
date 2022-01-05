@@ -1389,7 +1389,9 @@ autoRecovery:
   #         values:
   #         - bookkeeper
   #     topologyKey: "kubernetes.io/hostname"
-  annotations: {}
+  annotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "8000"
   tolerations: []
   gracePeriod: 60
   resources:
