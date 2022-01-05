@@ -430,7 +430,7 @@ zookeeper:
   replicaCount: 3
   updateStrategy:
     type: RollingUpdate
-  podManagementPolicy: OrderedReady
+  podManagementPolicy: Parallel
   # nodeSelector:
     # cloud.google.com/gke-nodepool: default-pool
   # nodeAffinity:
@@ -520,7 +520,7 @@ zookeepernp:
   replicaCount: 0
   updateStrategy:
     type: RollingUpdate
-  podManagementPolicy: OrderedReady
+  podManagementPolicy: Parallel
   # nodeSelector:
     # cloud.google.com/gke-nodepool: default-pool
   # nodeAffinity:
@@ -598,7 +598,7 @@ bookkeeper:
   replicaCount: 3
   updateStrategy:
     type: RollingUpdate
-  podManagementPolicy: OrderedReady
+  podManagementPolicy: Parallel
   # nodeSelector:
     # cloud.google.com/gke-nodepool: default-pool
   # nodeAffinity:
@@ -959,7 +959,7 @@ function:
   usePython3: false
   updateStrategy:
     type: RollingUpdate
-  podManagementPolicy: OrderedReady
+  podManagementPolicy: Parallel
   probe:
     enabled: true
     port: 6750
