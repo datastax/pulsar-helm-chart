@@ -338,11 +338,11 @@ image:
   pulsarHeartbeat:
     repository: datastax/pulsar-heartbeat
     pullPolicy: IfNotPresent
-    tag: 1.0.6
+    tag: 1.0.12
   pulsarAdminConsole:
     repository: datastax/pulsar-admin-console
     pullPolicy: IfNotPresent
-    tag: 1.1.4
+    tag: 1.1.5
 
 ## Tiered Storage
 ##
