@@ -178,7 +178,7 @@ spec:
           - name: ClusterName
             value: "{{ template "pulsar.fullname" . }}"
           - name: SuperRoles
-            value: {{ .Values.superUserRoles }}
+            value: "{{ .Values.superUserRoles }},{{ .Values.proxyRoles }}"
           - name: ProcessMode
             value: "init"
           - name: PulsarNamespace

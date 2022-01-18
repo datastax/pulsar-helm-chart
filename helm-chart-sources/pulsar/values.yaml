@@ -173,7 +173,7 @@ tls:
 tlsCaPath: /etc/ssl/certs
 tlsCaCert: ca-certificates.crt
 
-superUserRoles: superuser,admin,websocket,proxy
+superUserRoles: superuser,admin,websocket
 proxyRoles: proxy
 
 # Enable token-based authentication and authorization
