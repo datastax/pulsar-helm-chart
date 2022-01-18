@@ -449,7 +449,7 @@ zookeeper:
   gracePeriod: 60
   probe:
     enabled: true
-    initial: 10
+    initial: 20
     period: 30
     timeout: 5
   resources:
@@ -539,7 +539,7 @@ zookeepernp:
   gracePeriod: 60
   probe:
     enabled: true
-    initial: 10
+    initial: 20
     period: 30
     timeout: 5
   resources:
