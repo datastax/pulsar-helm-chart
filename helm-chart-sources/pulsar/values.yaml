@@ -334,7 +334,7 @@ image:
   tardigrade:
     repository: storjlabs/gateway
     pullPolicy: IfNotPresent
-    tag: 981f92a-v1.20.0-go1.17.5
+    tag: latest
   pulsarHeartbeat:
     repository: datastax/pulsar-heartbeat
     pullPolicy: IfNotPresent
