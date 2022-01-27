@@ -33,9 +33,9 @@ metadata:
     component: {{ .Values.function.component }}
     cluster: {{ template "pulsar.fullname" . }}
 allowVolumeExpansion: true
-reclaimPolicy: Retain
 volumeBindingMode: WaitForFirstConsumer
 {{- if .Values.function.volumes.data.storageClass }}
+reclaimPolicy: {{ .Values.function.volumes.data.storageClass.reclaimPolicy | default .Values.default_storage.reclaimPolicy }}
 provisioner: {{ .Values.function.volumes.data.storageClass.provisioner }}
 parameters:
   {{- if .Values.function.volumes.data.storageClass.type }}
@@ -48,6 +48,7 @@ parameters:
 {{ toYaml .Values.function.volumes.data.storageClass.extraParams | indent 2 }}
   {{- end }}
 {{- else if .Values.default_storage }}
+reclaimPolicy: {{ .Values.default_storage.reclaimPolicy }}
 provisioner: {{ .Values.default_storage.provisioner }}
 parameters:
   {{- if .Values.default_storage.type }}
