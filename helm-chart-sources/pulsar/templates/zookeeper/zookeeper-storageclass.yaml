@@ -32,9 +32,9 @@ metadata:
     component: {{ .Values.zookeeper.component }}
     cluster: {{ template "pulsar.fullname" . }}
 allowVolumeExpansion: true
-reclaimPolicy: Retain
 volumeBindingMode: WaitForFirstConsumer
 {{- if .Values.zookeeper.volumes.data.storageClass }}
+reclaimPolicy: {{ .Values.zookeeper.volumes.data.storageClass.reclaimPolicy | default .Values.default_storage.reclaimPolicy }}
 provisioner: {{ .Values.zookeeper.volumes.data.storageClass.provisioner }}
 parameters:
   {{- if .Values.zookeeper.volumes.data.storageClass.type }}
@@ -47,6 +47,7 @@ parameters:
 {{ toYaml .Values.zookeeper.volumes.data.storageClass.extraParams | indent 2 }}
   {{- end }}
 {{- else if .Values.default_storage }}
+reclaimPolicy: {{ .Values.default_storage.reclaimPolicy }}
 provisioner: {{ .Values.default_storage.provisioner }}
 parameters:
   {{- if .Values.default_storage.type }}

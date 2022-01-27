@@ -60,6 +60,8 @@ enableWaitContainers: true
 
 default_storage:
   existingStorageClassName: default
+  ## The default reclaimPolicy for created storage classes
+  reclaimPolicy: Retain
 
 # If default_storage is set, that storage class is the default for all
 # persistent volumes created by the chart.
