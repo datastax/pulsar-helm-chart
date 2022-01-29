@@ -153,6 +153,8 @@ spec:
         readinessProbe:
           exec:
             command:
+            - timeout
+            - "{{ .Values.zookeepernp.probe.timeout }}"
             - "bin/pulsar-zookeeper-ruok.sh"
           initialDelaySeconds: {{ .Values.zookeepernp.probe.initial }}
           periodSeconds: {{ .Values.zookeepernp.probe.period }}
@@ -160,6 +162,8 @@ spec:
         livenessProbe:
           exec:
             command:
+            - timeout
+            - "{{ .Values.zookeepernp.probe.timeout }}"
             - "bin/pulsar-zookeeper-ruok.sh"
           initialDelaySeconds: {{ .Values.zookeepernp.probe.initial }}
           periodSeconds: {{ .Values.zookeepernp.probe.period }}
