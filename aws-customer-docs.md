@@ -15,7 +15,7 @@ Reference: https://docs.cert-manager.io
 
 * Install the Cert-Manager CustomResourceDefinition resources
 ```
-kubectl apply --validate=false -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.12/deploy/manifests/00-crds.yaml
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.5/cert-manager.crds.yaml
 ```
 
 * Create the namespace for Cert-Manager
@@ -38,7 +38,7 @@ helm repo update
 helm install \
   --name cert-manager \
   --namespace cert-manager \
-  --version v0.12.0 \
+  --version v1.5.5 \
   jetstack/cert-manager
 ```
 
@@ -99,7 +99,7 @@ kubectl apply -f aws_key_secret.yaml
 Create a ClusterIssuer that includes the IAM access key and references the secret:
 
 ```
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
   name: letsencrypt-production
@@ -136,7 +136,7 @@ kubectl apply -f letsencrypt-production-aws.yaml
 Create a certificate resource file like this:
 
 ```
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: <insert-name-for-certificate>
