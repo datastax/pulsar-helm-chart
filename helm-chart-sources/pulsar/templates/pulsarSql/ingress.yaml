@@ -39,6 +39,6 @@ spec:
           - path: /
             backend:
               serviceName: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarSQL.component }}"
-              servicePort: 8080
+              servicePort: "http-coord"
 {{- end }}
 {{- end }}
