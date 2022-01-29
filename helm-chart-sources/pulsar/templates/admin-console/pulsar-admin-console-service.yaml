@@ -30,7 +30,6 @@ metadata:
     cluster: {{ template "pulsar.fullname" . }}
   annotations:
 {{ toYaml .Values.pulsarAdminConsole.service.annotations | indent 4 }}
-# TODO remove this deprecated field on the next major version bump
 {{ toYaml .Values.pulsarAdminConsole.annotations | indent 4 }}
 spec:
   type: {{ .Values.pulsarAdminConsole.service.type }}
