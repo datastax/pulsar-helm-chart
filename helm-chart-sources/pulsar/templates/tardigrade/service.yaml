@@ -25,6 +25,9 @@ metadata:
     app: {{ .Release.Name }}-tardigrade-gateway
 spec:
   type: {{ .Values.tardigrade.service.type }}
+  {{- if .Values.tardigrade.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.tardigrade.service.loadBalancerIP }}
+  {{- end }}
   selector:
     app: {{ .Release.Name }}-tardigrade-gateway
   ports:

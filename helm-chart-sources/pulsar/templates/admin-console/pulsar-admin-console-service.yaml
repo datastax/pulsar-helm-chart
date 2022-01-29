@@ -32,6 +32,9 @@ metadata:
 {{ toYaml .Values.pulsarAdminConsole.annotations | indent 4 }}
 spec:
   type: {{ .Values.pulsarAdminConsole.service.type }}
+  {{- if .Values.pulsarAdminConsole.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.pulsarAdminConsole.service.loadBalancerIP }}
+  {{- end }}
   ports:
 {{ toYaml .Values.pulsarAdminConsole.service.ports | indent 2 }}
   selector:

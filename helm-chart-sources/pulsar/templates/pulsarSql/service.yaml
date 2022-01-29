@@ -27,6 +27,9 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   type: {{ .Values.pulsarSQL.service.type }}
+  {{- if .Values.pulsarSQL.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.pulsarSQL.service.loadBalancerIP }}
+  {{- end }}
   ports:
     - port: {{ .Values.pulsarSQL.server.config.http.port }}
       targetPort: http-coord
