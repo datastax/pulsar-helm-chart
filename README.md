@@ -334,7 +334,7 @@ Note: With message/state persistence disabled, the cluster will not survive a re
 * dev-values-tls.yaml. Development environment with self-signed certificate created by cert-manager. You need to install the cert-manager CRDs before installing the Helm chart. The chart will install the cert-manager application.
 
 ```
-kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.1.0/cert-manager.crds.yaml
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.5/cert-manager.crds.yaml
 helm install pulsar -f dev-values-tls.yaml datastax-pulsar/pulsar
 ```
 
