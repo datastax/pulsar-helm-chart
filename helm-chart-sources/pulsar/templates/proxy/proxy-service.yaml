@@ -41,6 +41,9 @@ metadata:
 {{- end }}
 spec:
   type: {{ .Values.proxy.service.type }}
+  {{- if .Values.proxy.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.proxy.service.loadBalancerIP }}
+  {{- end }}
   ports:
   {{- if .Values.proxy.service.autoPortAssign.enabled }}
 {{ include "pulsar.proxyAutoPort" . | indent 2 }}
@@ -77,6 +80,9 @@ metadata:
 {{- end }}
 spec:
   type: {{ .Values.proxy.extraService.type }}
+  {{- if .Values.proxy.extraService.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.proxy.extraService.loadBalancerIP }}
+  {{- end }}
   ports:
   {{- if .Values.proxy.extraService.autoPortAssign.enabled }}
 {{ include "pulsar.proxyAutoPort" . | indent 2 }}
