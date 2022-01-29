@@ -29,6 +29,9 @@ metadata:
     component: {{ .Values.broker.component }}
     cluster: {{ template "pulsar.fullname" . }}
   annotations:
+  {{- if .Values.broker.service.annotations }}
+{{ toYaml .Values.broker.service.annotations | indent 4 }}
+  {{- end }}
 {{- if .Values.extra.dnsOnBroker }}
     external-dns.alpha.kubernetes.io/hostname: {{ .Values.dnsName }}
 {{- end }}
