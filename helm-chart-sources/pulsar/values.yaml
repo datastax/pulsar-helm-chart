@@ -324,7 +324,7 @@ image:
   burnell:
     repository: datastax/burnell
     pullPolicy: Always
-    tag: 1.0.2
+    tag: 1.0.3
   burnellLogCollector:
     repository: datastax/burnell
     pullPolicy: IfNotPresent
@@ -340,7 +340,7 @@ image:
   pulsarHeartbeat:
     repository: datastax/pulsar-heartbeat
     pullPolicy: IfNotPresent
-    tag: 1.0.6
+    tag: 1.0.13
   pulsarAdminConsole:
     repository: datastax/pulsar-admin-console
     pullPolicy: IfNotPresent
