@@ -1035,6 +1035,8 @@ function:
   #   mainContainerStartupCmd: "cp -f /connectors/pulsar-connectors/* /pulsar/connectors"
 
   authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
+  # upload false means the connector jar will not uploaded from bookie but from the same version as function worker
+  uploadBuiltinSinksSources: "false"
 
   ## When adding custom properties to configure a function worker, the values must be supplied here. Normal config
   ## is read in to the WorkerConfig fields. Custom configuration (for fields that are not in the WorkerConfig class)
