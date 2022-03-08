@@ -60,6 +60,8 @@ enableWaitContainers: true
 
 default_storage:
   existingStorageClassName: default
+  ## The default reclaimPolicy for created storage classes
+  reclaimPolicy: Retain
 
 # If default_storage is set, that storage class is the default for all
 # persistent volumes created by the chart.
@@ -289,32 +291,32 @@ image:
     # If not using tiered storage, you can use the smaller pulsar image for the broker
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.11
+    tag: 2.8.0_1.1.15
   brokerSts:
     # If not using tiered storage, you can use the smaller pulsar image for the broker
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.11
+    tag: 2.8.0_1.1.15
   function:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.11
+    tag: 2.8.0_1.1.15
   zookeeper:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.11
+    tag: 2.8.0_1.1.15
   bookkeeper:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.11
+    tag: 2.8.0_1.1.15
   proxy:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.11
+    tag: 2.8.0_1.1.15
   bastion:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.11
+    tag: 2.8.0_1.1.15
   pulsarBeam:
     repository: kesque/pulsar-beam
     pullPolicy: IfNotPresent
@@ -322,27 +324,27 @@ image:
   burnell:
     repository: datastax/burnell
     pullPolicy: Always
-    tag: 1.0.2
+    tag: 1.0.3
   burnellLogCollector:
     repository: datastax/burnell
     pullPolicy: IfNotPresent
     tag: logcollector_latest
   pulsarSQL:
     repository: datastax/lunastreaming-all
-    tag: 2.8.0_1.1.11
+    tag: 2.8.0_1.1.15
     pullPolicy: IfNotPresent
   tardigrade:
     repository: storjlabs/gateway
     pullPolicy: IfNotPresent
-    tag: latest
+    tag: 981f92a-v1.20.0-go1.17.5
   pulsarHeartbeat:
     repository: datastax/pulsar-heartbeat
     pullPolicy: IfNotPresent
-    tag: 1.0.6
+    tag: 1.0.13
   pulsarAdminConsole:
     repository: datastax/pulsar-admin-console
     pullPolicy: IfNotPresent
-    tag: 1.1.4
+    tag: 1.1.5
 
 ## Tiered Storage
 ##
@@ -430,7 +432,7 @@ zookeeper:
   replicaCount: 3
   updateStrategy:
     type: RollingUpdate
-  podManagementPolicy: OrderedReady
+  podManagementPolicy: Parallel
   # nodeSelector:
     # cloud.google.com/gke-nodepool: default-pool
   # nodeAffinity:
@@ -449,7 +451,7 @@ zookeeper:
   gracePeriod: 60
   probe:
     enabled: true
-    initial: 10
+    initial: 20
     period: 30
     timeout: 5
   resources:
@@ -520,7 +522,7 @@ zookeepernp:
   replicaCount: 0
   updateStrategy:
     type: RollingUpdate
-  podManagementPolicy: OrderedReady
+  podManagementPolicy: Parallel
   # nodeSelector:
     # cloud.google.com/gke-nodepool: default-pool
   # nodeAffinity:
@@ -539,7 +541,7 @@ zookeepernp:
   gracePeriod: 60
   probe:
     enabled: true
-    initial: 10
+    initial: 20
     period: 30
     timeout: 5
   resources:
@@ -598,7 +600,7 @@ bookkeeper:
   replicaCount: 3
   updateStrategy:
     type: RollingUpdate
-  podManagementPolicy: OrderedReady
+  podManagementPolicy: Parallel
   # nodeSelector:
     # cloud.google.com/gke-nodepool: default-pool
   # nodeAffinity:
@@ -959,7 +961,7 @@ function:
   usePython3: false
   updateStrategy:
     type: RollingUpdate
-  podManagementPolicy: OrderedReady
+  podManagementPolicy: Parallel
   probe:
     enabled: true
     port: 6750

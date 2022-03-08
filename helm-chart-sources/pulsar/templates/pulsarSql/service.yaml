@@ -25,8 +25,15 @@ metadata:
     chart: {{ template "presto.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
+  {{- if .Values.pulsarSQL.service.annotations }}
+  annotations:
+{{ toYaml .Values.pulsarSQL.service.annotations | indent 4 }}
+  {{- end }}
 spec:
   type: {{ .Values.pulsarSQL.service.type }}
+  {{- if .Values.pulsarSQL.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.pulsarSQL.service.loadBalancerIP }}
+  {{- end }}
   ports:
     - port: {{ .Values.pulsarSQL.server.config.http.port }}
       targetPort: http-coord

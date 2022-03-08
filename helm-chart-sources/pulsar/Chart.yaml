@@ -23,14 +23,14 @@ maintainers:
   - name: cdbartholomew
   - name: lhotari
   - name: michaeljmarshall
-version: 2.0.11
+version: 2.0.14
 dependencies:
 - name: kube-prometheus-stack
   version: 12.x.x
   repository: https://prometheus-community.github.io/helm-charts
   condition: kube-prometheus-stack.enabled
 - name: cert-manager
-  version: v1.1.x
+  version: v1.5.x
   repository: https://charts.jetstack.io
   condition: cert-manager.enabled
 - name: keycloak
