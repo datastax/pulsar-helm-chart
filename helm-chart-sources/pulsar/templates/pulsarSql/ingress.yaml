@@ -52,7 +52,6 @@ spec:
               service:
                 name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarSQL.component }}"
                 port: 
-                  number: 8080
                   name: "http-coord"
             {{- end }}
 {{- end }}
