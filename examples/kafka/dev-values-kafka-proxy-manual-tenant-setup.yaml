@@ -127,7 +127,6 @@ broker:
     PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://advertisedAddress:9092"
     PULSAR_PREFIX_kafkaTransactionCoordinatorEnabled: "true"
     PULSAR_PREFIX_kafkaNamespace: "kafka"
-    PULSAR_PREFIX_kafkaMetadataTenant: "__kafka"
     PULSAR_PREFIX_kopSchemaRegistryNamespace: "__kafka_unlimited"
     PULSAR_PREFIX_kafkaTransactionProducerIdsNamespace: "__kafka_unlimited"
     PULSAR_PREFIX_kafkaManageSystemNamespaces: "false"
@@ -177,11 +176,9 @@ proxy:
     PULSAR_PREFIX_kopSchemaRegistryProxyPort: "8081"
     PULSAR_PREFIX_kafkaTransactionCoordinatorEnabled: "true"
     PULSAR_PREFIX_kafkaNamespace: "kafka"
-    PULSAR_PREFIX_kafkaMetadataTenant: "__kafka"
     PULSAR_PREFIX_kopSchemaRegistryNamespace: "__kafka_unlimited"
     PULSAR_PREFIX_kafkaTransactionProducerIdsNamespace: "__kafka_unlimited"
     PULSAR_PREFIX_kafkaManageSystemNamespaces: "false"
-    PULSAR_PREFIX_authenticateMetricsEndpoint: "false"
 
   autoPortAssign:
     enablePlainTextWithTLS: true
