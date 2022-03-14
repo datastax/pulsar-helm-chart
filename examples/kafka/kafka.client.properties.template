@@ -55,3 +55,8 @@ ssl.truststore.location=cert.jks
 ssl.truststore.password=pulsar
 # The identification algorithm must be empty
 ssl.endpoint.identification.algorithm=
+
+schema.registry.url=https://localhost:8081
+basic.auth.credentials.source=USER_INFO
+basic.auth.user.info=TENANT:token:TOKEN
+
