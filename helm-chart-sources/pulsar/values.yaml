@@ -291,32 +291,32 @@ image:
     # If not using tiered storage, you can use the smaller pulsar image for the broker
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.25
+    tag: 2.8.0_1.1.26
   brokerSts:
     # If not using tiered storage, you can use the smaller pulsar image for the broker
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.25
+    tag: 2.8.0_1.1.26
   function:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.25
+    tag: 2.8.0_1.1.26
   zookeeper:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.25
+    tag: 2.8.0_1.1.26
   bookkeeper:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.25
+    tag: 2.8.0_1.1.26
   proxy:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.25
+    tag: 2.8.0_1.1.26
   bastion:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.25
+    tag: 2.8.0_1.1.26
   pulsarBeam:
     repository: kesque/pulsar-beam
     pullPolicy: IfNotPresent
@@ -331,7 +331,7 @@ image:
     tag: logcollector_latest
   pulsarSQL:
     repository: datastax/lunastreaming-all
-    tag: 2.8.0_1.1.25
+    tag: 2.8.0_1.1.26
     pullPolicy: IfNotPresent
   tardigrade:
     repository: storjlabs/gateway
