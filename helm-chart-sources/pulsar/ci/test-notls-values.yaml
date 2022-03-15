@@ -102,14 +102,15 @@ proxy:
   service:
     autoPortAssign:
       enabled: true
+    type: ClusterIP
 
 grafanaDashboards:
   enabled: false
 
 pulsarAdminConsole:
   replicaCount: 1
-  ingress:
-    enabled: true
+  service:
+    type: ClusterIP
 
 kube-prometheus-stack:
   enabled: false

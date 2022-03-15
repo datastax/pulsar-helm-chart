@@ -54,7 +54,7 @@ spec:
         imagePullPolicy: {{ .Values.image.zookeeper.pullPolicy }}
         command: ["sh", "-c"]
         args:
-          - >-
+          - |-
             until [ "$(echo ruok | nc {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-{{ add (.Values.zookeeper.replicaCount | int) -1 }}.{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}.{{ .Release.Namespace }} 2181)" = "imok" ]; do
               echo Zookeeper not yet ready. Will try again after 3 seconds.
               sleep 3;
@@ -70,7 +70,7 @@ spec:
       {{- end }}
         command: ["sh", "-c"]
         args:
-          - >
+          - |
             bin/pulsar initialize-cluster-metadata \
               --cluster {{ template "pulsar.fullname" . }} \
               --zookeeper {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }} \
