@@ -17,7 +17,11 @@
 
 {{- if .Values.extra.pulsarSQL }}
 {{- if .Values.pulsarSQL.ingress.enabled }}
+{{- if semverCompare "<1.19-0" .Capabilities.KubeVersion.Version }}
 apiVersion: extensions/v1beta1
+{{- else }}
+apiVersion: networking.k8s.io/v1
+{{- end }}
 kind: Ingress
 metadata:
   name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarSQL.component }}"
@@ -37,8 +41,18 @@ spec:
       http:
         paths:
           - path: /
+            {{- if semverCompare "<1.19-0" .Capabilities.KubeVersion.Version }}
             backend:
               serviceName: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarSQL.component }}"
+              servicePort: 8080
               servicePort: "http-coord"
+            {{- else }}
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarSQL.component }}"
+                port: 
+                  name: "http-coord"
+            {{- end }}
 {{- end }}
 {{- end }}

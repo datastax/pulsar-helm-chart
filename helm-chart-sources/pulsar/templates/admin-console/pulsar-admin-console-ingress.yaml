@@ -17,7 +17,11 @@
 
 {{- if .Values.extra.pulsarAdminConsole }}
 {{- if .Values.pulsarAdminConsole.ingress.enabled }}
+{{- if semverCompare "<1.19-0" .Capabilities.KubeVersion.Version }}
 apiVersion: extensions/v1beta1
+{{- else }}
+apiVersion: networking.k8s.io/v1
+{{- end }}
 kind: Ingress
 metadata:
   name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}"
@@ -37,13 +41,31 @@ spec:
       http:
         paths:
           - path: /
+            {{- if semverCompare "<1.19-0" .Capabilities.KubeVersion.Version }}
             backend:
               serviceName: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}"
               servicePort: 8080
+            {{- else }}
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}"
+                port: 
+                  number: 8080
+            {{- end }}
           - path: /ws/
+            {{- if semverCompare "<1.19-0" .Capabilities.KubeVersion.Version }}
             backend:
               serviceName: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}"
               servicePort: 8080
+            {{- else }}
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}"
+                port: 
+                  number: 8080
+            {{- end }}
   {{- if and .Values.enableTls .Values.pulsarAdminConsole.ingress.enableTls}}
   tls:
   - hosts:

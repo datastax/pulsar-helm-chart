@@ -16,7 +16,11 @@
 #
 
 {{- if .Values.proxy.ingress.enabled }}
+{{- if semverCompare "<1.19-0" .Capabilities.KubeVersion.Version }}
 apiVersion: extensions/v1beta1
+{{- else }}
+apiVersion: networking.k8s.io/v1
+{{- end }}
 kind: Ingress
 metadata:
   name: "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}"
@@ -42,6 +46,7 @@ spec:
       http:
         paths:
           - path: /
+            {{- if semverCompare "<1.19-0" .Capabilities.KubeVersion.Version }}
             backend:
               serviceName: "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}"
               {{- if .Values.enableTls }}
@@ -49,8 +54,21 @@ spec:
               {{- else }}
               servicePort: 8080
               {{- end }}
+            {{- else }}
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}"
+                port: 
+                  {{- if .Values.enableTls }}
+                  number: 8443
+                  {{- else }}
+                  number: 8080
+                  {{- end }}
+            {{- end }}
           {{- if .Values.proxy.ingress.enableWebSocket }}
           - path: /ws
+            {{- if semverCompare "<1.19-0" .Capabilities.KubeVersion.Version }}
             backend:
               serviceName: "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}"
               {{- if .Values.enableTls }}
@@ -58,15 +76,37 @@ spec:
               {{- else }}
               servicePort: 8000
               {{- end }}
+            {{- else }}
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}"
+                port:
+                  {{- if .Values.enableTls }}
+                  number: {{ .Values.proxy.ingress.wssPortOnProxy }}
+                  {{- else }}
+                  number: 8000
+                  {{- end }}
+            {{- end }}
           {{- end }}
           {{- if .Values.proxy.ingress.enableBurnell }}
           - path: /br
+            {{- if semverCompare "<1.19-0" .Capabilities.KubeVersion.Version }}
             backend:
               serviceName: "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}"
               servicePort: 8964
+            {{- else }}
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}"
+                port: 
+                  number: 8964
+            {{- end }}
           {{- end }}
           {{- if .Values.broker.ingress.enabled }}
           - path: /broker
+            {{- if semverCompare "<1.19-0" .Capabilities.KubeVersion.Version }}
             backend:
               serviceName: "{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}"
               {{- if .Values.enableTls }}
@@ -74,5 +114,17 @@ spec:
               {{- else }}
               servicePort: 8080
               {{- end }}
+            {{- else }}
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: "{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}"
+                port:
+              {{- if .Values.enableTls }}
+                number: 8443
+              {{- else }}
+              number: 8080
+              {{- end }}
+            {{- end }}
           {{- end }}
 {{- end }}
