@@ -21,31 +21,31 @@ image:
   broker:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.25
+    tag: 2.8.0_1.1.26
   brokerSts:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: l2.8.0_1.1.25
+    tag: 2.8.0_1.1.26
   function:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.25
+    tag: 2.8.0_1.1.26
   zookeeper:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.25
+    tag: 2.8.0_1.1.26
   bookkeeper:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.25
+    tag: 2.8.0_1.1.26
   proxy:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.25
+    tag: 2.8.0_1.1.26
   bastion:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.25
+    tag: 2.8.0_1.1.26
 
 enableAntiAffinity: false
 enableTls: true
