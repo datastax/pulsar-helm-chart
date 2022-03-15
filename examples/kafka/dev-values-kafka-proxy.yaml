@@ -16,6 +16,37 @@
 #
 
 # Please note that this example works only with Luna Streaming 2.8.0.1.1.5+
+
+image:
+  broker:
+    repository: datastax/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.25
+  brokerSts:
+    repository: datastax/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: l2.8.0_1.1.25
+  function:
+    repository: datastax/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.25
+  zookeeper:
+    repository: datastax/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.25
+  bookkeeper:
+    repository: datastax/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.25
+  proxy:
+    repository: datastax/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.25
+  bastion:
+    repository: datastax/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: 2.8.0_1.1.25
+
 enableAntiAffinity: false
 enableTls: true
 enableTokenAuth: true
@@ -23,10 +54,10 @@ restartOnConfigMapChange:
   enabled: true
 extra:
   function: true
-  burnell: true
-  burnellLogCollector: true
-  pulsarHeartbeat: true
-  pulsarAdminConsole: true
+  burnell: false
+  burnellLogCollector: false
+  pulsarHeartbeat: false
+  pulsarAdminConsole: false
 
 cert-manager:
   enabled: true
@@ -72,7 +103,9 @@ broker:
       port: 9092
     - name: kafkassl
       port: 9093
-  replicaCount: 3
+    - name: kafkaschemareg
+      port: 8001
+  replicaCount: 2
   ledger:
     defaultEnsembleSize: 1
     defaultAckQuorum: 1
@@ -83,11 +116,16 @@ broker:
       cpu: 0.1
   configData:
     PULSAR_MEM: "-Xms400m -Xmx400m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError"
-  kafkaOnPulsarEnabled: true
-  kafkaOnPulsar:    
-    saslAllowedMechanisms: PLAIN
-    brokerEntryMetadataInterceptors: "org.apache.pulsar.common.intercept.AppendIndexMetadataInterceptor,org.apache.pulsar.common.intercept.AppendBrokerTimestampMetadataInterceptor"
-    kopSchemaRegistryEnable: true
+    PULSAR_PREFIX_protocolHandlerDirectory: "./protocols"
+    PULSAR_PREFIX_messagingProtocols: "kafka"
+    PULSAR_PREFIX_brokerDeleteInactiveTopicsEnabled: "false"
+    PULSAR_PREFIX_saslAllowedMechanisms: PLAIN
+    PULSAR_PREFIX_brokerEntryMetadataInterceptors: "org.apache.pulsar.common.intercept.AppendIndexMetadataInterceptor,org.apache.pulsar.common.intercept.AppendBrokerTimestampMetadataInterceptor"
+    PULSAR_PREFIX_kopSchemaRegistryEnable: "true"
+    PULSAR_PREFIX_allowAutoTopicCreationType: "partitioned"
+    PULSAR_PREFIX_kafkaListeners: "SASL_PLAINTEXT://0.0.0.0:9092"
+    PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://advertisedAddress:9092"
+    PULSAR_PREFIX_kafkaTransactionCoordinatorEnabled: "true"
 
 autoRecovery:
   enableProvisionContainer: yes
@@ -121,13 +159,18 @@ proxy:
     PULSAR_MEM: "-Xms400m -Xmx400m -XX:MaxDirectMemorySize=112m"
     PULSAR_PREFIX_kafkaListeners: "SASL_PLAINTEXT://0.0.0.0:9092,SASL_SSL://0.0.0.0:9093"
 # here you have to customize the advertised name if you want to access
-# KOP from outside the kube    
-    PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://pulsar-proxy:9092,SASL_SSL://pulsar-proxy:9093"
+# Kafka from outside the kube    
+# Drop the SASL_PLAINTEXT endpoint if you want to allow only TLS (here and above)
+# The Proxy uses the same TLS certificate configured for the Pulsar protocol
+#    PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://pulsar-proxy:9092,SASL_SSL://pulsar-proxy:9093"
+# if you use port forwarding to localhost then you have to set 'localhost'    
+    PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://localhost:9092,SASL_SSL://localhost:9093"
     PULSAR_PREFIX_saslAllowedMechanisms: PLAIN
     PULSAR_PREFIX_kafkaProxySuperUserRole: superuser
-    PULSAR_PREFIX_kopSchemaRegistryProxyEnableTls: "false"
+    PULSAR_PREFIX_kopSchemaRegistryProxyEnableTls: "true"
     PULSAR_PREFIX_kopSchemaRegistryEnable: "true"
-    PULSAR_PREFIX_kopSchemaRegistryProxyPort: "8003"
+    PULSAR_PREFIX_kopSchemaRegistryProxyPort: "8081"
+    PULSAR_PREFIX_kafkaTransactionCoordinatorEnabled: "true"
   autoPortAssign:
     enablePlainTextWithTLS: true
   service:
@@ -142,6 +185,8 @@ proxy:
         containerPort: 9092
       - name: kafkassl
         containerPort: 9093
+      - name: kafkaschemareg
+        containerPort: 8081
     servicePorts:
      - name: kafkaplaintext
        port: 9092
@@ -151,15 +196,13 @@ proxy:
        port: 9093
        protocol: TCP
        targetPort: kafkassl      
+     - name: kafkaschemareg
+       port: 8081
+       protocol: TCP
+       targetPort: kafkaschemareg
 pulsarAdminConsole:
   replicaCount: 1
   service:
-    type: ClusterIP
-grafana: #ASF Helm Chart
-  service:
-    type: ClusterIP
-pulsar_manager:
-  service: #ASF Helm Chart
     type: ClusterIP
 kube-prometheus-stack:
   enabled: false
@@ -167,4 +210,6 @@ kube-prometheus-stack:
     enabled: false
   grafana:
     enabled: false
-    adminPassword: e9JYtk83*4#PM8    
+    adminPassword: e9JYtk83*4#PM8
+    service:
+      type: ClusterIP    
