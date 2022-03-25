@@ -170,21 +170,4 @@ spec:
         envFrom:
         - configMapRef:
             name: "{{ template "pulsar.fullname" . }}-{{ .Values.bastion.component }}"
-        env:
-        # If proxy is deployed, use that for web service URL to
-        # properly forward command to broker or function worker
-        {{- if .Values.extra.proxy }}
-        {{- if .Values.enableTls }}
-        - name: webServiceUrl
-          value: https://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8443/
-        {{- else }}
-        - name: webServiceUrl
-          value: http://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8080/
-        {{- end }}
-        {{- else }}
-        - name: webServiceUrl
-          value: http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080/
-        {{- end }}
-        - name: brokerServiceUrl
-          value: pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6650/
 {{- end }}

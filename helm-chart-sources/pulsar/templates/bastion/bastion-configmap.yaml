@@ -33,12 +33,32 @@ data:
   authParams: "file:///pulsar/token-superuser-stripped.jwt"
   authPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
   {{- end }}
-  {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}
-  tlsTrustCertsFilePath: /pulsar/certs/ca.crt
-  {{- else }}
+  # If proxy is deployed, use that for web service URL to
+  # properly forward command to broker or function worker
+  {{- if .Values.enableTls }}
+  tlsEnableHostnameVerification: "true"
+    {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}
+  tlsTrustCertsFilePath: "/pulsar/certs/ca.crt"
+    {{- else }}
   tlsTrustCertsFilePath: "{{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}"
-  {{- end }}
-{{- range $key, $val := $.Values.bastion.configData }}
+    {{- end }}
+    {{- if .Values.extra.proxy }}
+  brokerServiceUrl: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:6651/"
+  webServiceUrl: "https://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8443/"
+    {{- else }}
+  brokerServiceUrl: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6651/"
+  webServiceUrl: "https://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8443/"
+    {{- end }}
+  {{- else }}
+    {{- if .Values.extra.proxy }}
+  brokerServiceUrl: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6650/"
+  webServiceUrl: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080/"
+    {{- else }}
+  brokerServiceUrl: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6650/"
+  webServiceUrl: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080/"
+    {{- end }}
+    {{- range $key, $val := $.Values.bastion.configData }}
   {{ $key }}: {{ $val | replace "\"" "" | trim | quote }}
-{{- end }}
+    {{- end }}
+  {{- end }}
 {{- end }}

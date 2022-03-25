@@ -58,10 +58,15 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   secretName: {{ .Values.tlsSecretName }}
+  # The wildcard names are needed to connect directly to the broker
+  # The non-wildcard broker names are needed when calling the topic lookup service
   dnsNames:
-  - "{{ template "pulsar.fullname" . }}-broker.{{ .Release.Namespace }}.svc.cluster.local"
-  - "{{ template "pulsar.fullname" . }}-broker.{{ .Release.Namespace }}"
-  - "{{ template "pulsar.fullname" . }}-broker"
+  - "*.{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}.svc.cluster.local"
+  - "*.{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}"
+  - "*.{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}"
+  - "{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}.svc.cluster.local"
+  - "{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}"
+  - "{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}"
   - "{{ template "pulsar.fullname" . }}-proxy.{{ .Release.Namespace }}.svc.cluster.local"
   - "{{ template "pulsar.fullname" . }}-proxy.{{ .Release.Namespace }}"
   - "{{ template "pulsar.fullname" . }}-proxy"
