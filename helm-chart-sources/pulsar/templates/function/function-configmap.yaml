@@ -63,12 +63,10 @@ data:
     workerPort: "6750"
     {{- if .Values.enableTls }}
     workerPortTls: "6751"
-    # these two seem to break things... the errors are much less helpful
-    #    tlsEnableHostnameVerification: true
-    #    tlsRequireTrustedClientCertOnConnect: true
+    tlsEnableHostnameVerification: true
     tlsCertificateFilePath: "/pulsar/certs/tls.crt"
     {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}
-    tlsAllowInsecureConnection: true
+    tlsAllowInsecureConnection: false
     tlsTrustStorePath: /pulsar/certs/ca.crt
     tlsTrustCertsFilePath: /pulsar/certs/ca.crt
     brokerClientTlsTrustStore: /pulsar/certs/ca.crt
