@@ -51,8 +51,8 @@ data:
     {{- end }}
   {{- else }}
     {{- if .Values.extra.proxy }}
-  brokerServiceUrl: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6650/"
-  webServiceUrl: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080/"
+  brokerServiceUrl: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:6650/"
+  webServiceUrl: "http://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8080/"
     {{- else }}
   brokerServiceUrl: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6650/"
   webServiceUrl: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080/"
