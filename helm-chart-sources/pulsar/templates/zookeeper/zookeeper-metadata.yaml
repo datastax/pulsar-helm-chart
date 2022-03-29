@@ -90,7 +90,6 @@ spec:
         args:
           - |
             {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
-            openssl pkcs8 -topk8 -inform PEM -outform PEM -in /pulsar/certs/tls.key -out /pulsar/tls-pk8.key -nocrypt &&
             /pulsar/tools/certconverter.sh &&
             {{- end }}
             bin/pulsar initialize-cluster-metadata \
