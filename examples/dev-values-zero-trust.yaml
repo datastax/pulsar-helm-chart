@@ -80,7 +80,6 @@ bookkeeper:
 brokerSts:
   component: broker
   replicaCount: 1
-  functionsWorkerEnabled: true
   ledger:
     defaultEnsembleSize: 1
     defaultAckQuorum: 1
