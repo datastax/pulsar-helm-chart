@@ -45,6 +45,7 @@ restartOnConfigMapChange:
 extra:
   broker: false
   brokerSts: true
+  proxy: true
   function: true
   burnell: false # MAKE ME TRUE
   burnellLogCollector: false
