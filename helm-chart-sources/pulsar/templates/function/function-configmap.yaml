@@ -63,9 +63,16 @@ data:
     workerPort: "6750"
     {{- if .Values.enableTls }}
     workerPortTls: "6751"
+    # these two seem to break things... the errors are much less helpful
+    #    tlsEnableHostnameVerification: true
+    #    tlsRequireTrustedClientCertOnConnect: true
     tlsCertificateFilePath: "/pulsar/certs/tls.crt"
     {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}
+    tlsAllowInsecureConnection: true
+    tlsTrustStorePath: /pulsar/certs/ca.crt
     tlsTrustCertsFilePath: /pulsar/certs/ca.crt
+    brokerClientTlsTrustStore: /pulsar/certs/ca.crt
+    tlsTrustStore: /pulsar/certs/ca.crt
     brokerClientTrustCertsFilePath: "/pulsar/certs/ca.crt"
     {{- else }}
     tlsTrustCertsFilePath: "{{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}"
@@ -76,8 +83,8 @@ data:
     {{- if and .Values.enableTls .Values.tls.function.enabled }}
     tlsEnabled: "true"
     useTls: "true"
-    pulsarServiceUrl: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6651"
-    pulsarWebServiceUrl: "https://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8443"
+    pulsarServiceUrl: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}:6651"
+    pulsarWebServiceUrl: "https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}:8443"
     {{- else }}
     pulsarServiceUrl: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6650"
     pulsarWebServiceUrl: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080"

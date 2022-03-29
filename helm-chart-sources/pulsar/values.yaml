@@ -228,7 +228,7 @@ extra:
   # Broker as stateful set
   brokerSts: false
   # Pulsar proxy
-  proxy: true
+  proxy: false
   # Websocket proxy
   #
   # This will enable a standalone WebSocket proxy that

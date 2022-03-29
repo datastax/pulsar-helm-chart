@@ -70,6 +70,8 @@ spec:
   - "{{ template "pulsar.fullname" . }}-proxy.{{ .Release.Namespace }}.svc.cluster.local"
   - "{{ template "pulsar.fullname" . }}-proxy.{{ .Release.Namespace }}"
   - "{{ template "pulsar.fullname" . }}-proxy"
+  - "{{ template "pulsar.fullname" . }}-zookeeper"
+  - "*.{{ template "pulsar.fullname" . }}-zookeeper"
   {{- if .Values.createCertificates.selfSigned.includeDns }}
   - "{{ .Values.dnsName}}"
   {{- end }}
