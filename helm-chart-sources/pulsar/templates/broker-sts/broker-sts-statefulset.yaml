@@ -285,10 +285,6 @@ spec:
             name: "{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}"
         env:
         {{- if .Values.broker.kafkaOnPulsarEnabled }}
-        - name: advertisedAddress
-          valueFrom:
-            fieldRef:
-              fieldPath: status.podIP
         - name: PULSAR_PREFIX_kafkaAdvertisedListeners
           value: "PLAINTEXT://$(advertisedAddress):9092"
         {{- end }}
