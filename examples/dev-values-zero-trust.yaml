@@ -89,7 +89,7 @@ tls:
   #
   zookeeper:
     enabled: true
-  # Enable TLS between broker and BookKeeper
+  # Enable TLS between broker and BookKeeper, and function worker and bookkeeper
   bookkeeper:
     enabled: true
   # Enable TLS between function worker and broker

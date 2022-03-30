@@ -210,7 +210,6 @@ spec:
           {{ .Values.function.initContainer.mainContainerStartupCmd }} &&
           {{- end }}
           bin/apply-config-from-env.py conf/broker.conf &&
-          bin/apply-config-from-env.py conf/client.conf &&
           cp -f funcconf/functions_worker.yml conf/functions_worker.yml &&
           export PF_workerHostname="${workerHostname}.{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}" &&
           bin/gen-yml-from-env.py conf/functions_worker.yml &&
