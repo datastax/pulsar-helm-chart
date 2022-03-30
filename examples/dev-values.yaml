@@ -21,6 +21,7 @@ enableTokenAuth: false
 restartOnConfigMapChange:
   enabled: true
 extra:
+  proxy: true
   function: true
   burnell: true
   burnellLogCollector: true
