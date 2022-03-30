@@ -99,8 +99,8 @@ tls:
   websocket:
     enabled: true
 
-# TODO the current function worker code only uses TLS connections to brokers when authentication is enabled. This
-# seems like unnecessary coupling.
+# TODO the current function worker code only uses TLS connections to brokers when authentication is enabled.
+# This seems like unnecessary coupling.
 enableTokenAuth: true
 restartOnConfigMapChange:
   enabled: true
@@ -109,8 +109,9 @@ extra:
   brokerSts: true
   proxy: true
   function: true
-  burnell: true # TODO ensure this uses TLS
   burnellLogCollector: false
+  # Note that these deployments currently use the plaintext broker ports
+  burnell: true
   pulsarHeartbeat: true
   pulsarAdminConsole: true
 
