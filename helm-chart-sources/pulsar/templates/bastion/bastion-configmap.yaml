@@ -46,8 +46,8 @@ data:
   brokerServiceUrl: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:6651/"
   webServiceUrl: "https://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8443/"
     {{- else }}
-  brokerServiceUrl: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6651/"
-  webServiceUrl: "https://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8443/"
+  brokerServiceUrl: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}:6651/"
+  webServiceUrl: "https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}:8443/"
     {{- end }}
   {{- else }}
     {{- if .Values.extra.proxy }}
