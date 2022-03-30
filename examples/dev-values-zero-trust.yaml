@@ -201,4 +201,3 @@ kube-prometheus-stack:
     enabled: false
   grafana:
     enabled: false
-    adminPassword: e9JYtk83*4#PM8
