@@ -75,6 +75,7 @@ data:
   {{- end }}
 {{- if .Values.enableTls }}
   tlsEnabledInProxy: "true"
+  tlsEnableHostnameVerification: "true"
   tlsCertificateFilePath: /pulsar/certs/tls.crt
   tlsKeyFilePath: /pulsar/tls-pk8.key
   {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}

@@ -94,6 +94,7 @@ data:
   {{- end }}
 {{- if .Values.enableTls }}
   tlsEnabled: "true"
+  tlsEnableHostnameVerification: "true"
   tlsCertificateFilePath: /pulsar/certs/tls.crt
   tlsKeyFilePath: /pulsar/tls-pk8.key
   {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}

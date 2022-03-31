@@ -63,13 +63,13 @@ data:
     workerPort: "6750"
     {{- if .Values.enableTls }}
     workerPortTls: "6751"
+    tlsAllowInsecureConnection: false
     tlsEnableHostnameVerification: true
     tlsCertificateFilePath: "/pulsar/certs/tls.crt"
     {{- if .Values.tls.bookkeeper.enabled }}
     bookkeeperTLSClientAuthentication: true
     {{- end }}
     {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}
-    tlsAllowInsecureConnection: false
     tlsTrustStorePath: /pulsar/certs/ca.crt
     tlsTrustCertsFilePath: /pulsar/certs/ca.crt
     brokerClientTlsTrustStore: /pulsar/certs/ca.crt
