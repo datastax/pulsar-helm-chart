@@ -116,6 +116,7 @@ data:
   bookkeeperTLSKeyFileType: "PEM"
   bookkeeperTLSKeyFilePath: "/pulsar/tls-pk8.key"
   bookkeeperTLSCertificateFilePath: "/pulsar/certs/tls.crt"
+  PULSAR_PREFIX_bookkeeper_tlsHostnameVerificationEnabled: "true"
   {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}
   bookkeeperTLSTrustCertsFilePath: /pulsar/certs/ca.crt
   {{- else }}
