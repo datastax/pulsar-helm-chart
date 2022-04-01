@@ -63,7 +63,6 @@ data:
     workerPort: "6750"
     {{- if .Values.enableTls }}
     workerPortTls: "6751"
-    tlsEnableHostnameVerification: true
     tlsCertificateFilePath: "/pulsar/certs/tls.crt"
     {{- if .Values.tls.bookkeeper.enabled }}
     bookkeeperTLSClientAuthentication: true
@@ -78,6 +77,7 @@ data:
     tlsKeyFilePath: "/pulsar/tls-pk8.key"
     {{- end }}
     {{- if and .Values.enableTls .Values.tls.function.enabled }}
+    tlsEnableHostnameVerification: true
     tlsEnabled: "true"
     useTls: "true"
     pulsarServiceUrl: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}:6651"
