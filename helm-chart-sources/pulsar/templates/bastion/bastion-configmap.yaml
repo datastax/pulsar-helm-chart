@@ -57,8 +57,8 @@ data:
   brokerServiceUrl: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6650/"
   webServiceUrl: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080/"
     {{- end }}
-    {{- range $key, $val := $.Values.bastion.configData }}
+  {{- end }}
+  {{- range $key, $val := $.Values.bastion.configData }}
   {{ $key }}: {{ $val | replace "\"" "" | trim | quote }}
-    {{- end }}
   {{- end }}
 {{- end }}
