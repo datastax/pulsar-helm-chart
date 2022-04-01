@@ -58,7 +58,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   secretName: {{ .Values.tlsSecretName }}
-  # The wildcard names are needed to connect directly to the broker
+  # The wildcard names are needed to connect directly to the broker and zookeeper pods.
   # The non-wildcard broker names are needed when calling the topic lookup service
   dnsNames:
   - "*.{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}.svc.cluster.local"
@@ -82,6 +82,9 @@ spec:
   - "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}.{{ .Release.Namespace }}.svc.cluster.local"
   - "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}.{{ .Release.Namespace }}"
   - "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}"
+  - "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-ca.{{ .Release.Namespace }}.svc.cluster.local"
+  - "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-ca.{{ .Release.Namespace }}"
+  - "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-ca"
   {{- if .Values.createCertificates.selfSigned.includeDns }}
   - "{{ .Values.dnsName}}"
   {{- end }}
