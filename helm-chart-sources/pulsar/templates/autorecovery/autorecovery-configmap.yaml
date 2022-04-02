@@ -43,6 +43,9 @@ data:
     {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2181
       {{- end }}
     {{- end }}
+  {{- if and .Values.enableTls .Values.tls.bookkeeper.enabled }}
+  PULSAR_PREFIX_tlsHostnameVerificationEnabled: "true"
+  {{- end }}
 {{- range $key, $val := $.Values.autoRecovery.configData }}
   {{ $key }}: {{ $val | replace "\"" "" | trim | quote }}
 {{- end }}

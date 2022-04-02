@@ -61,6 +61,7 @@ data:
   PULSAR_PREFIX_tlsKeyStoreType: PEM
   PULSAR_PREFIX_tlsKeyStore: /pulsar/tls-pk8.key
   PULSAR_PREFIX_tlsTrustStoreType: PEM
+  PULSAR_PREFIX_tlsHostnameVerificationEnabled: "true"
   PULSAR_PREFIX_bookkeeperTLSClientAuthentication: "true"
   {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}
   PULSAR_PREFIX_bookkeeperTLSTrustCertsFilePath: /pulsar/certs/ca.crt
