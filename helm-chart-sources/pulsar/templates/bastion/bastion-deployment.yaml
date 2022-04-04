@@ -89,7 +89,10 @@ spec:
         {{- if .Values.enableTls }}
         - name: certs
           secret:
-            secretName: "{{ .Values.tlsSecretName }}"
+            secretName: {{ .Values.tls.rootCaSecretName | default .Values.tlsSecretName | quote }}
+            items:
+              - key: ca.crt
+                path: ca.crt
         {{- end }}
       containers:
 {{- if .Values.extra.pulsarHealer }}

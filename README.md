@@ -562,6 +562,8 @@ enableTokenAuth: true
 
 ### TLS
 
+#### TLS with Client Facing Components
+
 There are many components to consider when enabling TLS for a Pulsar Cluster. To enable TLS for all client facing
 endpoints, set `enableTls: true` in the values file and configure certificates. This setting will enable TLS endpoints
 for the Broker pods, Function Worker pods, and Proxy pods. However, this setting will not configure the proxy or the
@@ -569,6 +571,18 @@ function worker to use TLS for connections with the broker. You can enable those
 `tls.proxy.enableTlsWithBroker: true` and `tls.function.enableTlsWithBroker: true`, respectively. Because the function
 worker only connects to the broker over TLS when authentication is configured, make sure to enable authentication if
 you'd like the function worker to connect to the broker over TLS.
+
+#### TLS within all components (zero-trust)
+
+In order to support a zero-trust deployment of Pulsar please view the zero trust example values file [here](./examples/dev-values-zero-trust.yaml).
+The example shows the key components necessary for configuring TLS for all connections in Pulsar cluster. Note that
+you can supply a certificate per component now. Also note that the default values file has documentation for many of the
+fields related to zero trust.
+
+If you are using Cert Manager, the zero trust example is a complete example. If you are using your own certificates,
+you'll need to add the correct hostnames to the certificates in order to make hostname verification work. Please see
+the [self-signed-cert-per-component.yaml](helm-chart-sources/pulsar/templates/cert-manager/self-signed-cert-per-component.yaml)
+template to see which hostnames are required for each component.
 
 #### Hostname Verification
 

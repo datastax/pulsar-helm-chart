@@ -37,7 +37,7 @@ data:
   # properly forward command to broker or function worker
   {{- if .Values.enableTls }}
   tlsEnableHostnameVerification: "true"
-    {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}
+    {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled .Values.createCertificates.selfSignedPerComponent.enabled }}
   tlsTrustCertsFilePath: "/pulsar/certs/ca.crt"
     {{- else }}
   tlsTrustCertsFilePath: "{{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}"

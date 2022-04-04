@@ -43,6 +43,21 @@ data:
     {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2181
       {{- end }}
     {{- end }}
+  {{- if and .Values.enableTls .Values.tls.bookkeeper.enabled }}
+  PULSAR_PREFIX_tlsHostnameVerificationEnabled: "{{ .Values.tls.autoRecovery.enableHostnameVerification }}"
+  PULSAR_PREFIX_tlsProvider: OpenSSL
+  PULSAR_PREFIX_tlsProviderFactoryClass: org.apache.bookkeeper.tls.TLSContextFactory
+  PULSAR_PREFIX_tlsCertificatePath: /pulsar/certs/tls.crt
+  PULSAR_PREFIX_tlsKeyStoreType: PEM
+  PULSAR_PREFIX_tlsKeyStore: /pulsar/tls-pk8.key
+  PULSAR_PREFIX_tlsTrustStoreType: PEM
+  PULSAR_PREFIX_tlsClientAuthentication: "true"
+  {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled .Values.createCertificates.selfSignedPerComponent.enabled }}
+  PULSAR_PREFIX_tlsTrustStore: /pulsar/certs/ca.crt
+  {{- else }}
+  PULSAR_PREFIX_tlsTrustStore: "{{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}"
+  {{- end }}
+  {{- end }}
 {{- range $key, $val := $.Values.autoRecovery.configData }}
   {{ $key }}: {{ $val | replace "\"" "" | trim | quote }}
 {{- end }}

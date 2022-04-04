@@ -1,0 +1,196 @@
+#
+#  Copyright 2022 DataStax, Inc.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+#
+
+{{- if .Values.createCertificates.selfSignedPerComponent.enabled }}
+# Self signed issuer
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-self-signed-issuer"
+  namespace: "{{ .Release.Namespace }}"
+spec:
+  selfSigned: {}
+---
+# CA certificate from self-signed issuer
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-ca-certificate"
+  namespace: "{{ .Release.Namespace }}"
+spec:
+  secretName: "{{ template "pulsar.fullname" . }}-ss-ca"
+  commonName: "{{ .Release.Namespace }}.svc.cluster.local"
+  usages:
+    - server auth
+    - client auth
+  isCA: true
+  issuerRef:
+    name: "{{ template "pulsar.fullname" . }}-self-signed-issuer"
+---
+# Issuer using the self-signed CA certificate
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-ca-issuer"
+spec:
+  ca:
+    secretName: {{ template "pulsar.fullname" . }}-ss-ca
+---
+{{- if .Values.tls.broker.createCertificates }}
+# Self-signed certificate for broker TLS
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}-tls"
+  namespace: {{ .Release.Namespace }}
+spec:
+  secretName: {{ required "Must set .Values.tls.broker.tlsSecretName to create certificates for broker" .Values.tls.broker.tlsSecretName }}
+  # The wildcard names are needed to connect directly to the broker.
+  # The non-wildcard broker names are needed when calling the topic lookup service.
+  dnsNames:
+    - "*.{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}.svc.cluster.local"
+    - "*.{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}"
+    - "*.{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}.svc.cluster.local"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}"
+  issuerRef:
+    name: "{{ template "pulsar.fullname" . }}-ca-issuer"
+{{- end }}
+---
+{{- if .Values.tls.bookkeeper.createCertificates }}
+# Self-signed certificate for Bookkeeper TLS
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}-tls"
+  namespace: {{ .Release.Namespace }}
+spec:
+  secretName: {{ .Values.tls.bookkeeper.tlsSecretName }}
+  # The wildcard names are needed to connect directly to the broker.
+  dnsNames:
+    - "*.{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}.{{ .Release.Namespace }}.svc.cluster.local"
+    - "*.{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}.{{ .Release.Namespace }}"
+    - "*.{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}.{{ .Release.Namespace }}.svc.cluster.local"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}.{{ .Release.Namespace }}"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}"
+  issuerRef:
+    name: "{{ template "pulsar.fullname" . }}-ca-issuer"
+{{- end }}
+---
+{{- if .Values.tls.proxy.createCertificates }}
+# Self-signed certificate for Proxy TLS
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}-tls"
+  namespace: {{ .Release.Namespace }}
+spec:
+  secretName: {{ required "Must set .Values.tls.proxy.tlsSecretName to create certificates for proxy" .Values.tls.proxy.tlsSecretName }}
+  dnsNames:
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ .Release.Namespace }}.svc.cluster.local"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ .Release.Namespace }}"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}"
+  issuerRef:
+    name: "{{ template "pulsar.fullname" . }}-ca-issuer"
+{{- end }}
+---
+{{- if .Values.tls.zookeeper.createCertificates }}
+# Self-signed certificate for Zookeeper TLS
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-tls"
+  namespace: {{ .Release.Namespace }}
+spec:
+  secretName: {{ required "Must set .Values.tls.zookeeper.tlsSecretName to create certificates for zookeeper" .Values.tls.zookeeper.tlsSecretName }}
+  # The DNS names ending in "-ca" are meant for client access. The wildcard names are used for zookeeper to zookeeper
+  # networking.
+  dnsNames:
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ .Release.Namespace }}.svc.cluster.local"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ .Release.Namespace }}"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca"
+    - "*.{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}.{{ .Release.Namespace }}.svc.cluster.local"
+    - "*.{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}.{{ .Release.Namespace }}"
+    - "*.{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}.{{ .Release.Namespace }}.svc.cluster.local"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}.{{ .Release.Namespace }}"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}"
+  issuerRef:
+    name: "{{ template "pulsar.fullname" . }}-ca-issuer"
+{{- end }}
+---
+{{- if .Values.tls.function.createCertificates }}
+# Self-signed certificate for Function Worker TLS
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-tls"
+  namespace: {{ .Release.Namespace }}
+spec:
+  secretName: {{ required "Must set .Values.tls.function.tlsSecretName to create certificates for function worker" .Values.tls.function.tlsSecretName }}
+  # The DNS names ending in "-ca" are meant for client access. The wildcard names are used for zookeeper to zookeeper
+  # networking.
+  dnsNames:
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-ca.{{ .Release.Namespace }}.svc.cluster.local"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-ca.{{ .Release.Namespace }}"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-ca"
+    - "*.{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}.{{ .Release.Namespace }}.svc.cluster.local"
+    - "*.{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}.{{ .Release.Namespace }}"
+    - "*.{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}.{{ .Release.Namespace }}.svc.cluster.local"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}.{{ .Release.Namespace }}"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}"
+  issuerRef:
+    name: "{{ template "pulsar.fullname" . }}-ca-issuer"
+{{- end }}
+---
+{{- if .Values.tls.autoRecovery.createCertificates }}
+# Self-signed certificate for AutoRecovery TLS
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.autoRecovery.component }}-tls"
+  namespace: {{ .Release.Namespace }}
+spec:
+  # TODO This cert is only used for TLS authentication. Figure out what is needed for the name, if anything.
+  commonName: autorecovery
+  usages:
+  - "client auth"
+  secretName: {{ required "Must set .Values.tls.autoRecovery.tlsSecretName to create certificates for autorecovery" .Values.tls.autoRecovery.tlsSecretName }}
+  issuerRef:
+    name: "{{ template "pulsar.fullname" . }}-ca-issuer"
+{{- end }}
+---
+{{- if .Values.tls.pulsarAdminConsole.createCertificates }}
+# Self-signed certificate for Pulsar Admin Console TLS
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.autoRecovery.component }}-tls"
+  namespace: {{ .Release.Namespace }}
+spec:
+  secretName: {{ required "Must set .Values.tls.pulsarAdminConsole.tlsSecretName to create certificates for pulsarAdminConsole" .Values.tls.pulsarAdminConsole.tlsSecretName }}
+  dnsNames:
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}.{{ .Release.Namespace }}.svc.cluster.local"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}.{{ .Release.Namespace }}"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}"
+  issuerRef:
+    name: "{{ template "pulsar.fullname" . }}-ca-issuer"
+{{- end }}
+{{- end }}
