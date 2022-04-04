@@ -115,12 +115,14 @@ default_storage:
 # When you enable TLS and are using a proxy, you need to expose the
 # TLS-enabled ports on the service. To allow TLS connections only, remove the plain-text ports.
 # See the proxy and broker sections for details.
-
+# This flag enables TLS for all client and admin facing components: broker, proxy, websocket proxy, standalone function
+# worker. You must deploy the broker as a StatefulSet for hostname verification to work. The function worker and the
+# proxy will network with the brokers over TLS when this flag is set to true.
 enableTls: false
 tlsSecretName: pulsar-tls
 
-# By default, TLS is enabled on the client- or admin-facing components (broker, proxy, websocket
-# proxy, standalone function worker).
+# When enableTls is true, TLS is enabled on the client- or admin-facing components (broker, proxy, websocket
+# proxy, standalone function worker) by default.
 # For added security, you can also enable TLS between the internal components (zookeeper, bookkeeper,
 # function worker [connect to broker])
 tls:
@@ -138,12 +140,28 @@ tls:
   # Enable TLS between broker and BookKeeper
   bookkeeper:
     enabled: false
+
+  ## TLS is enabled for the function worker, broker, and proxy when enableTls is true. The below <component>.enabled
+  ## flags are used to determine whether the component's client should use TLS when connecting to the broker or the
+  ## function worker. This is an inversion of the paradigm used for the zookeeper and bookkeeper configurations above,
+  ## which is used to enable TLS for all components interacting with bookkeeper or zookeeper.
+
   # Enable TLS between function worker and broker
+  # NOTE: the function worker's connection to the broker is only over TLS if brokerClientAuthenticationEnabled is true
+  # or if authenticationEnabled is true in the function's configuration.
   function:
     enabled: false
+    # NOTE: temporarily false to allow for easy transition. In next major version bump, this will default to true.
+    enableHostnameVerification: false
   # Enable TLS between WebSocket proxy and broker
   websocket:
     enabled: false
+  # Enable TLS between proxy and broker and between proxy and function worker
+  proxy:
+    enabled: false
+    # Applies to upstream broker and function worker TLS connections.
+    # NOTE: temporarily false to allow for easy transition. In next major version bump, this will default to true.
+    enableHostnameVerification: false
 
 # secrets:
   ## If you're providing your own certificates, please use this to add the certificates as secrets

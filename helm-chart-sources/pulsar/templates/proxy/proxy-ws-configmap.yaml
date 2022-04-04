@@ -61,7 +61,7 @@ data:
   PULSAR_PREFIX_openIDAllowedTokenIssuers: "{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}{{ template "pulsar.keycloak.issuer.port" .}}/auth/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}{{ template "pulsar.keycloak.issuer.port" .}}/auth/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}.svc.cluster.local{{ template "pulsar.keycloak.issuer.port" .}}/auth/realms/{{ .Values.keycloak.realm }}"
   {{- end }}
   {{- end }}
-{{- if and .Values.enableTls }}
+{{- if .Values.enableTls }}
   webServicePortTls: "{{ .Values.proxy.wsProxyPortTls }}"
   tlsEnabled: "true"
   tlsCertificateFilePath: /pulsar/certs/tls.crt

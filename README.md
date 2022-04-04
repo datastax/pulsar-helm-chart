@@ -562,6 +562,23 @@ enableTokenAuth: true
 
 ### TLS
 
+There are many components to consider when enabling TLS for a Pulsar Cluster. To enable TLS for all client facing
+endpoints, set `enableTls: true` in the values file and configure certificates. This setting will enable TLS endpoints
+for the Broker pods, Function Worker pods, and Proxy pods. However, this setting will not configure the proxy or the
+function worker to use TLS for connections with the broker. You can enable those by configuring
+`tls.proxy.enabled: true` and `tls.function.enabled: true`, respectively. Because the function worker only connects to
+the broker over TLS when authentication is configured, make sure to enable authentication if you'd like the function
+worker to connect to the broker over TLS.
+
+#### Hostname Verification
+
+In order for hostname verification to work, you must configure the helm chart to deploy the broker cluster as a
+StatefulSet. This kind of deployment gives each pod a stable network identifier, which is necessary for hostname
+verification and the Pulsar Protocol.
+
+To enable hostname verification with upstream servers, set `tls.<component>.enableHostnameVerification: true`. Note that
+these settings temporarily default to false for backwards compatibility, but will be updated to default to true in the
+next major version bump.
 
 ### Automatically generating certificates using cert-manager
 

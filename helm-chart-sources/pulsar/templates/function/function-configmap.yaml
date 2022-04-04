@@ -62,6 +62,7 @@ data:
     workerHostname: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}"
     workerPort: "6750"
     {{- if .Values.enableTls }}
+    tlsEnabled: "true"
     workerPortTls: "6751"
     tlsCertificateFilePath: "/pulsar/certs/tls.crt"
     {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}
@@ -74,10 +75,10 @@ data:
     tlsKeyFilePath: "/pulsar/tls-pk8.key"
     {{- end }}
     {{- if and .Values.enableTls .Values.tls.function.enabled }}
-    tlsEnabled: "true"
     useTls: "true"
-    pulsarServiceUrl: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6651"
-    pulsarWebServiceUrl: "https://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8443"
+    tlsEnableHostnameVerification: "{{ .Values.tls.proxy.enableHostnameVerification }}"
+    pulsarServiceUrl: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}:6651"
+    pulsarWebServiceUrl: "https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}:8443"
     {{- else }}
     pulsarServiceUrl: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6650"
     pulsarWebServiceUrl: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080"
