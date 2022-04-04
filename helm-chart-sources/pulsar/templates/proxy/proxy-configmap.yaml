@@ -92,14 +92,14 @@ data:
   webServicePortTls: "8443"
   servicePortTls: "6651"
   # Used to enable via .Values.tls.function.enabled, but that is deprecated now.
-  {{- if or .Values.tls.function.enabled .Values.tls.proxy.enabled }}
+  {{- if or .Values.tls.function.enabled .Values.tls.proxy.enableTlsWithBroker }}
   tlsEnabledWithBroker: "true"
   tlsHostnameVerificationEnabled: "{{ .Values.tls.proxy.enableHostnameVerification }}"
   {{- else }}
   tlsEnabledWithBroker: "false"
   {{- end }}
   {{- if .Values.extra.function }}
-  {{- if or .Values.tls.function.enabled .Values.tls.proxy.enabled }}
+  {{- if or .Values.tls.function.enabled .Values.tls.proxy.enableTlsWithBroker }}
   functionWorkerWebServiceURLTLS: "https://{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-ca:6751"
   {{- else }}
   functionWorkerWebServiceURL: "http://{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-ca:6750"

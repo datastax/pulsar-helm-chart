@@ -566,9 +566,9 @@ There are many components to consider when enabling TLS for a Pulsar Cluster. To
 endpoints, set `enableTls: true` in the values file and configure certificates. This setting will enable TLS endpoints
 for the Broker pods, Function Worker pods, and Proxy pods. However, this setting will not configure the proxy or the
 function worker to use TLS for connections with the broker. You can enable those by configuring
-`tls.proxy.enabled: true` and `tls.function.enabled: true`, respectively. Because the function worker only connects to
-the broker over TLS when authentication is configured, make sure to enable authentication if you'd like the function
-worker to connect to the broker over TLS.
+`tls.proxy.enableTlsWithBroker: true` and `tls.function.enableTlsWithBroker: true`, respectively. Because the function
+worker only connects to the broker over TLS when authentication is configured, make sure to enable authentication if
+you'd like the function worker to connect to the broker over TLS.
 
 #### Hostname Verification
 

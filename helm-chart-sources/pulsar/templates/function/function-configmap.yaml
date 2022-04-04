@@ -74,7 +74,7 @@ data:
     {{- end }}
     tlsKeyFilePath: "/pulsar/tls-pk8.key"
     {{- end }}
-    {{- if and .Values.enableTls .Values.tls.function.enabled }}
+    {{- if or (and .Values.enableTls .Values.tls.function.enabled) (and .Values.enableTls .Values.tls.function.enableTlsWithBroker) }}
     useTls: "true"
     tlsEnableHostnameVerification: "{{ .Values.tls.proxy.enableHostnameVerification }}"
     pulsarServiceUrl: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}:6651"
