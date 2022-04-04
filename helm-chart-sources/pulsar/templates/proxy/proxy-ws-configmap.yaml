@@ -66,7 +66,8 @@ data:
   tlsEnabled: "true"
   tlsCertificateFilePath: /pulsar/certs/tls.crt
   tlsKeyFilePath: /pulsar/tls-pk8.key
-  {{- if or .Values.tls.websocket.enabled .Values.enableTls }}
+  # .Values.tls.websocket.enabled is deprecated
+  {{- if or (or .Values.tls.websocket.enabled .Values.enableTls) (and .Values.enableTls .Values.tls.websocket.enableTlsWithBroker) }}
   brokerClientTlsEnabled: "true"
   {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}
   tlsTrustCertsFilePath: /pulsar/certs/ca.crt

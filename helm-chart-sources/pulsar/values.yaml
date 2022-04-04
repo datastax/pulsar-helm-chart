@@ -116,8 +116,9 @@ default_storage:
 # TLS-enabled ports on the service. To allow TLS connections only, remove the plain-text ports.
 # See the proxy and broker sections for details.
 # This flag enables TLS for all client and admin facing components: broker, proxy, websocket proxy, standalone function
-# worker. You must deploy the broker as a StatefulSet for hostname verification to work. The function worker and the
-# proxy will network with the brokers over TLS when this flag is set to true.
+# worker. You must deploy the broker as a StatefulSet for hostname verification to work. In order to enable Pulsar
+# components to network using TLS, see the tls.<component> section below; by default, intra cluster networking is
+# plaintext.
 enableTls: false
 tlsSecretName: pulsar-tls
 
@@ -150,15 +151,14 @@ tls:
   # NOTE: the function worker's connection to the broker is only over TLS if brokerClientAuthenticationEnabled is true
   # or if authenticationEnabled is true in the function's configuration.
   function:
-    enabled: false
+    enableTlsWithBroker: false
     # NOTE: temporarily false to allow for easy transition. In next major version bump, this will default to true.
     enableHostnameVerification: false
-  # Enable TLS between WebSocket proxy and broker
   websocket:
-    enabled: false
-  # Enable TLS between proxy and broker and between proxy and function worker
+    enableTlsWithBroker: false
   proxy:
-    enabled: false
+    # Applies to connections to standalone function worker, too.
+    enableTlsWithBroker: false
     # Applies to upstream broker and function worker TLS connections.
     # NOTE: temporarily false to allow for easy transition. In next major version bump, this will default to true.
     enableHostnameVerification: false
