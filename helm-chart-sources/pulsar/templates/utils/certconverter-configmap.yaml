@@ -44,7 +44,7 @@ data:
     keyStoreFile=/pulsar/tls.keystore.jks
     trustStoreFile=/pulsar/tls.truststore.jks
 
-    PASSWORD=$(head /dev/urandom | base64 | head -c 24)
+    head /dev/urandom | base64 | head -c 24 > /pulsar/keystoreSecret.txt
 
     openssl pkcs12 \
         -export \
@@ -52,27 +52,33 @@ data:
         -inkey ${keyFile} \
         -out ${p12File} \
         -name ${name} \
-        -passout "pass:${PASSWORD}"
+        -passout "file:/pulsar/keystoreSecret.txt"
 
     keytool -importkeystore \
         -srckeystore ${p12File} \
-        -srcstoretype PKCS12 -srcstorepass "${PASSWORD}" \
+        -srcstoretype PKCS12 -srcstorepass:file "/pulsar/keystoreSecret.txt" \
         -alias ${name} \
         -destkeystore ${keyStoreFile} \
-        -deststorepass "${PASSWORD}"
+        -deststorepass:file "/pulsar/keystoreSecret.txt"
 
     keytool -import \
         -file ${caFile} \
         -storetype JKS \
         -alias ${name} \
         -keystore ${trustStoreFile} \
-        -storepass "${PASSWORD}" \
+        -storepass:file "/pulsar/keystoreSecret.txt" \
         -trustcacerts -noprompt
 
+    {{- if .Values.tls.zookeeper.configureKeystoreWithPasswordFile }}
+    passwordArg="passwordPath=/pulsar/keystoreSecret.txt"
+    {{- else }}
+    passwordArg="password=$(cat /pulsar/keystoreSecret.txt)"
+    {{- end }}
+
     echo $'\n' >> conf/pulsar_env.sh
-    echo "PULSAR_EXTRA_OPTS=\"${PULSAR_EXTRA_OPTS} -Dzookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty -Dzookeeper.client.secure=true -Dzookeeper.ssl.keyStore.location=${keyStoreFile} -Dzookeeper.ssl.keyStore.password=${PASSWORD} -Dzookeeper.ssl.trustStore.location=${trustStoreFile} -Dzookeeper.ssl.trustStore.password=${PASSWORD} -Dzookeeper.sslQuorum=true -Dzookeeper.serverCnxnFactory=org.apache.zookeeper.server.NettyServerCnxnFactory -Dzookeeper.ssl.quorum.keyStore.location=${keyStoreFile} -Dzookeeper.ssl.quorum.keyStore.password=${PASSWORD} -Dzookeeper.ssl.quorum.trustStore.location=${trustStoreFile} -Dzookeeper.ssl.quorum.trustStore.password=${PASSWORD} -Dzookeeper.ssl.hostnameVerification={{ .Values.tls.zookeeper.enableHostnameVerification }} -Dzookeeper.ssl.quorum.hostnameVerification={{ .Values.tls.zookeeper.enableHostnameVerification }}\"" >> conf/pulsar_env.sh
+    echo "PULSAR_EXTRA_OPTS=\"${PULSAR_EXTRA_OPTS} -Dzookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty -Dzookeeper.client.secure=true -Dzookeeper.ssl.keyStore.location=${keyStoreFile} -Dzookeeper.ssl.keyStore.${passwordArg} -Dzookeeper.ssl.trustStore.location=${trustStoreFile} -Dzookeeper.ssl.trustStore.${passwordArg} -Dzookeeper.sslQuorum=true -Dzookeeper.serverCnxnFactory=org.apache.zookeeper.server.NettyServerCnxnFactory -Dzookeeper.ssl.quorum.keyStore.location=${keyStoreFile} -Dzookeeper.ssl.quorum.keyStore.${passwordArg} -Dzookeeper.ssl.quorum.trustStore.location=${trustStoreFile} -Dzookeeper.ssl.quorum.trustStore.${passwordArg} -Dzookeeper.ssl.hostnameVerification={{ .Values.tls.zookeeper.enableHostnameVerification }} -Dzookeeper.ssl.quorum.hostnameVerification={{ .Values.tls.zookeeper.enableHostnameVerification }}\"" >> conf/pulsar_env.sh
 
     echo $'\n' >> conf/bkenv.sh
-    echo "BOOKIE_EXTRA_OPTS=\"${BOOKIE_EXTRA_OPTS} -Dzookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty -Dzookeeper.client.secure=true -Dzookeeper.ssl.keyStore.location=${keyStoreFile} -Dzookeeper.ssl.keyStore.password=${PASSWORD} -Dzookeeper.ssl.trustStore.location=${trustStoreFile} -Dzookeeper.ssl.trustStore.password=${PASSWORD} -Dzookeeper.ssl.hostnameVerification={{ .Values.tls.zookeeper.enableHostnameVerification }}\"" >> conf/bkenv.sh
+    echo "BOOKIE_EXTRA_OPTS=\"${BOOKIE_EXTRA_OPTS} -Dzookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty -Dzookeeper.client.secure=true -Dzookeeper.ssl.keyStore.location=${keyStoreFile} -Dzookeeper.ssl.keyStore.${passwordArg} -Dzookeeper.ssl.trustStore.location=${trustStoreFile} -Dzookeeper.ssl.trustStore.${passwordArg} -Dzookeeper.ssl.hostnameVerification={{ .Values.tls.zookeeper.enableHostnameVerification }}\"" >> conf/bkenv.sh
 
 {{- end }}

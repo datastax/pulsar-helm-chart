@@ -145,6 +145,8 @@ tls:
     enableHostnameVerification: false
     # If set, supersedes the root "tlsSecretName" config
     tlsSecretName: ""
+    # Starting in Zookeeper 3.8.0, it's possible to pass the Java Keystore password by file name.
+    configureKeystoreWithPasswordFile: false
   # Enable TLS between broker and BookKeeper, function worker and bookkeeper, and autorecovyer and bookkeeper
   bookkeeper:
     enabled: false
