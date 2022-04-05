@@ -83,6 +83,7 @@ tls:
     createCertificates: true
     enableHostnameVerification: true
     tlsSecretName: "pulsar-zookeeper-tls"
+    configureKeystoreWithPasswordFile: true
   bookkeeper:
     enabled: true
     createCertificates: true
