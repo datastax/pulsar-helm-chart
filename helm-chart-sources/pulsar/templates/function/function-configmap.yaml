@@ -65,7 +65,10 @@ data:
     tlsEnabled: "true"
     workerPortTls: "6751"
     tlsCertificateFilePath: "/pulsar/certs/tls.crt"
-    {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}
+    {{- if .Values.tls.bookkeeper.enabled }}
+    bookkeeperTLSClientAuthentication: true
+    {{- end }}
+    {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled .Values.createCertificates.selfSignedPerComponent.enabled }}
     tlsTrustCertsFilePath: /pulsar/certs/ca.crt
     brokerClientTrustCertsFilePath: "/pulsar/certs/ca.crt"
     {{- else }}
@@ -76,7 +79,7 @@ data:
     {{- end }}
     {{- if or (and .Values.enableTls .Values.tls.function.enabled) (and .Values.enableTls .Values.tls.function.enableTlsWithBroker) }}
     useTls: "true"
-    tlsEnableHostnameVerification: "{{ .Values.tls.proxy.enableHostnameVerification }}"
+    tlsEnableHostnameVerification: "{{ .Values.tls.function.enableHostnameVerification }}"
     pulsarServiceUrl: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}:6651"
     pulsarWebServiceUrl: "https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}:8443"
     {{- else }}

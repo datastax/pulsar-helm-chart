@@ -147,7 +147,7 @@ spec:
         {{- if .Values.enableTls }}
         - name: certs
           secret:
-            secretName: "{{ .Values.tlsSecretName }}"
+            secretName: {{ .Values.tls.broker.tlsSecretName | default .Values.tlsSecretName | quote }}
           {{- if .Values.tls.zookeeper.enabled}}
         - name: certconverter
           configMap:

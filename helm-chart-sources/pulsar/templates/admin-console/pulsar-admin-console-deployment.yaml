@@ -145,7 +145,7 @@ spec:
         {{- if .Values.enableTls }}
         - name: certs
           secret:
-            secretName: "{{ .Values.tlsSecretName }}"
+            secretName: {{ .Values.tls.pulsarAdminConsole.tlsSecretName | default .Values.tlsSecretName | quote }}
         {{- end }}
         {{- if .Values.enableTokenAuth }}
         - name: token-superuser

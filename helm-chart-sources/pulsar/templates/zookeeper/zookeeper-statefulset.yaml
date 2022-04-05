@@ -196,7 +196,7 @@ spec:
       {{- if and .Values.enableTls .Values.tls.zookeeper.enabled}}
       - name: certs
         secret:
-          secretName: "{{ .Values.tlsSecretName }}"
+          secretName: {{ .Values.tls.zookeeper.tlsSecretName | default .Values.tlsSecretName | quote }}
       - name: certconverter
         configMap:
           name: "{{ template "pulsar.fullname" . }}-certconverter-configmap"

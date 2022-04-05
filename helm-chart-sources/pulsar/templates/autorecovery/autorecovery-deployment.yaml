@@ -156,7 +156,7 @@ spec:
       {{- if and .Values.enableTls .Values.tls.zookeeper.enabled}}
       - name: certs
         secret:
-          secretName: "{{ .Values.tlsSecretName }}"
+          secretName: {{ .Values.tls.autoRecovery.tlsSecretName | default .Values.tlsSecretName | quote }}
       - name: certconverter
         configMap:
           name: "{{ template "pulsar.fullname" . }}-certconverter-configmap"
@@ -200,6 +200,9 @@ spec:
         args:
         - >
           bin/apply-config-from-env.py conf/bookkeeper.conf &&
+          {{- if .Values.tls.bookkeeper.enabled }}
+          openssl pkcs8 -topk8 -inform PEM -outform PEM -in /pulsar/certs/tls.key -out /pulsar/tls-pk8.key -nocrypt &&
+          {{- end }}
           {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
           /pulsar/tools/certconverter.sh &&
           {{- end }}

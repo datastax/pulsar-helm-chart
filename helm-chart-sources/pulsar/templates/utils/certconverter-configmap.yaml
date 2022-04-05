@@ -35,7 +35,7 @@ data:
     crtFile=/pulsar/certs/tls.crt
     keyFile=/pulsar/certs/tls.key
 
-    {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}
+    {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled .Values.createCertificates.selfSignedPerComponent.enabled }}
     caFile=/pulsar/certs/ca.crt
     {{- else }}
     caFile={{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}
@@ -70,9 +70,9 @@ data:
         -trustcacerts -noprompt
 
     echo $'\n' >> conf/pulsar_env.sh
-    echo "PULSAR_EXTRA_OPTS=\"${PULSAR_EXTRA_OPTS} -Dzookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty -Dzookeeper.client.secure=true -Dzookeeper.ssl.keyStore.location=${keyStoreFile} -Dzookeeper.ssl.keyStore.password=${PASSWORD} -Dzookeeper.ssl.trustStore.location=${trustStoreFile} -Dzookeeper.ssl.trustStore.password=${PASSWORD} -Dzookeeper.sslQuorum=true -Dzookeeper.serverCnxnFactory=org.apache.zookeeper.server.NettyServerCnxnFactory -Dzookeeper.ssl.quorum.keyStore.location=${keyStoreFile} -Dzookeeper.ssl.quorum.keyStore.password=${PASSWORD} -Dzookeeper.ssl.quorum.trustStore.location=${trustStoreFile} -Dzookeeper.ssl.quorum.trustStore.password=${PASSWORD} -Dzookeeper.ssl.hostnameVerification=false -Dzookeeper.ssl.quorum.hostnameVerification=false\"" >> conf/pulsar_env.sh
+    echo "PULSAR_EXTRA_OPTS=\"${PULSAR_EXTRA_OPTS} -Dzookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty -Dzookeeper.client.secure=true -Dzookeeper.ssl.keyStore.location=${keyStoreFile} -Dzookeeper.ssl.keyStore.password=${PASSWORD} -Dzookeeper.ssl.trustStore.location=${trustStoreFile} -Dzookeeper.ssl.trustStore.password=${PASSWORD} -Dzookeeper.sslQuorum=true -Dzookeeper.serverCnxnFactory=org.apache.zookeeper.server.NettyServerCnxnFactory -Dzookeeper.ssl.quorum.keyStore.location=${keyStoreFile} -Dzookeeper.ssl.quorum.keyStore.password=${PASSWORD} -Dzookeeper.ssl.quorum.trustStore.location=${trustStoreFile} -Dzookeeper.ssl.quorum.trustStore.password=${PASSWORD} -Dzookeeper.ssl.hostnameVerification={{ .Values.tls.zookeeper.enableHostnameVerification }} -Dzookeeper.ssl.quorum.hostnameVerification={{ .Values.tls.zookeeper.enableHostnameVerification }}\"" >> conf/pulsar_env.sh
 
     echo $'\n' >> conf/bkenv.sh
-    echo "BOOKIE_EXTRA_OPTS=\"${BOOKIE_EXTRA_OPTS} -Dzookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty -Dzookeeper.client.secure=true -Dzookeeper.ssl.keyStore.location=${keyStoreFile} -Dzookeeper.ssl.keyStore.password=${PASSWORD} -Dzookeeper.ssl.trustStore.location=${trustStoreFile} -Dzookeeper.ssl.trustStore.password=${PASSWORD} -Dzookeeper.ssl.hostnameVerification=false\"" >> conf/bkenv.sh
+    echo "BOOKIE_EXTRA_OPTS=\"${BOOKIE_EXTRA_OPTS} -Dzookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty -Dzookeeper.client.secure=true -Dzookeeper.ssl.keyStore.location=${keyStoreFile} -Dzookeeper.ssl.keyStore.password=${PASSWORD} -Dzookeeper.ssl.trustStore.location=${trustStoreFile} -Dzookeeper.ssl.trustStore.password=${PASSWORD} -Dzookeeper.ssl.hostnameVerification={{ .Values.tls.zookeeper.enableHostnameVerification }}\"" >> conf/bkenv.sh
 
 {{- end }}

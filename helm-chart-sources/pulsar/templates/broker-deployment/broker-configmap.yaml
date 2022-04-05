@@ -96,7 +96,7 @@ data:
   tlsEnabled: "true"
   tlsCertificateFilePath: /pulsar/certs/tls.crt
   tlsKeyFilePath: /pulsar/tls-pk8.key
-  {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}
+  {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled .Values.createCertificates.selfSignedPerComponent.enabled }}
   tlsTrustCertsFilePath: /pulsar/certs/ca.crt
   {{- else }}
   tlsTrustCertsFilePath: "{{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}"
@@ -105,7 +105,7 @@ data:
   brokerServicePortTls: "6651"
   brokerClientTlsEnabled: "true"
   webServicePortTls: "8443"
-  {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}
+  {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled .Values.createCertificates.selfSignedPerComponent.enabled }}
   brokerClientTrustCertsFilePath: /pulsar/certs/ca.crt
   {{- else }}
   brokerClientTrustCertsFilePath: "{{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}"
@@ -115,7 +115,7 @@ data:
   bookkeeperTLSKeyFileType: "PEM"
   bookkeeperTLSKeyFilePath: "/pulsar/tls-pk8.key"
   bookkeeperTLSCertificateFilePath: "/pulsar/certs/tls.crt"
-  {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}
+  {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled .Values.createCertificates.selfSignedPerComponent.enabled }}
   bookkeeperTLSTrustCertsFilePath: /pulsar/certs/ca.crt
   {{- else }}
   bookkeeperTLSTrustCertsFilePath: "{{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}"
@@ -126,7 +126,7 @@ data:
   PULSAR_PREFIX_bookkeeperTLSKeyFilePath: "/pulsar/tls-pk8.key"
   PULSAR_PREFIX_bookkeeperTLSCertificateFilePath: "/pulsar/certs/tls.crt"
   PULSAR_PREFIX_bookkeeperTLSTrustCertTypes: "PEM"
-  {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled}}
+  {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled .Values.createCertificates.selfSignedPerComponent.enabled }}
   PULSAR_PREFIX_bookkeeperTLSTrustCertsFilePath: /pulsar/certs/ca.crt
   {{- else }}
   PULSAR_PREFIX_bookkeeperTLSTrustCertsFilePath: "{{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}"

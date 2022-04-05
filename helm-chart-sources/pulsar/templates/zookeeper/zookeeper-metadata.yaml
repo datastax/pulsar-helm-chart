@@ -48,6 +48,16 @@ spec:
       tolerations:
 {{ toYaml .Values.zookeeper.tolerations | indent 8 }}
     {{- end }}
+     {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
+      volumes:
+      - name: certs
+        secret:
+          secretName: {{ .Values.tls.zookeeper.tlsSecretName | default .Values.tlsSecretName | quote }}
+      - name: certconverter
+        configMap:
+          name: "{{ template "pulsar.fullname" . }}-certconverter-configmap"
+          defaultMode: 0755
+      {{- end }}
       initContainers:
       - name: wait-zookeeper-ready
         image: "{{ .Values.image.zookeeper.repository }}:{{ .Values.image.zookeeper.tag }}"
@@ -64,6 +74,14 @@ spec:
       - name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeperMetadata.component }}"
         image: "{{ .Values.image.zookeeper.repository }}:{{ .Values.image.zookeeper.tag }}"
         imagePullPolicy: {{ .Values.image.zookeeper.pullPolicy }}
+        {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
+        volumeMounts:
+        - name: certs
+          readOnly: true
+          mountPath: /pulsar/certs
+        - name: certconverter
+          mountPath: /pulsar/tools
+        {{- end }}
       {{- if .Values.zookeeperMetadata.resources }}
         resources:
 {{ toYaml .Values.zookeeperMetadata.resources | indent 10 }}
@@ -71,10 +89,18 @@ spec:
         command: ["sh", "-c"]
         args:
           - |
+            {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
+            /pulsar/tools/certconverter.sh &&
+            {{- end }}
             bin/pulsar initialize-cluster-metadata \
               --cluster {{ template "pulsar.fullname" . }} \
-              --zookeeper {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }} \
-              --configuration-store {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }} \
+              {{- if .Values.tls.zookeeper.enabled }}
+              --zookeeper {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2281 \
+              --configuration-store {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2281 \
+              {{- else }}
+              --zookeeper {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2181 \
+              --configuration-store {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2181 \
+              {{- end }}
               {{- if .Values.enableTls }}
               --web-service-url-tls https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}:8443/ \
               --broker-service-url-tls pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}:6651/ \
