@@ -362,7 +362,7 @@ image:
   pulsarAdminConsole:
     repository: datastax/pulsar-admin-console
     pullPolicy: IfNotPresent
-    tag: 1.1.5
+    tag: 1.2.5
 
 ## Tiered Storage
 ##
