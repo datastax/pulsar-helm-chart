@@ -182,7 +182,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: "{{ template "pulsar.fullname" . }}-{{ .Values.autoRecovery.component }}-tls"
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}-tls"
   namespace: {{ .Release.Namespace }}
 spec:
   secretName: {{ required "Must set .Values.tls.pulsarAdminConsole.tlsSecretName to create certificates for pulsarAdminConsole" .Values.tls.pulsarAdminConsole.tlsSecretName }}
