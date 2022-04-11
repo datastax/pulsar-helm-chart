@@ -19,12 +19,15 @@ jobs:
           command: ct lint --config tests/ct.yaml
 
   install-charts:
+    parameters:
+      k8s-version:
+        type: string
     machine:
       image: ubuntu-2004:202107-02
     steps:
       - checkout
       - run:
-          command: tests/e2e-kind.sh
+          command: K8S_VERSION=<< parameters.k8s-version >> tests/e2e-kind.sh
           no_output_timeout: 1h
 
   release-charts:
@@ -51,6 +54,9 @@ workflows:
           requires:
             - lint-scripts
             - lint-charts
+          matrix:
+            parameters:
+              k8s-version: ["v1.18.20", "v1.21.10", "v1.23.5"]
   release:
     jobs:
       - release-charts:

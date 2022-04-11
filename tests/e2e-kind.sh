@@ -7,7 +7,7 @@ set -o pipefail
 
 readonly CT_VERSION=latest
 readonly KIND_VERSION=v0.11.1
-readonly K8S_VERSION=v1.21.2
+: "${K8S_VERSION:=v1.21.2}"
 
 readonly CLUSTER_NAME=pulsar-helm-test
 
