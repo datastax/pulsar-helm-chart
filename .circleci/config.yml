@@ -19,6 +19,9 @@ jobs:
           command: ct lint --config tests/ct.yaml
 
   install-charts:
+    parameters:
+      k8s-version:
+        type: string
     machine:
       image: ubuntu-2004:202107-02
     steps:
