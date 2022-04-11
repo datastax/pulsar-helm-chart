@@ -74,6 +74,10 @@ data:
   functionWorkerWebServiceURL: "http://{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-ca:6750"
   {{- end }}
 {{- if .Values.enableTls }}
+  tlsEnabledWithKeyStore: "true"
+  tlsKeyStore: "/pulsar/tls.keystore.jks"
+  tlsTrustStore: "/pulsar/tls.truststore.jks"
+  PULSAR_PREFIX_brokerClientTlsTrustStore: "/pulsar/tls.truststore.jks"
   tlsEnabledInProxy: "true"
   tlsEnableHostnameVerification: "true"
   tlsCertificateFilePath: /pulsar/certs/tls.crt

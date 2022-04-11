@@ -66,6 +66,9 @@ data:
   tlsEnabled: "true"
   tlsCertificateFilePath: /pulsar/certs/tls.crt
   tlsKeyFilePath: /pulsar/tls-pk8.key
+  tlsEnabledWithKeyStore: "true"
+  tlsKeyStore: "/pulsar/tls.keystore.jks"
+  tlsTrustStore: "/pulsar/tls.truststore.jks"
   # .Values.tls.websocket.enabled is deprecated
   {{- if or (or .Values.tls.websocket.enabled .Values.enableTls) (and .Values.enableTls .Values.tls.websocket.enableTlsWithBroker) }}
   brokerClientTlsEnabled: "true"
