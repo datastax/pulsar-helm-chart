@@ -79,6 +79,9 @@ data:
     {{- end }}
     {{- if or (and .Values.enableTls .Values.tls.function.enabled) (and .Values.enableTls .Values.tls.function.enableTlsWithBroker) }}
     useTls: "true"
+    tlsEnabledWithKeyStore: "true"
+    tlsKeyStore: "/pulsar/tls.keystore.jks"
+    tlsTrustStore: "/pulsar/tls.truststore.jks"
     tlsEnableHostnameVerification: "{{ .Values.tls.function.enableHostnameVerification }}"
     pulsarServiceUrl: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}:6651"
     pulsarWebServiceUrl: "https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}:8443"

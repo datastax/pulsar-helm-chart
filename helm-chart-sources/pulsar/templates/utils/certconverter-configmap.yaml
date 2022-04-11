@@ -15,7 +15,7 @@
 #
 #
 
-{{- if .Values.tls.zookeeper.enabled }}
+{{- if .Values.enableTls }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -45,6 +45,11 @@ data:
     trustStoreFile=/pulsar/tls.truststore.jks
 
     head /dev/urandom | base64 | head -c 24 > /pulsar/keystoreSecret.txt
+    export tlsTrustStorePassword=$(cat /pulsar/keystoreSecret.txt)
+    export PF_tlsTrustStorePassword=$(cat /pulsar/keystoreSecret.txt)
+    export tlsKeyStorePassword=$(cat /pulsar/keystoreSecret.txt)
+    export PF_tlsKeyStorePassword=$(cat /pulsar/keystoreSecret.txt)
+    export PULSAR_PREFIX_brokerClientTlsTrustStorePassword=$(cat /pulsar/keystoreSecret.txt)
 
     openssl pkcs12 \
         -export \
@@ -69,6 +74,7 @@ data:
         -storepass:file "/pulsar/keystoreSecret.txt" \
         -trustcacerts -noprompt
 
+    {{- if .Values.tls.zookeeper.enabled }}
     {{- if .Values.tls.zookeeper.configureKeystoreWithPasswordFile }}
     passwordArg="passwordPath=/pulsar/keystoreSecret.txt"
     {{- else }}
@@ -80,5 +86,6 @@ data:
 
     echo $'\n' >> conf/bkenv.sh
     echo "BOOKIE_EXTRA_OPTS=\"${BOOKIE_EXTRA_OPTS} -Dzookeeper.clientCnxnSocket=org.apache.zookeeper.ClientCnxnSocketNetty -Dzookeeper.client.secure=true -Dzookeeper.ssl.keyStore.location=${keyStoreFile} -Dzookeeper.ssl.keyStore.${passwordArg} -Dzookeeper.ssl.trustStore.location=${trustStoreFile} -Dzookeeper.ssl.trustStore.${passwordArg} -Dzookeeper.ssl.hostnameVerification={{ .Values.tls.zookeeper.enableHostnameVerification }}\"" >> conf/bkenv.sh
+    {{- end }}
 
 {{- end }}

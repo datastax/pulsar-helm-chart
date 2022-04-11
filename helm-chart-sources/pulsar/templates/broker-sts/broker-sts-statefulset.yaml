@@ -148,12 +148,10 @@ spec:
         - name: certs
           secret:
             secretName: {{ .Values.tls.broker.tlsSecretName | default .Values.tlsSecretName | quote }}
-          {{- if .Values.tls.zookeeper.enabled}}
         - name: certconverter
           configMap:
             name: "{{ template "pulsar.fullname" . }}-certconverter-configmap"
             defaultMode: 0755
-          {{- end }}
         {{- end }}
         {{- if .Values.enableTokenAuth }}
         - name: token-public-key
@@ -231,17 +229,15 @@ spec:
         command: ["sh", "-c"]
         args:
         - >
+          {{- if .Values.enableTls }}
+          openssl pkcs8 -topk8 -inform PEM -outform PEM -in /pulsar/certs/tls.key -out /pulsar/tls-pk8.key -nocrypt &&
+          . /pulsar/tools/certconverter.sh &&
+          {{- end }}
           bin/apply-config-from-env.py conf/broker.conf &&
           bin/apply-config-from-env.py conf/client.conf &&
           bin/gen-yml-from-env.py conf/functions_worker.yml &&
-          {{- if .Values.enableTls }}
-          openssl pkcs8 -topk8 -inform PEM -outform PEM -in /pulsar/certs/tls.key -out /pulsar/tls-pk8.key -nocrypt &&
-          {{- end }}
           {{- if .Values.enableTokenAuth }}
           cat /pulsar/token-superuser/superuser.jwt | tr -d '\n' > /pulsar/token-superuser-stripped.jwt &&
-          {{- end }}
-          {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
-          /pulsar/tools/certconverter.sh &&
           {{- end }}
           OPTS="${OPTS} -Dlog4j2.formatMsgNoLookups=true" exec bin/pulsar broker
         ports:
@@ -256,10 +252,8 @@ spec:
           - name: certs
             readOnly: true
             mountPath: /pulsar/certs
-            {{- if .Values.tls.zookeeper.enabled}}
           - name: certconverter
             mountPath: /pulsar/tools
-            {{- end }}
           {{- end }}
           {{- if .Values.brokerSts.initContainer }}
           - name: lib-data

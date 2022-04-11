@@ -151,12 +151,10 @@ spec:
         - name: certs
           secret:
             secretName: {{ .Values.tls.proxy.tlsSecretName | default .Values.tlsSecretName | quote }}
-         {{- if .Values.tls.zookeeper.enabled}}
         - name: certconverter
           configMap:
             name: "{{ template "pulsar.fullname" . }}-certconverter-configmap"
             defaultMode: 0755
-          {{- end }}
         {{- end }}
         {{- if .Values.enableTokenAuth }}
         - name: token-public-key
@@ -251,13 +249,11 @@ spec:
           {{- if .Values.enableTokenAuth }}
           cat /pulsar/token-superuser/superuser.jwt | tr -d '\n' > /pulsar/token-superuser-stripped.jwt &&
           {{- end }}
-          bin/apply-config-from-env.py conf/proxy.conf &&
           {{- if .Values.enableTls }}
           openssl pkcs8 -topk8 -inform PEM -outform PEM -in /pulsar/certs/tls.key -out /pulsar/tls-pk8.key -nocrypt &&
+          . /pulsar/tools/certconverter.sh &&
           {{- end }}
-          {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
-          /pulsar/tools/certconverter.sh &&
-          {{- end }}
+          bin/apply-config-from-env.py conf/proxy.conf &&
           OPTS="${OPTS} -Dlog4j2.formatMsgNoLookups=true" exec bin/pulsar proxy
         ports:
         - name: wss
@@ -272,10 +268,8 @@ spec:
           - name: certs
             readOnly: true
             mountPath: /pulsar/certs
-            {{- if .Values.tls.zookeeper.enabled}}
           - name: certconverter
             mountPath: /pulsar/tools
-            {{- end }}
           {{- end }}
           {{- if .Values.enableTokenAuth }}
           - mountPath: "/pulsar/token-public-key"
@@ -309,13 +303,11 @@ spec:
           {{- if .Values.enableTokenAuth }}
           echo "tokenPublicKey=" >> /pulsar/conf/websocket.conf &&
           {{- end }}
-          bin/apply-config-from-env.py conf/websocket.conf &&
           {{- if .Values.enableTls }}
           openssl pkcs8 -topk8 -inform PEM -outform PEM -in /pulsar/certs/tls.key -out /pulsar/tls-pk8.key -nocrypt &&
+          . /pulsar/tools/certconverter.sh &&
           {{- end }}
-          {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
-          /pulsar/tools/certconverter.sh &&
-          {{- end }}
+          bin/apply-config-from-env.py conf/websocket.conf &&
           OPTS="${OPTS} -Dlog4j2.formatMsgNoLookups=true" exec bin/pulsar websocket
         ports:
         - name: http
@@ -327,10 +319,8 @@ spec:
           - name: certs
             readOnly: true
             mountPath: /pulsar/certs
-            {{- if .Values.tls.zookeeper.enabled}}
           - name: certconverter
             mountPath: /pulsar/tools
-            {{- end }}
           {{- end }}
           {{- if .Values.enableTokenAuth }}
           - mountPath: "/pulsar/token-public-key"

@@ -106,6 +106,9 @@ data:
   brokerServicePortTls: "6651"
   brokerClientTlsEnabled: "true"
   webServicePortTls: "8443"
+  tlsEnabledWithKeyStore: "true"
+  tlsKeyStore: "/pulsar/tls.keystore.jks"
+  tlsTrustStore: "/pulsar/tls.truststore.jks"
   {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled .Values.createCertificates.selfSignedPerComponent.enabled }}
   brokerClientTrustCertsFilePath: /pulsar/certs/ca.crt
   {{- else }}
