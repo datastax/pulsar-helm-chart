@@ -84,35 +84,72 @@ tls:
     enableHostnameVerification: true
     tlsSecretName: "pulsar-zookeeper-tls"
     configureKeystoreWithPasswordFile: true
+    certSpec:
+      privateKey:
+        algorithm: "ECDSA"
+        size: 256
   bookkeeper:
     enabled: true
     createCertificates: true
     tlsSecretName: "pulsar-bookkeeper-tls"
+    certSpec:
+      privateKey:
+        algorithm: "ECDSA"
+        size: 256
   function:
     enableTlsWithBroker: true
     createCertificates: true
     tlsSecretName: "pulsar-function-tls"
     enableHostnameVerification: true
+    certSpec:
+      privateKey:
+        algorithm: "ECDSA"
+        size: 256
   websocket:
     enableTlsWithBroker: true
     enableHostnameVerification: true
+    certSpec:
+      privateKey:
+        algorithm: "ECDSA"
+        size: 256
   proxy:
     enableTlsWithBroker: true
     enableHostnameVerification: true
     createCertificates: true
     tlsSecretName: "pulsar-proxy-tls"
+    certSpec:
+      privateKey:
+        algorithm: "ECDSA"
+        size: 256
   broker:
     createCertificates: true
     tlsSecretName: "pulsar-broker-tls"
+    certSpec:
+      privateKey:
+        algorithm: "ECDSA"
+        size: 256
   # Certificate used for TLS authentication with bookkeeper and zookeeper
   autoRecovery:
     enableHostnameVerification: true
     createCertificates: true
     tlsSecretName: "pulsar-autorecovery-tls"
+    certSpec:
+      privateKey:
+        algorithm: "ECDSA"
+        size: 256
   pulsarAdminConsole:
     enableTlsWithBroker: true
     createCertificates: true
     tlsSecretName: "pulsar-adminconsole-tls"
+    certSpec:
+      privateKey:
+        algorithm: "ECDSA"
+        size: 256
+  ssCaCert:
+    certSpec:
+      privateKey:
+        algorithm: "ECDSA"
+        size: 256
   rootCaSecretName: "pulsar-ss-ca"
 
 # The current function worker code only uses TLS connections to brokers when authentication is enabled, so enable it here.
