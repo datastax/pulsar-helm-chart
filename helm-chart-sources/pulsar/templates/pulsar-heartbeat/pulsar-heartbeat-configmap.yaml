@@ -25,7 +25,7 @@ data:
     name: {{ template "pulsar.fullname" . }}
     token: {{ .Values.pulsarHeartbeat.config.pulsarClientToken }}
     tokenFilePath: {{ .Values.pulsarHeartbeat.config.tokenFilePath }}
-    trustStore: {{ .Values.pulsarHeartbeat.config.trustStore }}
+    trustStore: {{ .Values.pulsarHeartbeat.config.trustStore | default "/pulsar/certs/ca.crt" }}
     analyticsConfig:
       apiKey: {{ .Values.pulsarHeartbeat.config.analyticsApiKey }}
       ingestionURL: {{ .Values.pulsarHeartbeat.config.analyticsUrl }}
@@ -54,7 +54,11 @@ data:
     brokersConfig:
       {{- if .Values.pulsarHeartbeat.config.broker }}
       intervalSeconds: {{ .Values.pulsarHeartbeat.config.broker.intervalSeconds | default 45 }}
+      {{- if .Values.enableTls }}
+      inclusterRestURL: "https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}:8443"
+      {{- else }}
       inclusterRestURL: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080"
+      {{- end }}
       alertPolicy:
         Ceiling: {{ .Values.pulsarHeartbeat.config.broker.alertCeiling | default 5 }}
         MovingWindowSeconds: {{ .Values.pulsarHeartbeat.config.broker.alertWindowSeconds | default 600 }}
@@ -65,7 +69,11 @@ data:
       intervalSeconds: {{ .Values.pulsarHeartbeat.config.adminRest.intervalSeconds | default 120 }}
       clusters:
         - name: {{ template "pulsar.fullname" . }}
+          {{- if .Values.enableTls }}
+          url: "https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}:8443"
+          {{- else }}
           url: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080"
+          {{- end }}
           alertPolicy:
             Ceiling: {{ .Values.pulsarHeartbeat.config.adminRest.alertCeiling | default 5 }}
             MovingWindowSeconds: 600
@@ -76,7 +84,11 @@ data:
       - latencyBudgetMs: {{ .Values.pulsarHeartbeat.config.latencyTest.budgetMs | default 60 }}
         name: "pubsub-latency-incluster-{{ template "pulsar.fullname" . }}"
         intervalSeconds: {{ .Values.pulsarHeartbeat.config.latencyTest.intervalSeconds | default 60 }}
+        {{- if .Values.enableTls }}
+        pulsarUrl: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}:6651"
+        {{- else }}
         pulsarUrl: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6650"
+        {{- end }}
         topicName: {{ .Values.pulsarHeartbeat.config.latencyTest.intervalSeconds | default "persistent://public/default/pubsub-latency-test" }}
         payloadSizes: [15B]
         numberOfMessages: 1

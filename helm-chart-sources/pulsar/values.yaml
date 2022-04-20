@@ -1688,6 +1688,8 @@ pulsarHeartbeat:
   config:
     k8sInClusterMonitorEnabled: "false"
     alertUrl:
+    # If not supplied, defaults to "/pulsar/certs/ca.crt"
+    trustStore:
     opsGenieHeartbeatUrl:
     opsGenieHeartbeatKey:
     opsGenieAlertKey:

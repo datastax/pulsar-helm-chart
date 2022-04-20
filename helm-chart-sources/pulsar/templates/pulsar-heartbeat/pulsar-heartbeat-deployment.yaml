@@ -59,6 +59,14 @@ spec:
         - name: config-volume
           configMap:
             name: "{{ include "pulsar.fullname" . }}-{{ .Values.pulsarHeartbeat.component }}-config"
+        {{- if .Values.enableTls }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.tls.rootCaSecretName | default .Values.tlsSecretName | quote }}
+            items:
+              - key: ca.crt
+                path: ca.crt
+        {{- end }}
       initContainers:
       {{- if .Values.pulsarHeartbeat.enableWaitContainers | default true }}
       # This init container will wait for bookkeeper to be ready before
@@ -95,13 +103,22 @@ spec:
           volumeMounts:
           - name: config-volume
             mountPath: /config
+          {{- if .Values.enableTls }}
+          - name: certs
+            readOnly: true
+            mountPath: /pulsar/certs
+          {{- end }}
           env:
           - name: DeployEnv
             value: production
           - name: ClusterName
             value: "{{ template "pulsar.fullname" . }}"
           - name: BrokerProxyURL
+            {{- if .Values.enableTls }}
+            value: "https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}:8443"
+            {{- else }}
             value: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080"
+            {{- end }}
           {{- if .Values.enableTokenAuth }}
           - name: PulsarToken
             valueFrom:
@@ -110,7 +127,11 @@ spec:
                 key: superuser.jwt
           {{- end }}
           - name: PulsarURL
+            {{- if .Values.enableTls }}
+            value: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}:6651"
+            {{- else }}
             value: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6650"
+            {{- end }}
       {{- with .Values.pulsarHeartbeat.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
