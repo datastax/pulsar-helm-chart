@@ -30,22 +30,22 @@ metadata:
     cluster: {{ template "pulsar.fullname" . }}
 data:
   {{- if .Values.proxy.disableZookeeperDiscovery }}
-  brokerServiceUrl: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6650"
-  brokerServiceUrlTls: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6651"
-  serviceUrl: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080"
-  serviceUrlTls: "https://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8443"
+  brokerServiceUrl: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}.svc.cluster.local:6650"
+  brokerServiceUrlTls: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}.svc.cluster.local:6651"
+  serviceUrl: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}.svc.cluster.local:8080"
+  serviceUrlTls: "https://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}.svc.cluster.local:8443"
   {{- end }}
   zookeeperServers:
     {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
-    "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2281"
+    "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ .Release.Namespace }}.svc.cluster.local:2281"
     {{- else }}
-    "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2181"
+    "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ .Release.Namespace }}.svc.cluster.local:2181"
     {{- end }}
   configurationStoreServers:
     {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
-    "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2281"
+    "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ .Release.Namespace }}.svc.cluster.local:2281"
     {{- else }}
-    "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2181"
+    "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ .Release.Namespace }}.svc.cluster.local:2181"
     {{- end }}
   clusterName: {{ template "pulsar.fullname" . }}
   webServicePort: "{{ .Values.proxy.wsProxyPort }}"

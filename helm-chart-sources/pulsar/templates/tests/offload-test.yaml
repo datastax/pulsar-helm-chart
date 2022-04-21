@@ -91,9 +91,9 @@ spec:
           /pulsar/tests/test.sh
     env:
     - name: webServiceUrl
-      value: http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080/
+      value: http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.svc.cluster.local:8080/
     - name: brokerServiceUrl
-      value: pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6650/
+      value: pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.svc.cluster.local:6650/
     volumeMounts:
       - name: test-scripts
         mountPath: /pulsar/tests

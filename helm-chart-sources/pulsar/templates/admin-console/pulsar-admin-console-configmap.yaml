@@ -84,9 +84,9 @@ data:
         "oauth_client_id": "{{ .Values.pulsarAdminConsole.oauthClientId }}",
         "host_overrides": {
             {{- if .Values.pulsarAdminConsole.codeSampleUrl.useDnsName }}
-            "pulsar": "pulsar+ssl://{{ .Values.dnsName }}:6651",
-            "ws": "wss://{{ .Values.dnsName }}:8001",
-            "http": "https://{{ .Values.dnsName }}:8085"
+            "pulsar": "pulsar+ssl://{{ .Values.dnsName }}.{{ .Release.Namespace }}.svc.cluster.local:6651",
+            "ws": "wss://{{ .Values.dnsName }}.{{ .Release.Namespace }}.svc.cluster.local:8001",
+            "http": "https://{{ .Values.dnsName }}.{{ .Release.Namespace }}.svc.cluster.local:8085"
             {{- else }}
             "pulsar": "{{ .Values.pulsarAdminConsole.codeSampleUrl.pulsar }}",
             "ws": "{{ .Values.pulsarAdminConsole.codeSampleUrl.websocket }}",

@@ -29,7 +29,7 @@ spec:
     image: "{{ .Values.image.bastion.repository }}:{{ .Values.image.bastion.tag }}"
     imagePullPolicy: {{ .Values.image.bastion.pullPolicy }}
     command: ["/pulsar/bin/pulsar-admin"]
-    args: ["--admin-url", "https://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8443", "tenants", "list"]
+    args: ["--admin-url", "https://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}.svc.cluster.local:8443", "tenants", "list"]
   # Do not restart containers after they exit
   restartPolicy: Never
 ---
@@ -63,7 +63,7 @@ spec:
       cat /pulsar/token-superuser/superuser.jwt | tr -d '\n' > /pulsar/token-superuser-stripped.jwt &&
       {{- end }}
       bin/apply-config-from-env.py conf/client.conf &&
-      /pulsar/bin/pulsar-client --url pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6651 produce -m hello public/default/test
+      /pulsar/bin/pulsar-client --url pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}.svc.cluster.local:6651 produce -m hello public/default/test
     volumeMounts:
       - name: certs
         mountPath: /pulsar/certs
