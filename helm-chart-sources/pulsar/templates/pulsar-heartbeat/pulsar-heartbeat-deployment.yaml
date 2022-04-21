@@ -73,10 +73,20 @@ spec:
       - name: wait-bookkeeper-ready
         image: "{{ .Values.image.broker.repository }}:{{ .Values.image.broker.tag }}"
         imagePullPolicy: {{ .Values.image.broker.pullPolicy }}
+        {{- if .Values.enableTls }}
+        volumeMounts:
+        - name: certs
+          readOnly: true
+          mountPath: /pulsar/certs
+        {{- end }}
         command: ["sh", "-c"]
         args:
           - >-
+            {{- if .Values.enableTls }}
+            until curl --connect-timeout 5 --cacert /pulsar/certs/ca.crt https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}:8443; do
+            {{- else }}
             until curl --connect-timeout 5 http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080; do
+            {{- end }}
               sleep 3;
             done;
       {{- end }}
