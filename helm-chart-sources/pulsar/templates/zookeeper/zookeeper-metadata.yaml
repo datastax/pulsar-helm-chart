@@ -31,6 +31,8 @@ metadata:
 spec:
   template:
     spec:
+      dnsConfig:
+{{ toYaml .Values.dnsConfig | indent 8 }}
       {{- if .Values.zookeeper.nodeAffinity }}
       affinity:
         nodeAffinity:

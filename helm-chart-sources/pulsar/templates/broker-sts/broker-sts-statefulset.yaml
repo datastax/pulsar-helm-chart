@@ -49,6 +49,8 @@ spec:
       {{- end }}
 {{ toYaml .Values.brokerSts.annotations | indent 8 }}
     spec:
+      dnsConfig:
+{{ toYaml .Values.dnsConfig | indent 8 }}
       {{- if .Values.priorityClass.enabled }}
       priorityClassName: pulsar-priority
       {{- end }}

@@ -39,6 +39,8 @@ spec:
         release: {{ .Release.Name }}
         component: coordinator
     spec:
+      dnsConfig:
+{{ toYaml .Values.dnsConfig | indent 8 }}
       {{- if .Values.pulsarSQL.image.securityContext.enabled }}
       securityContext:
         runAsUser: {{ .Values.pulsarSQL.image.securityContext.runAsUser }}

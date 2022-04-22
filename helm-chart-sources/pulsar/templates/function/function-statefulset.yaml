@@ -52,6 +52,8 @@ spec:
       {{- end }}
 {{ toYaml .Values.function.annotations | indent 8 }}
     spec:
+      dnsConfig:
+{{ toYaml .Values.dnsConfig | indent 8 }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
       {{- toYaml . | nindent 8 }}

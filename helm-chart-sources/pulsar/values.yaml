@@ -28,6 +28,15 @@ dnsName: pulsar.example.com
 # and is used to fully qualify service names when configuring Pulsar.
 kubernetesClusterDomain: "cluster.local"
 
+# The DNS Config to apply to all pod specs. It is documented here: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-dns-config.
+# Note that because we use fully qualified service names for intra cluster networking with Pulsar components, we set
+# the ndots value to 4 (the default is 5). This prevents 3 DNS lookups for the fully qualified service names that would
+# be guaranteed to result in NXDOMAIN.
+dnsConfig:
+  options:
+    - name: ndots
+      value: "4"
+
 # RBAC resource configuration
 rbac:
   # create ClusterRole/Role and ClusterRoleBinding/RoleBinding resources

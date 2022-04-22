@@ -51,6 +51,8 @@ spec:
       {{- end }}
 {{ toYaml .Values.zookeeper.annotations | indent 8 }}
     spec:
+      dnsConfig:
+{{ toYaml .Values.dnsConfig | indent 8 }}
       {{- if .Values.priorityClass.enabled }}
       priorityClassName: pulsar-priority
       {{- end }}

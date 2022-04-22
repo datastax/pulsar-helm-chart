@@ -50,6 +50,8 @@ spec:
 {{ toYaml .Values.bastion.annotations | indent 8 }}
       {{- end }}
     spec:
+      dnsConfig:
+{{ toYaml .Values.dnsConfig | indent 8 }}
       {{- if .Values.priorityClass.enabled }}
       priorityClassName: pulsar-priority
       {{- end }}

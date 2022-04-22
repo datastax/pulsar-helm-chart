@@ -48,6 +48,8 @@ spec:
         checksum/config: {{ include (print $.Template.BasePath "/pulsar-heartbeat/pulsar-heartbeat-configmap.yaml") . | sha256sum }}
 {{ toYaml .Values.pulsarHeartbeat.annotations | indent 8 }}
     spec:
+      dnsConfig:
+{{ toYaml .Values.dnsConfig | indent 8 }}
     {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
