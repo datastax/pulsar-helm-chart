@@ -464,10 +464,10 @@ spec:
             value: "{{ .Values.pulsarBeam.tlsCaPath }}/{{ .Values.pulsarBeam.tlsCaCert }}"
             {{- end }}
           - name: PulsarBrokerURL
-            value: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ .Release.Namespace }}.svc.cluster.local:6651"
+            value: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6651"
           {{- else }}
           - name: PulsarBrokerURL
-            value: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ .Release.Namespace }}.svc.cluster.local:6650"
+            value: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6650"
           {{- end }}
 {{- end }}
 {{- if .Values.extra.burnell }}
@@ -503,9 +503,9 @@ spec:
           - name: WebsocketURL
             value: {{ .Values.burnell.wsUrl | default "ws://localhost:8000" }}
           - name: BrokerProxyURL
-            value: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}.svc.cluster.local:8080"
+            value: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080"
           - name: FunctionProxyURL
-            value: "http://{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}.{{ .Release.Namespace }}.svc.cluster.local:6750"
+            value: "http://{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6750"
           {{- if .Values.enableTokenAuth }}
           - name: SuperRoles
             value: {{ .Values.superUserRoles }}
@@ -518,7 +518,7 @@ spec:
           - name: HTTPAuthImpl
             value: {{ .Values.burnell.token }}
           - name: PulsarURL
-            value: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}.svc.cluster.local:6650"
+            value: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6650"
           {{- if .Values.enableTokenAuth }}
           - name: PulsarPublicKey
             value: "/pulsar/token-public-key/{{ .Values.tokenPublicKeyFile }}"
@@ -546,6 +546,6 @@ spec:
           - name: AdminRestPrefix
             value: {{ .Values.burnell.adminRestAPIPrefix | default "/admin/v2" }}
           - name: FunctionWorkerDomain
-            value: ".{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}.{{ .Release.Namespace }}.svc.cluster.local"
+            value: ".{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}.{{ template "pulsar.serviceDnsSuffix" . }}"
 {{- end }}
 {{- end }}

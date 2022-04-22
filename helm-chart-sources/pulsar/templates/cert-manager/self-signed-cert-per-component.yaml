@@ -171,13 +171,13 @@ spec:
   # The DNS names ending in "-ca" are meant for client access. The wildcard names are used for zookeeper to zookeeper
   # networking.
   dnsNames:
-    - "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-ca.{{ .Release.Namespace }}.svc.cluster.local"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}"
     - "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-ca.{{ .Release.Namespace }}"
     - "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-ca"
-    - "*.{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}.{{ .Release.Namespace }}.svc.cluster.local"
+    - "*.{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}.{{ template "pulsar.serviceDnsSuffix" . }}"
     - "*.{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}.{{ .Release.Namespace }}"
     - "*.{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}"
-    - "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}.{{ .Release.Namespace }}.svc.cluster.local"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}.{{ template "pulsar.serviceDnsSuffix" . }}"
     - "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}.{{ .Release.Namespace }}"
     - "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}"
   issuerRef:
@@ -219,7 +219,7 @@ spec:
   {{- end }}
   secretName: {{ required "Must set .Values.tls.pulsarAdminConsole.tlsSecretName to create certificates for pulsarAdminConsole" .Values.tls.pulsarAdminConsole.tlsSecretName }}
   dnsNames:
-    - "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}.{{ .Release.Namespace }}.svc.cluster.local"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}.{{ template "pulsar.serviceDnsSuffix" . }}"
     - "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}.{{ .Release.Namespace }}"
     - "{{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}"
   issuerRef:

@@ -83,9 +83,9 @@ spec:
         args:
           - >-
             {{- if .Values.enableTls }}
-            until curl --connect-timeout 5 --cacert /pulsar/certs/ca.crt https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}.svc.cluster.local:8443; do
+            until curl --connect-timeout 5 --cacert /pulsar/certs/ca.crt https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443; do
             {{- else }}
-            until curl --connect-timeout 5 http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}.svc.cluster.local:8080; do
+            until curl --connect-timeout 5 http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080; do
             {{- end }}
               sleep 3;
             done;
@@ -125,9 +125,9 @@ spec:
             value: "{{ template "pulsar.fullname" . }}"
           - name: BrokerProxyURL
             {{- if .Values.enableTls }}
-            value: "https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}.svc.cluster.local:8443"
+            value: "https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443"
             {{- else }}
-            value: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}.svc.cluster.local:8080"
+            value: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080"
             {{- end }}
           {{- if .Values.enableTokenAuth }}
           - name: PulsarToken
@@ -138,9 +138,9 @@ spec:
           {{- end }}
           - name: PulsarURL
             {{- if .Values.enableTls }}
-            value: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}.svc.cluster.local:6651"
+            value: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6651"
             {{- else }}
-            value: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}.svc.cluster.local:6650"
+            value: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6650"
             {{- end }}
       {{- with .Values.pulsarHeartbeat.nodeSelector }}
       nodeSelector:

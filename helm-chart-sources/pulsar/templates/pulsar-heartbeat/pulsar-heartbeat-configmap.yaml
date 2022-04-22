@@ -55,9 +55,9 @@ data:
       {{- if .Values.pulsarHeartbeat.config.broker }}
       intervalSeconds: {{ .Values.pulsarHeartbeat.config.broker.intervalSeconds | default 45 }}
       {{- if .Values.enableTls }}
-      inclusterRestURL: "https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}.svc.cluster.local:8443"
+      inclusterRestURL: "https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443"
       {{- else }}
-      inclusterRestURL: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}.svc.cluster.local:8080"
+      inclusterRestURL: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080"
       {{- end }}
       alertPolicy:
         Ceiling: {{ .Values.pulsarHeartbeat.config.broker.alertCeiling | default 5 }}
@@ -70,9 +70,9 @@ data:
       clusters:
         - name: {{ template "pulsar.fullname" . }}
           {{- if .Values.enableTls }}
-          url: "https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}.svc.cluster.local:8443"
+          url: "https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443"
           {{- else }}
-          url: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}.svc.cluster.local:8080"
+          url: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080"
           {{- end }}
           alertPolicy:
             Ceiling: {{ .Values.pulsarHeartbeat.config.adminRest.alertCeiling | default 5 }}
@@ -85,9 +85,9 @@ data:
         name: "pubsub-latency-incluster-{{ template "pulsar.fullname" . }}"
         intervalSeconds: {{ .Values.pulsarHeartbeat.config.latencyTest.intervalSeconds | default 60 }}
         {{- if .Values.enableTls }}
-        pulsarUrl: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}.svc.cluster.local:6651"
+        pulsarUrl: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6651"
         {{- else }}
-        pulsarUrl: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}.svc.cluster.local:6650"
+        pulsarUrl: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6650"
         {{- end }}
         topicName: {{ .Values.pulsarHeartbeat.config.latencyTest.intervalSeconds | default "persistent://public/default/pubsub-latency-test" }}
         payloadSizes: [15B]

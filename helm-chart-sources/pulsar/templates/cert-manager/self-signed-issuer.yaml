@@ -97,7 +97,7 @@ metadata:
 spec:
   secretName: "keycloak-{{ .Values.tlsSecretName }}"
   dnsNames:
-    - "{{ template "pulsar.keycloak.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local"
+    - "{{ template "pulsar.keycloak.fullname" . }}.{{ template "pulsar.serviceDnsSuffix" . }}"
     - "{{ template "pulsar.keycloak.fullname" . }}.{{ .Release.Namespace }}"
     - "{{ template "pulsar.keycloak.fullname" . }}"
   {{- if .Values.createCertificates.selfSigned.includeDns }}

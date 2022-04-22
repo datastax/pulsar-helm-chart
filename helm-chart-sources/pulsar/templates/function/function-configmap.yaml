@@ -40,20 +40,20 @@ data:
       {{- if .Values.extra.zookeepernp }}
     configurationStoreServers: {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2181,{{ template "pulsar.fullname" . }}-{{ .Values.zookeepernp.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2181
       {{- else }}
-    configurationStoreServers: {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ .Release.Namespace }}.svc.cluster.local:2181
+    configurationStoreServers: {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2181
       {{- end }}
     {{- end }}
     {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
       {{- if .Values.extra.zookeepernp }}
-    zookeeperServers: {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ .Release.Namespace }}.svc.cluster.local:2281,{{ template "pulsar.fullname" . }}-{{ .Values.zookeepernp.component }}-ca.{{ .Release.Namespace }}.svc.cluster.local:2281
+    zookeeperServers: {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2281,{{ template "pulsar.fullname" . }}-{{ .Values.zookeepernp.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2281
       {{- else }}
-    zookeeperServers: {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ .Release.Namespace }}.svc.cluster.local:2281
+    zookeeperServers: {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2281
       {{- end }}
     {{- else }}
       {{- if .Values.extra.zookeepernp }}
-    zookeeperServers: {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ .Release.Namespace }}.svc.cluster.local:2181,{{ template "pulsar.fullname" . }}-{{ .Values.zookeepernp.component }}-ca.{{ .Release.Namespace }}.svc.cluster.local:2181
+    zookeeperServers: {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2181,{{ template "pulsar.fullname" . }}-{{ .Values.zookeepernp.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2181
       {{- else }}
-    zookeeperServers: {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ .Release.Namespace }}.svc.cluster.local:2181
+    zookeeperServers: {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2181
       {{- end }}
     {{- end }}
     zooKeeperSessionTimeoutMillis: 30000
@@ -83,11 +83,11 @@ data:
     tlsKeyStore: "/pulsar/tls.keystore.jks"
     tlsTrustStore: "/pulsar/tls.truststore.jks"
     tlsEnableHostnameVerification: "{{ .Values.tls.function.enableHostnameVerification }}"
-    pulsarServiceUrl: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}.svc.cluster.local:6651"
-    pulsarWebServiceUrl: "https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}.svc.cluster.local:8443"
+    pulsarServiceUrl: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6651"
+    pulsarWebServiceUrl: "https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443"
     {{- else }}
-    pulsarServiceUrl: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}.svc.cluster.local:6650"
-    pulsarWebServiceUrl: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}.svc.cluster.local:8080"
+    pulsarServiceUrl: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6650"
+    pulsarWebServiceUrl: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080"
     {{- end }}
     numFunctionPackageReplicas: "{{ .Values.function.functionReplicaCount }}"
     downloadDirectory: "/tmp/pulsar_functions"
@@ -111,7 +111,7 @@ data:
     stateStorageServiceUrl: {{ .Values.function.stateStorageUrlOverride }}
     {{- else }}
     {{- if .Values.extra.stateStorage }}
-    stateStorageServiceUrl: "bk://{{ template "pulsar.fullname" . }}-{{ .Values.stateStorage.component }}-ca.{{ .Release.Namespace }}.svc.cluster.local:4181"
+    stateStorageServiceUrl: "bk://{{ template "pulsar.fullname" . }}-{{ .Values.stateStorage.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:4181"
     {{- else }}
     stateStorageServiceUrl: {{ include "pulsar.bkConnectStringOne" . }}
     {{- end }}
@@ -125,7 +125,7 @@ data:
     properties:
       tokenPublicKey: "file:///pulsar/token-public-key/{{ .Values.tokenPublicKeyFile }}"
       {{- if .Values.keycloak.enabled }}
-      openIDAllowedTokenIssuers: "{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}{{ template "pulsar.keycloak.issuer.port" .}}/auth/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}{{ template "pulsar.keycloak.issuer.port" .}}/auth/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}.svc.cluster.local{{ template "pulsar.keycloak.issuer.port" .}}/auth/realms/{{ .Values.keycloak.realm }}"
+      openIDAllowedTokenIssuers: "{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}{{ template "pulsar.keycloak.issuer.port" .}}/auth/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}{{ template "pulsar.keycloak.issuer.port" .}}/auth/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ template "pulsar.serviceDnsSuffix" . }}{{ template "pulsar.keycloak.issuer.port" .}}/auth/realms/{{ .Values.keycloak.realm }}"
       {{- end }}
       {{- if .Values.function.customProperties }}
 {{ toYaml .Values.function.customProperties | indent 6 }}
@@ -166,10 +166,10 @@ data:
       submittingInsidePod: true
       # setting the pulsar service url that pulsar function should use to connect to pulsar
       # if it is not set, it will use the pulsar service url configured in worker service
-      pulsarServiceUrl: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}.svc.cluster.local:6650/"
+      pulsarServiceUrl: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6650/"
       # setting the pulsar admin url that pulsar function should use to connect to pulsar
       # if it is not set, it will use the pulsar admin url configured in worker service
-      pulsarAdminUrl: "http://{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}.{{ .Release.Namespace }}.svc.cluster.local:6750/"
+      pulsarAdminUrl: "http://{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6750/"
       # the custom labels that function worker uses to select the nodes for pods
       #customLabels:
       # the directory for dropping extra function dependencies
