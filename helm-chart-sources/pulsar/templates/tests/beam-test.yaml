@@ -48,9 +48,9 @@ data:
     exit_if_error $? "Create subscription failed"
 
     echo "Send 3 messages using curl"
-    curl -q -X POST -H "TopicFn: $TOPIC"  -d "message 1" http://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8085/v1/firehose
-    curl -q -X POST -H "TopicFn: $TOPIC"  -d "message 2" http://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8085/v1/firehose
-    curl -q -X POST -H "TopicFn: $TOPIC"  -d "message 3" http://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8085/v1/firehose
+    curl -q -X POST -H "TopicFn: $TOPIC"  -d "message 1" http://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8085/v1/firehose
+    curl -q -X POST -H "TopicFn: $TOPIC"  -d "message 2" http://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8085/v1/firehose
+    curl -q -X POST -H "TopicFn: $TOPIC"  -d "message 3" http://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8085/v1/firehose
     exit_if_error $? "Sending e messages using curl failed"
 
     echo "Consume the messages"
@@ -83,9 +83,9 @@ spec:
           /pulsar/tests/test.sh
     env:
     - name: webServiceUrl
-      value: http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080/
+      value: http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080/
     - name: brokerServiceUrl
-      value: pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6650/
+      value: pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6650/
     volumeMounts:
       - name: test-scripts
         mountPath: /pulsar/tests

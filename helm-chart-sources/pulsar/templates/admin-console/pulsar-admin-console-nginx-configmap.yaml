@@ -63,21 +63,21 @@ data:
 
       upstream http-pulsar-proxy {
       {{- if .Values.enableTls }}
-        server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8443;
+        server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443;
       {{- else }}
-        server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8080;
+        server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080;
       {{- end }}
       }
 
       upstream pulsar-burnell {
-        server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8964;
+        server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8964;
       }
 
       upstream ws-pulsar-proxy {
       {{- if .Values.enableTls }}
-        server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8001;
+        server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8001;
       {{- else }}
-        server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8000;
+        server {{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8000;
       {{- end }}
       }
 

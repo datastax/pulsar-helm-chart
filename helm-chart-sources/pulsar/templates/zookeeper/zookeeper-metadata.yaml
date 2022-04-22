@@ -95,17 +95,17 @@ spec:
             bin/pulsar initialize-cluster-metadata \
               --cluster {{ template "pulsar.fullname" . }} \
               {{- if .Values.tls.zookeeper.enabled }}
-              --zookeeper {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2281 \
-              --configuration-store {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2281 \
+              --zookeeper {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2281 \
+              --configuration-store {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2281 \
               {{- else }}
-              --zookeeper {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2181 \
-              --configuration-store {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2181 \
+              --zookeeper {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2181 \
+              --configuration-store {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2181 \
               {{- end }}
               {{- if .Values.enableTls }}
-              --web-service-url-tls https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}:8443/ \
-              --broker-service-url-tls pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}:6651/ \
+              --web-service-url-tls https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443/ \
+              --broker-service-url-tls pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6651/ \
               {{- end }}
-              --web-service-url http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}:8080/ \
-              --broker-service-url pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}:6650/;
+              --web-service-url http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080/ \
+              --broker-service-url pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6650/;
       restartPolicy: OnFailure
 {{- end }}

@@ -29,7 +29,7 @@ spec:
     image: "{{ .Values.image.bastion.repository }}:{{ .Values.image.bastion.tag }}"
     imagePullPolicy: {{ .Values.image.bastion.pullPolicy }}
     command: ["/pulsar/bin/pulsar-admin"]
-    args: ["--admin-url", "http://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:8080", "tenants", "list"]
+    args: ["--admin-url", "http://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080", "tenants", "list"]
   # Do not restart containers after they exit
   restartPolicy: Never
 ---
@@ -45,7 +45,7 @@ spec:
     image: "{{ .Values.image.bastion.repository }}:{{ .Values.image.bastion.tag }}"
     imagePullPolicy: {{ .Values.image.bastion.pullPolicy }}
     command: ["/pulsar/bin/pulsar-client"]
-    args: ["--url", "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}:6650", "produce", "-m", "hello", "public/default/test"]
+    args: ["--url", "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6650", "produce", "-m", "hello", "public/default/test"]
   # Do not restart containers after they exit
   restartPolicy: Never
 {{- end }}

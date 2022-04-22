@@ -30,22 +30,22 @@ metadata:
     cluster: {{ template "pulsar.fullname" . }}
 data:
   {{- if .Values.proxy.disableZookeeperDiscovery }}
-  brokerServiceUrl: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6650"
-  brokerServiceUrlTls: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:6651"
-  serviceUrl: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8080"
-  serviceUrlTls: "https://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}:8443"
+  brokerServiceUrl: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6650"
+  brokerServiceUrlTls: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6651"
+  serviceUrl: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080"
+  serviceUrlTls: "https://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443"
   {{- end }}
   zookeeperServers:
     {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
-    "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2281"
+    "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2281"
     {{- else }}
-    "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2181"
+    "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2181"
     {{- end }}
   configurationStoreServers:
     {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
-    "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2281"
+    "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2281"
     {{- else }}
-    "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca:2181"
+    "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2181"
     {{- end }}
   clusterName: {{ template "pulsar.fullname" . }}
   webServicePort: "{{ .Values.proxy.wsProxyPort }}"
@@ -58,7 +58,7 @@ data:
   authorizationEnabled: "true"
   superUserRoles: "{{ .Values.superUserRoles }}"
   {{- if .Values.keycloak.enabled }}
-  PULSAR_PREFIX_openIDAllowedTokenIssuers: "{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}{{ template "pulsar.keycloak.issuer.port" .}}/auth/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}{{ template "pulsar.keycloak.issuer.port" .}}/auth/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}.svc.cluster.local{{ template "pulsar.keycloak.issuer.port" .}}/auth/realms/{{ .Values.keycloak.realm }}"
+  PULSAR_PREFIX_openIDAllowedTokenIssuers: "{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}{{ template "pulsar.keycloak.issuer.port" .}}/auth/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}{{ template "pulsar.keycloak.issuer.port" .}}/auth/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ template "pulsar.serviceDnsSuffix" . }}{{ template "pulsar.keycloak.issuer.port" .}}/auth/realms/{{ .Values.keycloak.realm }}"
   {{- end }}
   {{- end }}
 {{- if .Values.enableTls }}
