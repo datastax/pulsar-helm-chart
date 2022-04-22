@@ -37,7 +37,7 @@ spec:
 {{ toYaml .Values.tls.ssCaCert.certSpec.privateKey | indent 4 }}
   {{- end }}
   secretName: "{{ template "pulsar.fullname" . }}-ss-ca"
-  commonName: "{{ .Release.Namespace }}.svc.cluster.local"
+  commonName: "{{ template "pulsar.serviceDnsSuffix" . }}"
   usages:
     - server auth
     - client auth
@@ -70,10 +70,10 @@ spec:
   # The wildcard names are needed to connect directly to the broker.
   # The non-wildcard broker names are needed when calling the topic lookup service.
   dnsNames:
-    - "*.{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}.svc.cluster.local"
+    - "*.{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}"
     - "*.{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}"
     - "*.{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}"
-    - "{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}.svc.cluster.local"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}"
     - "{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ .Release.Namespace }}"
     - "{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}"
   issuerRef:
@@ -95,10 +95,10 @@ spec:
   secretName: {{ .Values.tls.bookkeeper.tlsSecretName }}
   # The wildcard names are needed to connect directly to the broker.
   dnsNames:
-    - "*.{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}.{{ .Release.Namespace }}.svc.cluster.local"
+    - "*.{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}.{{ template "pulsar.serviceDnsSuffix" . }}"
     - "*.{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}.{{ .Release.Namespace }}"
     - "*.{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}"
-    - "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}.{{ .Release.Namespace }}.svc.cluster.local"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}.{{ template "pulsar.serviceDnsSuffix" . }}"
     - "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}.{{ .Release.Namespace }}"
     - "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}"
   issuerRef:
@@ -119,7 +119,7 @@ spec:
   {{- end }}
   secretName: {{ required "Must set .Values.tls.proxy.tlsSecretName to create certificates for proxy" .Values.tls.proxy.tlsSecretName }}
   dnsNames:
-    - "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ .Release.Namespace }}.svc.cluster.local"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}"
     - "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ .Release.Namespace }}"
     - "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}"
   issuerRef:
@@ -142,13 +142,13 @@ spec:
   # The DNS names ending in "-ca" are meant for client access. The wildcard names are used for zookeeper to zookeeper
   # networking.
   dnsNames:
-    - "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ .Release.Namespace }}.svc.cluster.local"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}"
     - "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ .Release.Namespace }}"
     - "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca"
-    - "*.{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}.{{ .Release.Namespace }}.svc.cluster.local"
+    - "*.{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}.{{ template "pulsar.serviceDnsSuffix" . }}"
     - "*.{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}.{{ .Release.Namespace }}"
     - "*.{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}"
-    - "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}.{{ .Release.Namespace }}.svc.cluster.local"
+    - "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}.{{ template "pulsar.serviceDnsSuffix" . }}"
     - "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}.{{ .Release.Namespace }}"
     - "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}"
   issuerRef:

@@ -95,6 +95,13 @@ Create chart name and version as used by the chart label.
 {{- range $i, $e := until (.Values.zookeepernp.replicaCount | int) -}},{{ template "pulsar.fullname" $global }}-{{ $global.Values.zookeepernp.component }}-{{ printf "%d" $i }}.{{ template "pulsar.fullname" $global }}-{{ $global.Values.zookeepernp.component }}{{ end }}
 {{- end -}}
 
+{{/*
+Create the DNS suffix for Pulsar Services.
+*/}}
+{{- define "pulsar.serviceDnsSuffix" -}}
+{{- printf "%s.svc.%s" .Release.Namespace .Values.kubernetesClusterDomain  -}}
+{{- end -}}
+
 {{- define "pulsar.bkConnectString" -}}
 {{- $global := . -}}
 {{- range $i, $e := until (.Values.bookkeeper.replicaCount | int) -}}{{ if ne $i 0 }},{{ end }}bk://{{ template "pulsar.fullname" $global }}-{{ $global.Values.bookkeeper.component }}-{{ printf "%d" $i }}.{{ template "pulsar.fullname" $global }}-{{ $global.Values.bookkeeper.component }}:4181{{ end }}

@@ -224,9 +224,9 @@ spec:
             value: "{{ .Values.pulsarBeam.tlsCaPath }}/{{ .Values.pulsarBeam.tlsCaCert }}"
             {{- end }}
           - name: PulsarBrokerURL
-            value: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ .Release.Namespace }}.svc.cluster.local:6651"
+            value: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6651"
           {{- else }}
           - name: PulsarBrokerURL
-            value: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ .Release.Namespace }}.svc.cluster.local:6650"
+            value: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6650"
           {{- end }}
 {{- end }}

@@ -24,6 +24,10 @@ fullnameOverride: pulsar
 # DNS name for loadbalancer
 dnsName: pulsar.example.com
 
+# The domain name for your kubernetes cluster. This domain is documented here: https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#a-aaaa-records-1
+# and is used to fully qualify service names when configuring Pulsar.
+kubernetesClusterDomain: "cluster.local"
+
 # RBAC resource configuration
 rbac:
   # create ClusterRole/Role and ClusterRoleBinding/RoleBinding resources

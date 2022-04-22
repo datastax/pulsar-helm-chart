@@ -62,8 +62,8 @@ data:
   pulsar.properties: |
     connector.name=pulsar
     {{- if .Values.enableTls }}
-    # pulsar.broker-service-url=https://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}.svc.cluster.local:8443
-    pulsar.broker-service-url=http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}.svc.cluster.local:8080
+    # pulsar.broker-service-url=https://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443
+    pulsar.broker-service-url=http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080
     pulsar.tls-allow-insecure-connection = false
     pulsar.tls-hostname-verification-enable = false
     {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled .Values.createCertificates.selfSignedPerComponent.enabled }}
@@ -72,7 +72,7 @@ data:
     pulsar.tls-trust-cert-file-path = {{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}
     {{- end }}
     {{- else }}
-    pulsar.broker-service-url=http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ .Release.Namespace }}.svc.cluster.local:8080
+    pulsar.broker-service-url=http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080
     {{- end }}
     {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
     pulsar.zookeeper-uri={{ include "pulsar.zkConnectStringTls" . }}

@@ -364,7 +364,7 @@ spec:
           - name: TARGET_URL
             value: ws://localhost:8000
           - name: FUNC_URL
-            value: "http://{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}.{{ .Release.Namespace }}.svc.cluster.local:6750"
+            value: "http://{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6750"
           - name: TOKEN_SERVER_URL
             value: http://localhost:8084
 {{- end }}
