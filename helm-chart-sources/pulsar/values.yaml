@@ -245,15 +245,18 @@ tls:
       # Can be used to override the default algorithm that Cert-Manager uses when signing keys.
       privateKey: {}
 
-  # Configuration for the CA Certificate. Only applied when using Cert Manager's self-signed certs per component.
+  # Configuration for the self-signed root CA Certificate. (All Pulsar components are assumed to share the same root CA.)
   ssCaCert:
+    # If set, supersedes the root "tlsSecretName" config. Note, this secret is used to configure TLS verification for
+    # components like the Bastion and the Pulsar HeartBeat.
+    tlsSecretName: ""
+    # Only applied when using Cert Manager's self-signed certs per component.
     certSpec:
       # Spec defined here: https://cert-manager.io/docs/reference/api-docs/#cert-manager.io/v1.CertificatePrivateKey
       # Can be used to override the default algorithm that Cert-Manager uses when signing keys.
       privateKey: {}
 
-  # If using self-signed certs, it's essential to mount the root CA for TLS verification. If this value is specified,
-  # the chart will mount this secret's item named ca.crt to /pulsar/certs/ca.crt.
+  # Deprecated. Use tls.ssCaCert.tlsSecretName.
   rootCaSecretName: ""
 
 # secrets:
