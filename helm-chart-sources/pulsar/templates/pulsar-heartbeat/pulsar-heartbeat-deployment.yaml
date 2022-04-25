@@ -64,7 +64,7 @@ spec:
         {{- if .Values.enableTls }}
         - name: certs
           secret:
-            secretName: {{ .Values.tls.rootCaSecretName | default .Values.tlsSecretName | quote }}
+            secretName: {{ .Values.tls.ssCaCert.tlsSecretName | default (.Values.tls.rootCaSecretName | default .Values.tlsSecretName) | quote }}
             items:
               - key: ca.crt
                 path: ca.crt

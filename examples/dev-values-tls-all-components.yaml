@@ -142,11 +142,11 @@ tls:
         algorithm: "ECDSA"
         size: 256
   ssCaCert:
+    tlsSecretName: "pulsar-ss-ca"
     certSpec:
       privateKey:
         algorithm: "ECDSA"
         size: 256
-  rootCaSecretName: "pulsar-ss-ca"
 
 # The current function worker code only uses TLS connections to brokers when authentication is enabled, so enable it here.
 enableTokenAuth: true

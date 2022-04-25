@@ -36,7 +36,7 @@ spec:
   privateKey:
 {{ toYaml .Values.tls.ssCaCert.certSpec.privateKey | indent 4 }}
   {{- end }}
-  secretName: "{{ template "pulsar.fullname" . }}-ss-ca"
+  secretName: {{ required "Must set .Values.tls.ssCaCert.tlsSecretName to create the root CA Cert" .Values.tls.ssCaCert.tlsSecretName }}
   commonName: "{{ template "pulsar.serviceDnsSuffix" . }}"
   usages:
     - server auth
@@ -52,7 +52,7 @@ metadata:
   name: "{{ template "pulsar.fullname" . }}-ca-issuer"
 spec:
   ca:
-    secretName: {{ template "pulsar.fullname" . }}-ss-ca
+    secretName: {{ required "Must set .Values.tls.ssCaCert.tlsSecretName to create the CA issuer" .Values.tls.ssCaCert.tlsSecretName }}
 ---
 {{- if .Values.tls.broker.createCertificates }}
 # Self-signed certificate for broker TLS
