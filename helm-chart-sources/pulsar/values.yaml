@@ -1267,7 +1267,8 @@ proxy:
   component: proxy
   replicaCount: 3
   disableZookeeperDiscovery: true
-  useStsBrokersForDiscover: false
+  # use "brokersts" instead of "broker" to identify the broker k8s component
+  useStsBrokersForDiscovery: false
   updateStrategy:
     type: RollingUpdate
     rollingUpdate:
