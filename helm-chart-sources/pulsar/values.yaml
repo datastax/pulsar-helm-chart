@@ -164,7 +164,7 @@ tls:
       # Spec defined here: https://cert-manager.io/docs/reference/api-docs/#cert-manager.io/v1.CertificatePrivateKey
       # Can be used to override the default algorithm that Cert-Manager uses when signing keys.
       privateKey: {}
-  # Enable TLS between broker and BookKeeper, function worker and bookkeeper, and autorecovyer and bookkeeper
+  # Enable TLS between broker and BookKeeper, function worker and bookkeeper, and autorecovery and bookkeeper
   bookkeeper:
     enabled: false
     createCertificates: false
@@ -212,8 +212,6 @@ tls:
       privateKey: {}
 
   broker:
-    enableForProxyToBroker: false
-    enableForFunctionWorkerToBroker: false
     createCertificates: false
     # If set, supersedes the root "tlsSecretName" config
     tlsSecretName: ""
