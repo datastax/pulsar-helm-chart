@@ -504,8 +504,6 @@ spec:
             value: "{{ template "pulsar.fullname" . }}"
           - name: WebsocketURL
             value: {{ .Values.burnell.wsUrl | default "ws://localhost:8000" }}
-          - name: BrokerProxyURL
-            value: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080"
           - name: FunctionProxyURL
             value: "http://{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6750"
           {{- if .Values.enableTokenAuth }}
@@ -519,8 +517,6 @@ spec:
           {{- end }}
           - name: HTTPAuthImpl
             value: {{ .Values.burnell.token }}
-          - name: PulsarURL
-            value: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6650"
           {{- if .Values.enableTokenAuth }}
           - name: PulsarPublicKey
             value: "/pulsar/token-public-key/{{ .Values.tokenPublicKeyFile }}"
@@ -534,6 +530,15 @@ spec:
             value: /pulsar/certs/tls.key
           - name: TrustStore
             value: {{ .Values.burnell.trustStore | default "/pulsar/certs/ca.crt" }}
+          - name: BrokerProxyURL
+            value: "https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443"
+          - name: PulsarURL
+            value: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6651"
+          {{- else }}
+          - name: BrokerProxyURL
+            value: "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080"
+          - name: PulsarURL
+            value: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6650"
           {{- end }}
           - name: FederatedPromURL
             value: {{ .Values.burnell.federatedPromUrl }}
