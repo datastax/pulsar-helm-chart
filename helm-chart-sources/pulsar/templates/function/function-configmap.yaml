@@ -164,9 +164,13 @@ data:
       # setting this to true is let function worker to submit functions to the same k8s cluster as function worker
       # is running. setting this to false if your function worker is not running as a k8 pod.
       submittingInsidePod: true
+      {{- if and .Values.enableTls .Values.tls.function.enableTlsWithBroker }}
       # setting the pulsar service url that pulsar function should use to connect to pulsar
       # if it is not set, it will use the pulsar service url configured in worker service
+      pulsarServiceUrl: "pulsar+ssl://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6651/"
+      {{- else }}
       pulsarServiceUrl: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6650/"
+      {{- end }}
       # setting the pulsar admin url that pulsar function should use to connect to pulsar
       # if it is not set, it will use the pulsar admin url configured in worker service
       pulsarAdminUrl: "http://{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6750/"
