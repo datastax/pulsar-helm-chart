@@ -280,6 +280,16 @@ spec:
         - configMapRef:
             name: "{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}"
         env:
+        {{- if not .Values.enableTls }}
+        {{- /* 
+        advertisedAddress is set to podIP when TLS isn't enabled.
+        Using the podIP is not compatible with TLS hostname verification
+         */}}
+        - name: advertisedAddress
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        {{- end }}
         {{- if .Values.broker.kafkaOnPulsarEnabled }}
         - name: PULSAR_PREFIX_kafkaAdvertisedListeners
           value: "PLAINTEXT://$(advertisedAddress):9092"
