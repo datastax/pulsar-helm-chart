@@ -245,6 +245,8 @@ tls:
   bastion:
       enableHostnameVerification: true
       
+  pulsarHeartbeat:
+      enableHostnameVerification: true
 
   # Configuration for the self-signed root CA Certificate. (All Pulsar components are assumed to share the same root CA.)
   ssCaCert:
