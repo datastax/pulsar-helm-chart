@@ -106,8 +106,6 @@ data:
   {{- if .Values.extra.function }}
   {{- if or .Values.tls.function.enabled .Values.tls.proxy.enableTlsWithBroker }}
   functionWorkerWebServiceURLTLS: "https://{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:6751"
-  {{- else }}
-  functionWorkerWebServiceURL: "http://{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:6750"
   {{- end }}
   {{- end }}
 {{- end }}
