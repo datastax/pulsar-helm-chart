@@ -36,6 +36,8 @@ dnsConfig:
   options:
     - name: ndots
       value: "4"
+    # workaround DNS intermittent delays of 5s, https://github.com/kubernetes/kubernetes/issues/56903
+    - name: single-request-reopen 
 
 # RBAC resource configuration
 rbac:
