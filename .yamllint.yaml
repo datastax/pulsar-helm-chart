@@ -1,13 +1,12 @@
+# See https://yamllint.readthedocs.io for details.
+
 rules:
   braces: enable
   brackets: disable
   colons: disable
   commas: enable
-  comments:
-    level: warning
-    require-starting-space: false
-  comments-indentation:
-    level: warning
+  comments: disable
+  comments-indentation: disable
   document-end: disable
   document-start:
     level: warning
