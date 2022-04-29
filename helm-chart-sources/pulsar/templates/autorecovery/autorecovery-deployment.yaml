@@ -142,18 +142,6 @@ spec:
       {{- if .Values.autoRecovery.enableProvisionContainer }}
       serviceAccountName: "{{ template "pulsar.fullname" . }}-burnell"
       {{- end }}
-      initContainers:
-      # This init container will wait for zookeeper to be ready before
-      # deploying the bookies
-      - name: wait-zookeeper-ready
-        image: "{{ .Values.image.bookkeeper.repository }}:{{ .Values.image.bookkeeper.tag }}"
-        imagePullPolicy: {{ .Values.image.bookkeeper.pullPolicy }}
-        command: ["sh", "-c"]
-        args:
-          - >-
-            until bin/pulsar zookeeper-shell -server {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }} ls /admin/clusters | grep "^\[.*{{ template "pulsar.fullname" . }}.*\]"; do
-              sleep 3;
-            done;
       volumes:
       {{- if and .Values.enableTls .Values.tls.zookeeper.enabled}}
       - name: certs
@@ -166,6 +154,17 @@ spec:
       {{- end }}
 
       initContainers:
+      # This init container will wait for zookeeper to be ready before
+      # deploying the bookies
+      - name: wait-zookeeper-ready
+        image: "{{ .Values.image.bookkeeper.repository }}:{{ .Values.image.bookkeeper.tag }}"
+        imagePullPolicy: {{ .Values.image.bookkeeper.pullPolicy }}
+        command: ["sh", "-c"]
+        args:
+          - >-
+            until bin/pulsar zookeeper-shell -server {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }} ls /admin/clusters | grep "^\[.*{{ template "pulsar.fullname" . }}.*\]"; do
+              sleep 3;
+            done;
       {{- if .Values.autoRecovery.enableProvisionContainer }}
       - name: provision-tls-jwt
         image: "{{ .Values.image.burnell.repository }}:{{ .Values.image.burnell.tag }}"
@@ -174,8 +173,6 @@ spec:
         resources:
 {{ toYaml .Values.proxy.burnellResources | indent 10 }}
       {{- end }}
-        ports:
-        volumeMounts:
         env:
           - name: ClusterName
             value: "{{ template "pulsar.fullname" . }}"
