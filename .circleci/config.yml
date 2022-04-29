@@ -16,7 +16,11 @@ jobs:
     steps:
       - checkout
       - run:
-          command: ct lint --config tests/ct.yaml
+          # Helm lint doesn't prevent duplicate keys in yaml. However, this can lead to undesired behavior, so we store_test_results:
+          # for it using yamllint.
+          command: |
+            ct lint --all --config tests/ct.yaml
+            .circleci/yamllint-examples.sh
 
   install-charts:
     parameters:
