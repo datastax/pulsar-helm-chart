@@ -36,7 +36,7 @@ data:
   # If proxy is deployed, use that for web service URL to
   # properly forward command to broker or function worker
   {{- if .Values.enableTls }}
-  tlsEnableHostnameVerification: "true"
+  tlsEnableHostnameVerification: "{{ .Values.tls.bastion.enableHostnameVerification }}"
     {{- if or .Values.secrets .Values.createCertificates.selfSigned.enabled .Values.createCertificates.selfSignedPerComponent.enabled }}
   tlsTrustCertsFilePath: "/pulsar/certs/ca.crt"
     {{- else }}
