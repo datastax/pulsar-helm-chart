@@ -38,6 +38,63 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: "grafana-bookkeeper-read-cache-dashboard"
+  {{- if .Values.grafanaDashboards.namespaceOverride }}
+  namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
+  {{- end }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: "grafana-bookkeeper-read-cache-dashboard"
+    cluster: {{ template "pulsar.fullname" . }}
+    grafana_dashboard: bookkeeper-read-cache
+data:
+  bookkeeper-read-cache.json: |-
+{{ .Files.Get "grafana-dashboards/bookkeeper-read-cache.json" | indent 4}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "grafana-bookkeeper-read-use-dashboard"
+  {{- if .Values.grafanaDashboards.namespaceOverride }}
+  namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
+  {{- end }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: "grafana-bookkeeper-read-use-dashboard"
+    cluster: {{ template "pulsar.fullname" . }}
+    grafana_dashboard: bookkeeper-read-use
+data:
+  bookkeeper-read-use.json: |-
+{{ .Files.Get "grafana-dashboards/bookkeeper-read-use.json" | indent 4}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "grafana-starlight-kafka-dashboard"
+  {{- if .Values.grafanaDashboards.namespaceOverride }}
+  namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
+  {{- end }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: "grafana-starlight-kafka-dashboard"
+    cluster: {{ template "pulsar.fullname" . }}
+    grafana_dashboard: jvm
+data:
+  s4k.json: |-
+{{ .Files.Get "grafana-dashboards/s4k.json" | indent 4}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: "grafana-jvm-dashboard"
   {{- if .Values.grafanaDashboards.namespaceOverride }}
   namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
