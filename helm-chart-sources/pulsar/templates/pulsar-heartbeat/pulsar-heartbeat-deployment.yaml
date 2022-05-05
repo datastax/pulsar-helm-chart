@@ -61,7 +61,9 @@ spec:
         - name: config-volume
           configMap:
             name: "{{ include "pulsar.fullname" . }}-{{ .Values.pulsarHeartbeat.component }}-config"
-        {{- if .Values.enableTls }}
+        # index is workaround to not being able to refer to helm variables containing a dash
+        # find more: https://stackoverflow.com/questions/63853679/helm-templating-doesnt-let-me-use-dash-in-names#answer-63863410
+        {{- if and .Values.enableTls (not (index .Values "cert-manager").enabled) }}
         - name: certs
           secret:
             secretName: {{ .Values.tls.ssCaCert.tlsSecretName | default (.Values.tls.rootCaSecretName | default .Values.tlsSecretName) | quote }}
@@ -75,7 +77,7 @@ spec:
       - name: wait-bookkeeper-ready
         image: "{{ .Values.image.broker.repository }}:{{ .Values.image.broker.tag }}"
         imagePullPolicy: {{ .Values.image.broker.pullPolicy }}
-        {{- if .Values.enableTls }}
+                {{- if and .Values.enableTls (not (index .Values "cert-manager").enabled) }}
         volumeMounts:
         - name: certs
           readOnly: true
@@ -84,18 +86,21 @@ spec:
         command: ["sh", "-c"]
         args:
           - >-
+            until curl 
             {{- if .Values.enableTls }}
-            until \
-            CA_CERT=/pulsar/certs/ca.crt curl --connect-timeout 5  --cacert ${CA_CERT} \
+            https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443 --connect-timeout 5
             {{- if not .Values.tls.pulsarHeartbeat.enableHostnameVerification }}
-            --insecure \
+            --insecure 
             {{- end }}
-            https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443
-            ; do
+            {{- if (index .Values "cert-manager").enabled }}
+            --cacert "{{ .Values.tlsCaPath }}/{{ .Values.tlsCaCert }}";
+            {{ else }}
+            --cacert /pulsar/certs/ca.crt;
+            {{- end }}
             {{- else }}
-            until curl --connect-timeout 5 http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080; do
-            {{- end }}
-              sleep 3;
+            http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080 --connect-timeout 5;
+            {{- end }} 
+            do sleep 3;
             done;
       {{- end }}
       containers:
@@ -121,7 +126,7 @@ spec:
           volumeMounts:
           - name: config-volume
             mountPath: /config
-          {{- if .Values.enableTls }}
+            {{- if and .Values.enableTls (not (index .Values "cert-manager").enabled) }}
           - name: certs
             readOnly: true
             mountPath: /pulsar/certs
