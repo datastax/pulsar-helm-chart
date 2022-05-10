@@ -206,4 +206,118 @@ data:
   zookeeper.json: |-
 {{ .Files.Get "grafana-dashboards/zookeeper.json" | indent 4}}
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "grafana-broker-cache-dashboard"
+  {{- if .Values.grafanaDashboards.namespaceOverride }}
+  namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
+  {{- end }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: "grafana-broker-cache-dashboard"
+    cluster: {{ template "pulsar.fullname" . }}
+    grafana_dashboard: broker-cache
+data:
+  broker-cache.json: |-
+{{ .Files.Get "grafana-dashboards/broker-cache.json" | indent 4}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "grafana-debezium-dashboard"
+  {{- if .Values.grafanaDashboards.namespaceOverride }}
+  namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
+  {{- end }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: "grafana-debezium-dashboard"
+    cluster: {{ template "pulsar.fullname" . }}
+    grafana_dashboard: debezium
+data:
+  debezium.json: |-
+{{ .Files.Get "grafana-dashboards/debezium.json" | indent 4}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "grafana-load-balance-dashboard"
+  {{- if .Values.grafanaDashboards.namespaceOverride }}
+  namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
+  {{- end }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: "grafana-load-balance-dashboard"
+    cluster: {{ template "pulsar.fullname" . }}
+    grafana_dashboard: load-balance
+data:
+  load-balance.json: |-
+{{ .Files.Get "grafana-dashboards/load-balance.json" | indent 4}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "grafana-offload-dashboard"
+  {{- if .Values.grafanaDashboards.namespaceOverride }}
+  namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
+  {{- end }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: "grafana-offload-dashboard"
+    cluster: {{ template "pulsar.fullname" . }}
+    grafana_dashboard: offload
+data:
+  offload.json: |-
+{{ .Files.Get "grafana-dashboards/offload.json" | indent 4}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "grafana-pusarmonitor-dashboard"
+  {{- if .Values.grafanaDashboards.namespaceOverride }}
+  namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
+  {{- end }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: "grafana-pusarmonitor-dashboard"
+    cluster: {{ template "pulsar.fullname" . }}
+    grafana_dashboard: pusarmonitor
+data:
+  pusarmonitor.json: |-
+{{ .Files.Get "grafana-dashboards/pusarmonitor.json" | indent 4}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "grafana-sockets-dashboard"
+  {{- if .Values.grafanaDashboards.namespaceOverride }}
+  namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
+  {{- end }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: "grafana-sockets-dashboard"
+    cluster: {{ template "pulsar.fullname" . }}
+    grafana_dashboard: sockets
+data:
+  sockets.json: |-
+{{ .Files.Get "grafana-dashboards/sockets.json" | indent 4}}
+---
 {{- end }}
