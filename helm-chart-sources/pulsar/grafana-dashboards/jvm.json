@@ -32,13 +32,7 @@
       "id": 41,
       "panels": [],
       "repeat": "instance",
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-bookkeeper-0",
-          "value": "pex-azure-bookkeeper-0"
-        }
-      },
+      "scopedVars": {},
       "title": "$job - $instance",
       "type": "row"
     },
@@ -86,13 +80,7 @@
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-bookkeeper-0",
-          "value": "pex-azure-bookkeeper-0"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -204,13 +192,7 @@
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-bookkeeper-0",
-          "value": "pex-azure-bookkeeper-0"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -331,13 +313,7 @@
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-bookkeeper-0",
-          "value": "pex-azure-bookkeeper-0"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -447,13 +423,7 @@
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-bookkeeper-0",
-          "value": "pex-azure-bookkeeper-0"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [
         {
           "alias": "old count",
@@ -535,13 +505,7 @@
       "repeat": null,
       "repeatIteration": 1617970014384,
       "repeatPanelId": 41,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-bookkeeper-1",
-          "value": "pex-azure-bookkeeper-1"
-        }
-      },
+      "scopedVars": {},
       "title": "$job - $instance",
       "type": "row"
     },
@@ -592,13 +556,7 @@
       "repeatIteration": 1617970014384,
       "repeatPanelId": 4,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-bookkeeper-1",
-          "value": "pex-azure-bookkeeper-1"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -713,13 +671,7 @@
       "repeatIteration": 1617970014384,
       "repeatPanelId": 1,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-bookkeeper-1",
-          "value": "pex-azure-bookkeeper-1"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -843,13 +795,7 @@
       "repeatIteration": 1617970014384,
       "repeatPanelId": 2,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-bookkeeper-1",
-          "value": "pex-azure-bookkeeper-1"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -962,13 +908,7 @@
       "repeatIteration": 1617970014384,
       "repeatPanelId": 3,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-bookkeeper-1",
-          "value": "pex-azure-bookkeeper-1"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [
         {
           "alias": "old count",
@@ -1050,13 +990,7 @@
       "repeat": null,
       "repeatIteration": 1617970014384,
       "repeatPanelId": 41,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-bookkeeper-2",
-          "value": "pex-azure-bookkeeper-2"
-        }
-      },
+      "scopedVars": {},
       "title": "$job - $instance",
       "type": "row"
     },
@@ -1107,13 +1041,7 @@
       "repeatIteration": 1617970014384,
       "repeatPanelId": 4,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-bookkeeper-2",
-          "value": "pex-azure-bookkeeper-2"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -1228,13 +1156,7 @@
       "repeatIteration": 1617970014384,
       "repeatPanelId": 1,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-bookkeeper-2",
-          "value": "pex-azure-bookkeeper-2"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -1358,13 +1280,7 @@
       "repeatIteration": 1617970014384,
       "repeatPanelId": 2,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-bookkeeper-2",
-          "value": "pex-azure-bookkeeper-2"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -1477,13 +1393,7 @@
       "repeatIteration": 1617970014384,
       "repeatPanelId": 3,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-bookkeeper-2",
-          "value": "pex-azure-bookkeeper-2"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [
         {
           "alias": "old count",
@@ -1565,13 +1475,7 @@
       "repeat": null,
       "repeatIteration": 1617970014384,
       "repeatPanelId": 41,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-bookkeeper-3",
-          "value": "pex-azure-bookkeeper-3"
-        }
-      },
+      "scopedVars": {},
       "title": "$job - $instance",
       "type": "row"
     },
@@ -1622,13 +1526,7 @@
       "repeatIteration": 1617970014384,
       "repeatPanelId": 4,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-bookkeeper-3",
-          "value": "pex-azure-bookkeeper-3"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -1743,13 +1641,7 @@
       "repeatIteration": 1617970014384,
       "repeatPanelId": 1,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-bookkeeper-3",
-          "value": "pex-azure-bookkeeper-3"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -1873,13 +1765,7 @@
       "repeatIteration": 1617970014384,
       "repeatPanelId": 2,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-bookkeeper-3",
-          "value": "pex-azure-bookkeeper-3"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -1992,13 +1878,7 @@
       "repeatIteration": 1617970014384,
       "repeatPanelId": 3,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-bookkeeper-3",
-          "value": "pex-azure-bookkeeper-3"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [
         {
           "alias": "old count",

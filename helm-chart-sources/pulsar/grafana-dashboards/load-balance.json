@@ -800,13 +800,7 @@
       "id": 13,
       "panels": [],
       "repeat": "instance",
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-tfsn9",
-          "value": "pex-azure-broker-7ffb8b844d-tfsn9"
-        }
-      },
+      "scopedVars": {},
       "title": "$instance",
       "type": "row"
     },
@@ -852,13 +846,7 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-tfsn9",
-          "value": "pex-azure-broker-7ffb8b844d-tfsn9"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -963,13 +951,7 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-tfsn9",
-          "value": "pex-azure-broker-7ffb8b844d-tfsn9"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -1065,13 +1047,7 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-tfsn9",
-          "value": "pex-azure-broker-7ffb8b844d-tfsn9"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -1167,13 +1143,7 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-tfsn9",
-          "value": "pex-azure-broker-7ffb8b844d-tfsn9"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -1269,13 +1239,7 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-tfsn9",
-          "value": "pex-azure-broker-7ffb8b844d-tfsn9"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -1343,13 +1307,7 @@
       "repeat": null,
       "repeatIteration": 1621329296794,
       "repeatPanelId": 13,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-bb5rq",
-          "value": "pex-azure-broker-7ffb8b844d-bb5rq"
-        }
-      },
+      "scopedVars": {},
       "title": "$instance",
       "type": "row"
     },
@@ -1398,13 +1356,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 8,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-bb5rq",
-          "value": "pex-azure-broker-7ffb8b844d-bb5rq"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -1512,13 +1464,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 5,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-bb5rq",
-          "value": "pex-azure-broker-7ffb8b844d-bb5rq"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -1617,13 +1563,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 9,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-bb5rq",
-          "value": "pex-azure-broker-7ffb8b844d-bb5rq"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -1722,13 +1662,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 4,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-bb5rq",
-          "value": "pex-azure-broker-7ffb8b844d-bb5rq"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -1827,13 +1761,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 6,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-bb5rq",
-          "value": "pex-azure-broker-7ffb8b844d-bb5rq"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -1901,13 +1829,7 @@
       "repeat": null,
       "repeatIteration": 1621329296794,
       "repeatPanelId": 13,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-m2rvs",
-          "value": "pex-azure-broker-7ffb8b844d-m2rvs"
-        }
-      },
+      "scopedVars": {},
       "title": "$instance",
       "type": "row"
     },
@@ -1956,13 +1878,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 8,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-m2rvs",
-          "value": "pex-azure-broker-7ffb8b844d-m2rvs"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -2070,13 +1986,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 5,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-m2rvs",
-          "value": "pex-azure-broker-7ffb8b844d-m2rvs"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -2175,13 +2085,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 9,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-m2rvs",
-          "value": "pex-azure-broker-7ffb8b844d-m2rvs"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -2280,13 +2184,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 4,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-m2rvs",
-          "value": "pex-azure-broker-7ffb8b844d-m2rvs"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -2385,13 +2283,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 6,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-m2rvs",
-          "value": "pex-azure-broker-7ffb8b844d-m2rvs"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -2459,13 +2351,7 @@
       "repeat": null,
       "repeatIteration": 1621329296794,
       "repeatPanelId": 13,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-8wfv4",
-          "value": "pex-azure-broker-7ffb8b844d-8wfv4"
-        }
-      },
+      "scopedVars": {},
       "title": "$instance",
       "type": "row"
     },
@@ -2514,13 +2400,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 8,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-8wfv4",
-          "value": "pex-azure-broker-7ffb8b844d-8wfv4"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -2628,13 +2508,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 5,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-8wfv4",
-          "value": "pex-azure-broker-7ffb8b844d-8wfv4"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -2733,13 +2607,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 9,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-8wfv4",
-          "value": "pex-azure-broker-7ffb8b844d-8wfv4"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -2838,13 +2706,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 4,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-8wfv4",
-          "value": "pex-azure-broker-7ffb8b844d-8wfv4"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -2943,13 +2805,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 6,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-8wfv4",
-          "value": "pex-azure-broker-7ffb8b844d-8wfv4"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -3017,13 +2873,7 @@
       "repeat": null,
       "repeatIteration": 1621329296794,
       "repeatPanelId": 13,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-fqlgf",
-          "value": "pex-azure-broker-7ffb8b844d-fqlgf"
-        }
-      },
+      "scopedVars": {},
       "title": "$instance",
       "type": "row"
     },
@@ -3072,13 +2922,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 8,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-fqlgf",
-          "value": "pex-azure-broker-7ffb8b844d-fqlgf"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -3186,13 +3030,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 5,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-fqlgf",
-          "value": "pex-azure-broker-7ffb8b844d-fqlgf"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -3291,13 +3129,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 9,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-fqlgf",
-          "value": "pex-azure-broker-7ffb8b844d-fqlgf"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -3396,13 +3228,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 4,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-fqlgf",
-          "value": "pex-azure-broker-7ffb8b844d-fqlgf"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -3501,13 +3327,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 6,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-fqlgf",
-          "value": "pex-azure-broker-7ffb8b844d-fqlgf"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -3575,13 +3395,7 @@
       "repeat": null,
       "repeatIteration": 1621329296794,
       "repeatPanelId": 13,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-bwkwh",
-          "value": "pex-azure-broker-7ffb8b844d-bwkwh"
-        }
-      },
+      "scopedVars": {},
       "title": "$instance",
       "type": "row"
     },
@@ -3630,13 +3444,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 8,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-bwkwh",
-          "value": "pex-azure-broker-7ffb8b844d-bwkwh"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -3744,13 +3552,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 5,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-bwkwh",
-          "value": "pex-azure-broker-7ffb8b844d-bwkwh"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -3849,13 +3651,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 9,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-bwkwh",
-          "value": "pex-azure-broker-7ffb8b844d-bwkwh"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -3954,13 +3750,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 4,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-bwkwh",
-          "value": "pex-azure-broker-7ffb8b844d-bwkwh"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -4059,13 +3849,7 @@
       "repeatIteration": 1621329296794,
       "repeatPanelId": 6,
       "repeatedByRow": true,
-      "scopedVars": {
-        "instance": {
-          "selected": false,
-          "text": "pex-azure-broker-7ffb8b844d-bwkwh",
-          "value": "pex-azure-broker-7ffb8b844d-bwkwh"
-        }
-      },
+      "scopedVars": {},
       "seriesOverrides": [],
       "spaceLength": 10,
       "stack": false,
@@ -4145,36 +3929,6 @@
             "selected": true,
             "text": "All",
             "value": "$__all"
-          },
-          {
-            "selected": false,
-            "text": "pex-azure-broker-7ffb8b844d-tfsn9",
-            "value": "pex-azure-broker-7ffb8b844d-tfsn9"
-          },
-          {
-            "selected": false,
-            "text": "pex-azure-broker-7ffb8b844d-bb5rq",
-            "value": "pex-azure-broker-7ffb8b844d-bb5rq"
-          },
-          {
-            "selected": false,
-            "text": "pex-azure-broker-7ffb8b844d-m2rvs",
-            "value": "pex-azure-broker-7ffb8b844d-m2rvs"
-          },
-          {
-            "selected": false,
-            "text": "pex-azure-broker-7ffb8b844d-8wfv4",
-            "value": "pex-azure-broker-7ffb8b844d-8wfv4"
-          },
-          {
-            "selected": false,
-            "text": "pex-azure-broker-7ffb8b844d-fqlgf",
-            "value": "pex-azure-broker-7ffb8b844d-fqlgf"
-          },
-          {
-            "selected": false,
-            "text": "pex-azure-broker-7ffb8b844d-bwkwh",
-            "value": "pex-azure-broker-7ffb8b844d-bwkwh"
           }
         ],
         "query": "pulsar_lb_memory_usage{job=~\"broker.*\", kubernetes_pod_name=~\".+\"}",
