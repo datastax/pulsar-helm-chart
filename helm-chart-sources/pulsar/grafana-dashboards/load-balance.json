@@ -66,9 +66,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "pulsar_lb_cpu_usage",
+          "expr": "pulsar_lb_cpu_usage{kubernetes_pod_name=~\"$instance\"}",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "{{ kubernetes_pod_name }}",
           "refId": "A"
         }
       ],
@@ -160,9 +160,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "pulsar_lb_memory_usage",
+          "expr": "pulsar_lb_memory_usage{kubernetes_pod_name=~\"$instance\"}",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "{{ kubernetes_pod_name }}",
           "refId": "A"
         }
       ],
@@ -268,9 +268,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "pulsar_lb_bandwidth_in_usage",
+          "expr": "pulsar_lb_bandwidth_in_usage{kubernetes_pod_name=~\"$instance\"}",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "{{ kubernetes_pod_name }}",
           "refId": "A"
         }
       ],
@@ -362,9 +362,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "pulsar_lb_directMemory_usage",
+          "expr": "pulsar_lb_directMemory_usage{kubernetes_pod_name=~\"$instance\"}",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "{{ kubernetes_pod_name }}",
           "refId": "A"
         }
       ],
@@ -456,9 +456,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "pulsar_lb_bandwidth_out_usage",
+          "expr": "pulsar_lb_bandwidth_out_usage{kubernetes_pod_name=~\"$instance\"}",
           "interval": "",
-          "legendFormat": "",
+          "legendFormat": "{{ kubernetes_pod_name }}",
           "refId": "A"
         }
       ],
@@ -551,7 +551,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "pulsar_lb_unload_broker_count",
+          "expr": "pulsar_lb_unload_broker_count{kubernetes_pod_name=~\"$instance\"}",
           "interval": "",
           "legendFormat": "{{ kubernetes_pod_name }}",
           "refId": "A"
@@ -646,7 +646,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "pulsar_lb_unload_bundle_count",
+          "expr": "pulsar_lb_unload_bundle_count{kubernetes_pod_name=~\"$instance\"}",
           "interval": "",
           "legendFormat": "{{ kubernetes_pod_name }}",
           "refId": "A"
@@ -741,7 +741,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "pulsar_lb_bundles_split_count",
+          "expr": "pulsar_lb_bundles_split_count{kubernetes_pod_name=~\"$instance\"}",
           "interval": "",
           "legendFormat": "{{ kubernetes_pod_name }}",
           "refId": "A"
@@ -853,7 +853,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "pulsar_lb_cpu_usage",
+          "expr": "pulsar_lb_cpu_usage{kubernetes_pod_name=~\"$instance\"}",
           "interval": "",
           "legendFormat": "{{ kubernetes_pod_name }}",
           "refId": "A"
@@ -1363,7 +1363,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "pulsar_lb_cpu_usage",
+          "expr": "pulsar_lb_cpu_usage{kubernetes_pod_name=~\"$instance\"}",
           "interval": "",
           "legendFormat": "{{ kubernetes_pod_name }}",
           "refId": "A"
@@ -1885,7 +1885,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "pulsar_lb_cpu_usage",
+          "expr": "pulsar_lb_cpu_usage{kubernetes_pod_name=~\"$instance\"}",
           "interval": "",
           "legendFormat": "{{ kubernetes_pod_name }}",
           "refId": "A"
@@ -2407,7 +2407,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "pulsar_lb_cpu_usage",
+          "expr": "pulsar_lb_cpu_usage{kubernetes_pod_name=~\"$instance\"}",
           "interval": "",
           "legendFormat": "{{ kubernetes_pod_name }}",
           "refId": "A"
@@ -2929,7 +2929,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "pulsar_lb_cpu_usage",
+          "expr": "pulsar_lb_cpu_usage{kubernetes_pod_name=~\"$instance\"}",
           "interval": "",
           "legendFormat": "{{ kubernetes_pod_name }}",
           "refId": "A"
@@ -3451,7 +3451,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "pulsar_lb_cpu_usage",
+          "expr": "pulsar_lb_cpu_usage{kubernetes_pod_name=~\"$instance\"}",
           "interval": "",
           "legendFormat": "{{ kubernetes_pod_name }}",
           "refId": "A"
@@ -3932,7 +3932,7 @@
           }
         ],
         "query": "pulsar_lb_memory_usage{job=~\"broker.*\", kubernetes_pod_name=~\".+\"}",
-        "refresh": 0,
+        "refresh": 1,
         "regex": "/.*[^_]kubernetes_pod_name=\\\"([^\\\"]+)\\\".*/",
         "skipUrlSync": false,
         "sort": 0,
