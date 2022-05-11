@@ -27,13 +27,6 @@ Please refer to Helm's [documentation](https://helm.sh/docs/) to get started.
 
 ## Upgrade considerations
 
-### Luna Streaming 2.7.2
-
-For helm chart versions prior to 2.10.0, we recommended using the `fixRootlessPermissions` field in your `values.yaml`
-to make non-root docker images work correctly. In 2.10.0, we updated the chart to use the `securityContext` to ensure
-correct file system permissions. The `fixRootlessPermissions` was therefore removed in 2.10.0, since it was not
-necessary and an unused value field has no effect on deployment.
-
 ## Minikube quick start
 
 Make sure you have minikube [installed](https://minikube.sigs.k8s.io/docs/start/) and running (`minikube start`).
