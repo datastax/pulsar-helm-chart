@@ -1618,8 +1618,8 @@
         "allValue": null,
         "current": {
           "selected": true,
-          "text": "chris-kafkaesque-io/TTL",
-          "value": "chris-kafkaesque-io/TTL"
+          "text": "public/default",
+          "value": "public/default"
         },
         "datasource": "Prometheus",
         "definition": "pulsar_producers_count{cluster=\"$cluster\"}",
