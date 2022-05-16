@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 13,
+  "id": 36,
   "links": [],
   "panels": [
     {
@@ -24,7 +24,6 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
-      "description": "",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -67,8 +66,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "exemplar": true,
-          "expr": "sum(pulsar_producers_count{job=~\"broker\"}) by (kubernetes_pod_name)",
+          "expr": "rate(bookie_RECLAIMED_COMPACTION_SPACE_BYTES[5m]) ",
           "interval": "",
           "legendFormat": "{{ kubernetes_pod_name }}",
           "refId": "A"
@@ -78,7 +76,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Producers",
+      "title": "Bookie Reclaim Compaction Space (Rate)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -121,7 +119,6 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
-      "description": "",
       "fieldConfig": {
         "defaults": {
           "custom": {}
@@ -137,7 +134,7 @@
         "y": 0
       },
       "hiddenSeries": false,
-      "id": 7,
+      "id": 5,
       "legend": {
         "avg": false,
         "current": false,
@@ -164,8 +161,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "exemplar": true,
-          "expr": "sum(pulsar_consumers_count{job=~\"broker\"}) by (kubernetes_pod_name)",
+          "expr": "rate(bookie_RECLAIMED_DELETION_SPACE_BYTES[5m]) ",
           "interval": "",
           "legendFormat": "{{ kubernetes_pod_name }}",
           "refId": "A"
@@ -175,7 +171,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Consumers",
+      "title": "Bookie Reclaim Deletion Space  (Rate)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -260,10 +256,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "exemplar": true,
-          "expr": "container_sockets{container=~\".*proxy\",container!~\"kube-proxy.*\"}",
+          "expr": "rate(bookie_MAJOR_COMPACTION_COUNT[5m])",
           "interval": "",
-          "legendFormat": "{{ pod }}",
+          "legendFormat": "{{ kubernetes_pod_name }}",
           "refId": "A"
         }
       ],
@@ -271,7 +266,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Proxy Sockets",
+      "title": "Major Compaction (Rate)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -356,10 +351,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "exemplar": true,
-          "expr": "container_sockets{container=~\".*broker\"}",
+          "expr": "rate(bookie_MAJOR_COMPACTION_COUNT[5m])",
           "interval": "",
-          "legendFormat": "{{ pod }}",
+          "legendFormat": "{{ kubernetes_pod_name }}",
           "refId": "A"
         }
       ],
@@ -367,7 +361,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Broker Sockets",
+      "title": "Major Compaction (Rate)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -448,22 +442,21 @@
       "renderer": "flot",
       "seriesOverrides": [],
       "spaceLength": 10,
-      "stack": false,
+      "stack": true,
       "steppedLine": false,
       "targets": [
         {
-          "exemplar": true,
-          "expr": "container_sockets{container=~\".*bookkeeper.*\"}",
+          "expr": "bookie_ACTIVE_ENTRY_LOG_COUNT",
           "interval": "",
-          "legendFormat": "{{ pod }}",
-          "refId": "A"
+          "legendFormat": "{{ kubernetes_pod_name }}",
+          "refId": "B"
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Bookkeeper Sockets",
+      "title": "Active Entry Logs",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -521,7 +514,7 @@
         "y": 18
       },
       "hiddenSeries": false,
-      "id": 5,
+      "id": 8,
       "legend": {
         "avg": false,
         "current": false,
@@ -544,22 +537,21 @@
       "renderer": "flot",
       "seriesOverrides": [],
       "spaceLength": 10,
-      "stack": false,
+      "stack": true,
       "steppedLine": false,
       "targets": [
         {
-          "exemplar": true,
-          "expr": "container_sockets{container=~\".*zookeeper.*\"}",
+          "expr": "bookie_ACTIVE_ENTRY_LOG_COUNT",
           "interval": "",
-          "legendFormat": "{{ pod }}",
-          "refId": "A"
+          "legendFormat": "{{ kubernetes_pod_name }}",
+          "refId": "B"
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "ZooKeeper Sockets",
+      "title": "Active Entry Logs",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -595,9 +587,198 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 27
+      },
+      "hiddenSeries": false,
+      "id": 7,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.3.5",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "bookie_ACTIVE_LEDGER_COUNT",
+          "interval": "",
+          "legendFormat": "{{ kubernetes_pod_name }}",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Active Ledger Count",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "decbytes",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 12,
+        "y": 27
+      },
+      "hiddenSeries": false,
+      "id": 9,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.3.5",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": true,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "bookie_DELETED_LEDGER_COUNT",
+          "interval": "",
+          "legendFormat": "{{ kubernetes_pod_name }}",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Deleted Ledger Count",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "decbytes",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     }
   ],
-  "refresh": "10s",
   "schemaVersion": 26,
   "style": "dark",
   "tags": [],
@@ -605,12 +786,12 @@
     "list": []
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Sockets by Component",
-  "uid": "BPLyrjQ7k",
-  "version": 1
+  "title": "Pulsar / BookKeeper Compaction",
+  "uid": "dOcbekX7k",
+  "version": 3
 }
