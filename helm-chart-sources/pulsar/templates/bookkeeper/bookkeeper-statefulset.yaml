@@ -120,6 +120,7 @@ spec:
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.bookkeeper.gracePeriod }}
       initContainers:
+      {{- if .Values.enableWaitContainers }}
       # This init container will wait for zookeeper to be ready before
       # deploying the bookies
       - name: wait-zookeeper-ready
@@ -131,6 +132,7 @@ spec:
             until bin/pulsar zookeeper-shell -server {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }} ls /admin/clusters | grep "^\[.*{{ template "pulsar.fullname" . }}.*\]"; do
               sleep 3;
             done;
+      {{- end }}
       # This initContainer will make sure that the bookkeeper
       # metadata is in zookeeper
       - name: pulsar-bookkeeper-metaformat
