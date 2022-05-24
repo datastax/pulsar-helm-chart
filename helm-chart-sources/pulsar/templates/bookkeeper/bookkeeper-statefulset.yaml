@@ -97,21 +97,24 @@ spec:
             topologyKey: "kubernetes.io/hostname"
           {{- end }}
           {{- if .Values.antiAffinity.zone.enabled }}
-          - labelSelector:
-              matchExpressions:
-              - key: "app"
-                operator: In
-                values:
-                - "{{ template "pulsar.name" . }}"
-              - key: "release"
-                operator: In
-                values:
-                - {{ .Release.Name }}
-              - key: "component"
-                operator: In
-                values:
-                - {{ .Values.bookkeeper.component }}
-            topologyKey: failure-domain.beta.kubernetes.io/zone
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              topologyKey: failure-domain.beta.kubernetes.io/zone
+              labelSelector:
+                matchExpressions:
+                - key: "app"
+                  operator: In
+                  values:
+                  - "{{ template "pulsar.name" . }}"
+                - key: "release"
+                  operator: In
+                  values:
+                  - {{ .Release.Name }}
+                - key: "component"
+                  operator: In
+                  values:
+                  - {{ .Values.bookkeeper.component }}
           {{- end }}
         {{- end }}
       {{- end }}
