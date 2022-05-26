@@ -32,13 +32,13 @@ data:
   zookeeperServers:
     {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
     {{- if .Values.extra.zookeepernp }}
-    { template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2281,{{ template "pulsar.fullname" . }}-{{ .Values.zookeepernp.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2281
+    {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2281,{{ template "pulsar.fullname" . }}-{{ .Values.zookeepernp.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2281
     {{- else }}
     {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2281
     {{- end }}
     {{- else }}
     {{- if .Values.extra.zookeepernp }}
-    { template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2181,{{ template "pulsar.fullname" . }}-{{ .Values.zookeepernp.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2181
+    {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2181,{{ template "pulsar.fullname" . }}-{{ .Values.zookeepernp.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2181
     {{- else }}
     {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2181
     {{- end }}
@@ -52,7 +52,7 @@ data:
     {{- end }}
     {{- else }}
     {{- if .Values.extra.zookeepernp }}
-    { template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2181,{{ template "pulsar.fullname" . }}-{{ .Values.zookeepernp.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2181
+    {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2181,{{ template "pulsar.fullname" . }}-{{ .Values.zookeepernp.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2181
     {{- else }}
     {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2181
     {{- end }}
