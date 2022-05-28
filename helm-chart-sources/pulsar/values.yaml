@@ -1576,10 +1576,10 @@ pulsarAdminConsole:
     type: LoadBalancer
     ports:
     - name: http
-      port: 80
+      port: 8080
       targetPort: "nginx"
     - name: https
-      port: 443
+      port: 8443
       targetPort: "nginx-tls"
 
 ## Pulsar Component: Zoonavigator
