@@ -127,4 +127,10 @@ spec:
               {{- end }}
             {{- end }}
           {{- end }}
+  {{- if and .Values.enableTls}}
+  tls:
+  - hosts:
+    - {{ .Values.proxy.ingress.host }}
+    secretName: {{ .Values.tls.proxy.tlsSecretName }}
+  {{- end }}
 {{- end }}
