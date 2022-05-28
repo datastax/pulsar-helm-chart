@@ -70,7 +70,7 @@ spec:
   tls:
   - hosts:
     - {{ .Values.pulsarAdminConsole.ingress.host }}
-    secretName: {{ .Values.tlsSecretName }}
+    secretName: {{ default .Values.tls.pulsarAdminConsole.tlsSecretName .Values.tlsSecretName | quote }}
   {{- end }}
 {{- end }}
 {{- end }}
