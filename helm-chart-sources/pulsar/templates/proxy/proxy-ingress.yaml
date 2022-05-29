@@ -120,11 +120,12 @@ spec:
               service:
                 name: "{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}"
                 port:
-              {{- if .Values.enableTls }}
-                number: 8443
-              {{- else }}
-              number: 8080
-              {{- end }}
+                {{- if .Values.enableTls }}
+                  number: 8443
+                {{- else }}
+                number: 8080
+                {{- end }}
+                
             {{- end }}
           {{- end }}
   {{- if and .Values.enableTls}}
