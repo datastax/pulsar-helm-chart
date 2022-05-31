@@ -73,8 +73,9 @@ create_kind_cluster() {
 
 
 install_charts() {
-    docker_exec ls / /workdir
+    docker_exec ls -al / /workdir
     docker_exec pwd
+    docker_exec id
     docker_exec helm version --short
     docker_exec git rev-parse --is-inside-work-tree
     docker_exec ct install --debug --config tests/ct.yaml
