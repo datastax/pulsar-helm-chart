@@ -17,6 +17,7 @@ run_ct_container() {
         docker run --rm --interactive --detach --network host --name ct \
             --volume "$(pwd):/workdir" \
             --workdir /workdir \
+            --user 1000 \
             "quay.io/helmpack/chart-testing:$CT_VERSION" \
             cat
         echo
@@ -30,8 +31,9 @@ cleanup() {
     echo 'Done!'
 }
 
+# Set the user so that it properly owns the git repo
 docker_exec() {
-    docker exec --interactive ct "$@"
+    docker exec --user 1000 --interactive ct "$@"
 }
 
 create_kind_cluster() {
