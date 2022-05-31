@@ -73,6 +73,8 @@ create_kind_cluster() {
 
 
 install_charts() {
+    docker_exec ls / /worktree
+    docker_exec pwd
     docker_exec ct install --debug --config tests/ct.yaml
     echo
 }
