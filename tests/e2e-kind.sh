@@ -32,7 +32,7 @@ cleanup() {
 }
 
 docker_exec_user() {
-    docker exec --user "$1" --interactive ct "$@"
+    docker exec --user $1 --interactive ct "$@"
 }
 
 docker_exec_root() {
