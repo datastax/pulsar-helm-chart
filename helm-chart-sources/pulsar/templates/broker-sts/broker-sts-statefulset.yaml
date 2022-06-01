@@ -247,6 +247,12 @@ spec:
           containerPort: 8080
         - name: pulsar
           containerPort: 6650
+        {{- if .Values.enableTls }}
+        - name: https
+          containerPort: 8443
+        - name: pulsarssl
+          containerPort: 6651
+        {{- end }}
         volumeMounts:
           - name: health
             mountPath: /pulsar/health
