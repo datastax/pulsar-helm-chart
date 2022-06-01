@@ -66,7 +66,7 @@ kubectl get secret pulsar-grafana -o=jsonpath="{.data.admin-password}" | base64 
 
 ## Quick start
 
-With Helm installed with access to a Kubernetes cluster (ex minikube):
+With Helm installed to your local machine and with access to a Kubernetes cluster (e.g. minikube):
 
 ```
 helm repo add datastax-pulsar https://datastax.github.io/pulsar-helm-chart
@@ -93,6 +93,7 @@ To use the Pulsar admin and client tools (ex pulsar-admin, pulsar-client, pulsar
 
 You will find the tools in the `/pulsar/bin` directory.
 
+Note: if you are using Cert-Manager to manage TLS certificates, see [Enabling TLS using Cert-Manager](#enabling-tls-using-cert-manager) for additional configuration information.
 
 ## Add to local Helm repository 
 To add this chart to your local Helm repository:
@@ -281,6 +282,19 @@ pulsarAdminConsole:
     enabled: true
     host: pulsar-ui.example.com
 ```
+
+## Enabling TLS using Cert-Manager
+
+When using Cert-Manager to create your TLS certificates, you must first install the Cert-Manager CRDs. These are
+installed using the following command:
+
+```shell
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.5/cert-manager.crds.yaml
+```
+
+If you don't, you will get error messages like this:
+
+> Error: INSTALLATION FAILED: unable to build kubernetes objects from release manifest: [resource mapping not found for name: "pulsar-ca-certificate" namespace: "pulsar" from "": no matches for kind "Certificate" in version "cert-manager.io/v1"
 
 ## Enabling the Prometheus stack
 
