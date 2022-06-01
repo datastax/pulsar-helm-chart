@@ -31,16 +31,9 @@ cleanup() {
     echo 'Done!'
 }
 
-docker_exec_user() {
-    docker exec --user $1 --interactive ct "$@"
-}
-
-docker_exec_root() {
-    docker_exec_user 0 "$@"
-}
-
+# Set the user so that it properly owns the git repo
 docker_exec() {
-    docker_exec_user 1000 "$@"
+    docker exec --user 1000 --interactive ct "$@"
 }
 
 create_kind_cluster() {
@@ -65,10 +58,10 @@ create_kind_cluster() {
     else
         kind export kubeconfig --name "$CLUSTER_NAME"
     fi
-    docker_exec_root mkdir -p /.kube
+    docker_exec mkdir -p /root/.kube
 
     echo "Copying kubeconfig $KUBECONFIG to container..."
-    docker cp "$KUBECONFIG" ct:/.kube/config
+    docker cp "$KUBECONFIG" ct:/root/.kube/config
 
     docker_exec kubectl cluster-info
     echo
