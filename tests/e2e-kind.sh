@@ -17,6 +17,8 @@ run_ct_container() {
         docker run --rm --interactive --detach --network host --name ct \
             --volume "$(pwd):/workdir" \
             --workdir /workdir \
+            --user 1000 \
+            --env HOME=/workdir \
             "quay.io/helmpack/chart-testing:$CT_VERSION" \
             cat
         echo
@@ -30,8 +32,9 @@ cleanup() {
     echo 'Done!'
 }
 
+# Set the user so that it properly owns the git repo
 docker_exec() {
-    docker exec --interactive ct "$@"
+    docker exec --user 1000 --interactive ct "$@"
 }
 
 create_kind_cluster() {
@@ -56,10 +59,10 @@ create_kind_cluster() {
     else
         kind export kubeconfig --name "$CLUSTER_NAME"
     fi
-    docker_exec mkdir -p /root/.kube
+    docker_exec mkdir -p /workdir/.kube
 
     echo "Copying kubeconfig $KUBECONFIG to container..."
-    docker cp "$KUBECONFIG" ct:/root/.kube/config
+    docker cp "$KUBECONFIG" ct:/workdir/.kube/config
 
     docker_exec kubectl cluster-info
     echo
