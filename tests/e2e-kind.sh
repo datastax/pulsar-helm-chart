@@ -18,6 +18,7 @@ run_ct_container() {
             --volume "$(pwd):/workdir" \
             --workdir /workdir \
             --user 1000 \
+            --env HOME=/workdir \
             "quay.io/helmpack/chart-testing:$CT_VERSION" \
             cat
         echo
@@ -58,10 +59,10 @@ create_kind_cluster() {
     else
         kind export kubeconfig --name "$CLUSTER_NAME"
     fi
-    docker_exec mkdir -p /root/.kube
+    docker_exec mkdir -p /workdir/.kube
 
     echo "Copying kubeconfig $KUBECONFIG to container..."
-    docker cp "$KUBECONFIG" ct:/root/.kube/config
+    docker cp "$KUBECONFIG" ct:/workdir/.kube/config
 
     docker_exec kubectl cluster-info
     echo
