@@ -34,6 +34,6 @@ dependencies:
   repository: https://charts.jetstack.io
   condition: cert-manager.enabled
 - name: keycloak
-  version: 5.0.1
+  version: 5.2.8
   repository: https://charts.bitnami.com/bitnami
   condition: keycloak.enabled
