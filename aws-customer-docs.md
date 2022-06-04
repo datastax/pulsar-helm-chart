@@ -15,7 +15,7 @@ Reference: https://docs.cert-manager.io
 
 * Install the Cert-Manager CustomResourceDefinition resources
 ```
-kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.5/cert-manager.crds.yaml
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.8.0/cert-manager.crds.yaml
 ```
 
 * Create the namespace for Cert-Manager
@@ -38,7 +38,7 @@ helm repo update
 helm install \
   --name cert-manager \
   --namespace cert-manager \
-  --version v1.5.5 \
+  --version v1.8.0 \
   jetstack/cert-manager
 ```
 
