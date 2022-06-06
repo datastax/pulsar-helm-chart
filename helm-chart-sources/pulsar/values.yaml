@@ -1539,7 +1539,6 @@ pulsarAdminConsole:
     enabled: false
     user: ''
     password: ''
-  apiBaseUrl: "api/v1/"
   apiVersion: "2.7.2"
   probe:
     liveness:
@@ -1577,10 +1576,10 @@ pulsarAdminConsole:
     ports:
     - name: http
       port: 80
-      targetPort: "nginx"
+      targetPort: "http"
     - name: https
       port: 443
-      targetPort: "nginx-tls"
+      targetPort: "https"
 
 ## Pulsar Component: Zoonavigator
 ## templates/zoonavigator-deployment.yaml
