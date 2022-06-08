@@ -292,6 +292,8 @@ installed using the following command:
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.8.0/cert-manager.crds.yaml
 ```
 
+NOTE: if you're deploying a version of the chart before 3.0.0, you'll need to use version `v1.5.5` of the CRDs.
+
 If you don't, you will get error messages like this:
 
 > Error: INSTALLATION FAILED: unable to build kubernetes objects from release manifest: [resource mapping not found for name: "pulsar-ca-certificate" namespace: "pulsar" from "": no matches for kind "Certificate" in version "cert-manager.io/v1"
@@ -345,6 +347,7 @@ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.8
 helm install pulsar -f dev-values-tls.yaml datastax-pulsar/pulsar
 ```
 
+NOTE: if you're deploying a version of the chart before 3.0.0, you'll need to use version `v1.5.5` of the CRDs.
 
 ## Tiered Storage
 
