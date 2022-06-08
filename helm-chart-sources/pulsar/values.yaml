@@ -1959,6 +1959,24 @@ kube-prometheus-stack:
     testFramework:
       enabled: false
     defaultDashboardsEnabled: true
+    dashboardProviders:
+      dashboardproviders.yaml:
+        apiVersion: 1
+        providers:
+        - name: 'default'
+          orgId: 1
+          folder: ''
+          type: file
+          disableDeletion: true
+          editable: false
+          options:
+            path: /var/lib/grafana/dashboards/default
+    dashboards:
+      default:
+        zookeeper:
+          gnetId: 10465
+          revision: 4
+          datasource: Prometheus
     # Configure to set a default admin password for Grafana
     adminPassword:
     service:

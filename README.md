@@ -309,13 +309,6 @@ kube-prometheus-stack:
   enabled: true
 ```
 
-To enable the Grafana dashboards, use the following setting:
-
-```
-grafanaDashboards:
-  enabled: true
-```
-
 To enable the Kubernetes default rules, use the following setting:
 ```
 kube-prometheus-stack:
@@ -323,6 +316,20 @@ kube-prometheus-stack:
     create: true
 ```
 
+### Grafana Dashboards
+
+DataStax has several custom dashboards to help interpret Pulsar metrics. These custom dashboards are installed when the
+following is set in the values file:
+
+```
+grafanaDashboards:
+  enabled: true
+```
+
+Starting in Pulsar 2.8.0, the bundled Zookeeper process exports its own metrics instead of using the Pulsar metrics
+implementation. This results in new metrics names. As a result, we install two Grafana dashboards for Zookeeper. The
+first is a custom DataStax dashboard that works for versions before 2.8.0. The second is the official Zookeeper
+community Grafana dashboard: https://grafana.com/grafana/dashboards/10465.
 
 ## Example configurations
 
