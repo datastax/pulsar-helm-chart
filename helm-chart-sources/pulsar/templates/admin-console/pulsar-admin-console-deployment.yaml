@@ -44,7 +44,6 @@ spec:
         cluster: {{ template "pulsar.fullname" . }}
       annotations:
         checksum/dashboard: {{ include (print $.Template.BasePath "/admin-console/pulsar-admin-console-configmap.yaml") . | sha256sum }}
-        checksum/nginx: {{ include (print $.Template.BasePath "/admin-console/pulsar-admin-console-nginx-configmap.yaml") . | sha256sum }}
         {{- if .Values.pulsarAdminConsole.annotations }}
 {{ toYaml .Values.pulsarAdminConsole.annotations | indent 8 }}
         {{- end }}
