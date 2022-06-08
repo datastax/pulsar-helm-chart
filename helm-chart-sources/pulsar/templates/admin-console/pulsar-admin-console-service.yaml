@@ -29,7 +29,7 @@ metadata:
     component: {{ .Values.pulsarAdminConsole.component }}
     cluster: {{ template "pulsar.fullname" . }}
   annotations:
-{{ toYaml .Values.pulsarAdminConsole.annotations | indent 4 }}
+{{ toYaml .Values.pulsarAdminConsole.service.annotations | indent 4 }}
 spec:
   type: {{ .Values.pulsarAdminConsole.service.type }}
   {{- if .Values.pulsarAdminConsole.service.loadBalancerIP }}
