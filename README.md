@@ -289,8 +289,10 @@ When using Cert-Manager to create your TLS certificates, you must first install 
 installed using the following command:
 
 ```shell
-kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.5/cert-manager.crds.yaml
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.8.0/cert-manager.crds.yaml
 ```
+
+NOTE: if you're deploying a version of the chart before 3.0.0, you'll need to use version `v1.5.5` of the CRDs.
 
 If you don't, you will get error messages like this:
 
@@ -348,10 +350,11 @@ Note: With message/state persistence disabled, the cluster will not survive a re
 * dev-values-tls.yaml. Development environment with self-signed certificate created by cert-manager. You need to install the cert-manager CRDs before installing the Helm chart. The chart will install the cert-manager application.
 
 ```
-kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.5/cert-manager.crds.yaml
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.8.0/cert-manager.crds.yaml
 helm install pulsar -f dev-values-tls.yaml datastax-pulsar/pulsar
 ```
 
+NOTE: if you're deploying a version of the chart before 3.0.0, you'll need to use version `v1.5.5` of the CRDs.
 
 ## Tiered Storage
 
