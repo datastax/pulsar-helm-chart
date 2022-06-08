@@ -242,6 +242,10 @@ tls:
       # Spec defined here: https://cert-manager.io/docs/reference/api-docs/#cert-manager.io/v1.CertificatePrivateKey
       # Can be used to override the default algorithm that Cert-Manager uses when signing keys.
       privateKey: {}
+  bastion:
+    enableHostnameVerification: true
+  pulsarHeartbeat:
+    enableHostnameVerification: true
 
   # Configuration for the self-signed root CA Certificate. (All Pulsar components are assumed to share the same root CA.)
   ssCaCert:

@@ -85,7 +85,13 @@ spec:
         args:
           - >-
             {{- if .Values.enableTls }}
-            until curl --connect-timeout 5 --cacert /pulsar/certs/ca.crt https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443; do
+            until \
+            CA_CERT=/pulsar/certs/ca.crt curl --connect-timeout 5  --cacert ${CA_CERT} \
+            {{- if not .Values.tls.pulsarHeartbeat.enableHostnameVerification }}
+            --insecure \
+            {{- end }}
+            https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443
+            ; do
             {{- else }}
             until curl --connect-timeout 5 http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080; do
             {{- end }}
