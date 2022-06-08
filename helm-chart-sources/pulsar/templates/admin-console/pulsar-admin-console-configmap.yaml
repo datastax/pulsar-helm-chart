@@ -29,58 +29,47 @@ metadata:
     component: {{ .Values.pulsarAdminConsole.component }}
     cluster: {{ template "pulsar.fullname" . }}
 data:
-  config-override.js: |
-    var globalConf = {
-        "template_directory_uri": "",
-        "ajax_url": "",
-        "rest_url": "",
+  local.json: |
+    {
         "tenant": "{{ .Values.pulsarAdminConsole.defaultTenant }}",
-        "polling_interval": "10000",
-        "wss_url": "",
-        "disable_billing": "",
-        "home_cluster": "{{ template "pulsar.fullname" . }}",
-        "test": "",
-        "client_token": "",
-        "admin_token": "",
-        "login": "admin",
-        "email": "",
-        "client_role": "",
-        "plan": "",
-        "need_to_create_plan": "",
-        "plan_to_create": "",
-        "admin_role": "",
-        "cluster_list": ["{{ template "pulsar.fullname" . }}"],
-        "api_base_url": "{{ .Values.pulsarAdminConsole.apiBaseUrl }}",
-        "ca_certificate": "",
+        "cluster_name": "{{ template "pulsar.fullname" . }}",
+        "auth_mode": "{{ .Values.pulsarAdminConsole.authMode }}",
+        "server_config": {
+          {{- if .Values.enableTls }}
+          "port": "8443",
+          {{- else }}
+          "port": "8080",
+          {{- end }}
+          {{- if .Values.enableTokenAuth }}
+          "token_path": "/pulsar/token-superuser/superuser.jwt"
+          {{- end }}
+          {{- if .Values.enableTls }}
+          "pulsar_url": "https://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443",
+          "websocket_url": "wss://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8964",
+          {{- else }}
+          "pulsar_url": "http://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080",
+          "websocket_url": "ws://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8964",
+          {{- end }}
+          "log_level": "{{ .Values.pulsarAdminConsole.serverLogLevel }}",
+          "k8s_namespace": "{{ .Release.Namespace }}",
+          "ssl": {
+            {{- if .Values.enableTls }}
+            "ca_path": "/pulsar/certs/ca.crt",
+            "cert_path": "/pulsar/certs/tls.crt",
+            "key_path": "/pulsar/certs/tls.key"
+            {{- else }}
+            "ca_path": "",
+            "cert_path": "",
+            "key_path": ""
+            {{- end }}
+          }
+        },
         "api_version": "{{ .Values.pulsarAdminConsole.apiVersion }}",
-        "default_plan": "",
-        "notice_text": "",
         {{- if index .Values "kube-prometheus-stack" "grafana" "ingress" "enabled"}}
         "grafana_url": "https://{{ index .Values "kube-prometheus-stack" "grafana" "ingress" "hosts" 0 }}{{ index .Values "kube-prometheus-stack" "grafana" "ingress" "path" }}",
         {{- else }}
         "grafana_url": "http://localhost:3000",
         {{- end }}
-        "user_role": "administrator",
-        "feature_flags": {
-            "function": true,
-            "sink": true,
-            "source": true,
-            "tenantStats": false
-        },
-        "security": "",
-        "chargebee_site": "",
-        "billing_provider": "",
-        "multi_user_org": "",
-        "private_org": "true",
-        "functions_disabled": "false",
-        {{- if .Values.extra.burnell }}
-        "clients_disabled": "false",
-        {{- else }}
-        "clients_disabled": "false",
-        {{- end }}
-        "running_env": "k8s",
-        "use_token_list": "false",
-        "auth_mode": "{{ .Values.pulsarAdminConsole.authMode }}",
         "oauth_client_id": "{{ .Values.pulsarAdminConsole.oauthClientId }}",
         "host_overrides": {
             {{- if .Values.pulsarAdminConsole.codeSampleUrl.useDnsName }}
@@ -94,5 +83,4 @@ data:
             {{- end }}
         }
     }
-
 {{- end }}

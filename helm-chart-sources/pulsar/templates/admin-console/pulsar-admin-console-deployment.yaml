@@ -60,38 +60,6 @@ spec:
     {{- end }}
       terminationGracePeriodSeconds: {{ .Values.pulsarAdminConsole.gracePeriod }}
       containers:
-      - name: nginx
-        image: nginxinc/nginx-unprivileged:stable-alpine
-        imagePullPolicy: {{ .Values.image.pulsarAdminConsole.pullPolicy }}
-        ports:
-        - name: "nginx"
-          containerPort: 8080
-        {{- if .Values.enableTls }}
-        - name: "nginx-tls"
-          containerPort: 8443
-        {{- end }}
-        volumeMounts:
-        - mountPath: /etc/nginx
-          readOnly: true
-          name: nginxconf
-        {{- if .Values.enableTls }}
-        - mountPath: /certs
-          name: certs
-          readOnly: true
-        {{- end }}
-        livenessProbe:
-          httpGet:
-            path: /ruok
-            port: 8080
-          initialDelaySeconds: {{ .Values.pulsarAdminConsole.probe.liveness.initialDelaySeconds }}
-          timeoutSeconds: {{ .Values.pulsarAdminConsole.probe.liveness.timeoutSeconds }}
-        readinessProbe:
-          httpGet:
-            path: /ruok
-            port: 8080
-          initialDelaySeconds: {{ .Values.pulsarAdminConsole.probe.readiness.initialDelaySeconds }}
-          timeoutSeconds: {{ .Values.pulsarAdminConsole.probe.readiness.timeoutSeconds }}
-        resources:
       - name: "{{ template "pulsar.fullname" . }}-pulsar-admin-console"
         image: "{{ .Values.image.pulsarAdminConsole.repository }}:{{ .Values.image.pulsarAdminConsole.tag }}"
         imagePullPolicy: {{ .Values.image.pulsarAdminConsole.pullPolicy }}
@@ -101,13 +69,13 @@ spec:
         {{- end }}
         ports:
         - name: http
-          containerPort: 6454
+          containerPort: 8080
         - name: https
-          containerPort: 6455
+          containerPort: 8443
         volumeMounts:
           - name: dashboardconfig
-            mountPath: /home/appuser/dashboard/dist/config-override.js
-            subPath: config-override.js
+            mountPath: /home/appuser/config/local.json
+            subPath: local.json
           {{- if .Values.enableTls }}
           - name: certs
             readOnly: true
@@ -118,24 +86,13 @@ spec:
             name: token-superuser
             readOnly: true
           {{- end }}
-        env:
-          {{- if .Values.enableTokenAuth }}
-          - name: token_path
-            value: "/pulsar/token-superuser/superuser.jwt"
-          {{- end }}
-          - name: auth_mode
-            value: {{ .Values.pulsarAdminConsole.authMode }}
-          - name: K8S_NAMESPACE
-            value: {{ .Release.Namespace }}
-          - name: LOG_LEVEL
-            value: {{ .Values.pulsarAdminConsole.serverLogLevel }}
       volumes:
         - name: dashboardconfig
           configMap:
             name: {{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}
             items:
-            - key: config-override.js
-              path: config-override.js
+            - key: local.json
+              path: local.json
         - name: nginxconf
           configMap:
             name: {{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}-nginx
