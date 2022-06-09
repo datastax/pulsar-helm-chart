@@ -41,7 +41,7 @@ data:
           "port": "8080",
           {{- end }}
           {{- if .Values.enableTokenAuth }}
-          "token_path": "/pulsar/token-superuser/superuser.jwt"
+          "token_path": "/pulsar/token-superuser/superuser.jwt",
           {{- end }}
           {{- if .Values.enableTls }}
           "pulsar_url": "https://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443",
