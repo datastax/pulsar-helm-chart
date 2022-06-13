@@ -222,7 +222,6 @@ data:
 {{- if .Values.broker.transactionCoordinator.enabled }}
   PULSAR_PREFIX_transactionCoordinatorEnabled: "true"
 {{- end }}
-
 {{- range $key, $val := $.Values.broker.configData }}
   {{ $key }}: {{ $val | replace "\"" "" | trim | quote }}
 {{- end }}

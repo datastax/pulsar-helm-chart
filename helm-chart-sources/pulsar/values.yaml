@@ -889,7 +889,7 @@ broker:
   # See extra section above
   functionsWorkerEnabled: false
   webSocketServiceEnabled: false
-  transactionCoordinator: 
+  transactionCoordinator:
     enabled: false
     initialCount: 16
   probe:
@@ -1003,7 +1003,7 @@ brokerSts:
   # See extras section above
   functionsWorkerEnabled: false
   webSocketServiceEnabled: false
-  transactionCoordinator: 
+  transactionCoordinator:
     enabled: false
     initialCount: 16
   probe:
