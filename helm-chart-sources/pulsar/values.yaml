@@ -707,6 +707,8 @@ zookeepernp:
 ## metadata deployed
 zookeeperMetadata:
   component: zookeeper-metadata
+  ## timeout (in seconds) for running "bin/pulsar initialize-cluster-metadata" command
+  initTimeout: 60
 
 ## Pulsar: Bookkeeper cluster
 ## templates/bookkeeper-statefulset.yaml
