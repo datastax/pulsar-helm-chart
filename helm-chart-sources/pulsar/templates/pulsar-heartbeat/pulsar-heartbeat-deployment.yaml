@@ -61,7 +61,7 @@ spec:
         - name: config-volume
           configMap:
             name: "{{ include "pulsar.fullname" . }}-{{ .Values.pulsarHeartbeat.component }}-config"
-        {{- if .Values.enableTls }}
+        {{- if and .Values.enableTls (or .Values.secrets .Values.createCertificates.selfSigned.enabled .Values.createCertificates.selfSignedPerComponent.enabled)}}
         - name: certs
           secret:
             secretName: {{ .Values.tls.ssCaCert.tlsSecretName | default (.Values.tls.rootCaSecretName | default .Values.tlsSecretName) | quote }}
@@ -75,7 +75,7 @@ spec:
       - name: wait-bookkeeper-ready
         image: "{{ .Values.image.broker.repository }}:{{ .Values.image.broker.tag }}"
         imagePullPolicy: {{ .Values.image.broker.pullPolicy }}
-        {{- if .Values.enableTls }}
+        {{- if and .Values.enableTls (or .Values.secrets .Values.createCertificates.selfSigned.enabled .Values.createCertificates.selfSignedPerComponent.enabled) }}
         volumeMounts:
         - name: certs
           readOnly: true
@@ -86,7 +86,7 @@ spec:
           - >-
             {{- if .Values.enableTls }}
             {{- if .Values.tls.pulsarHeartbeat.enableHostnameVerification }}
-            until curl --connect-timeout 5  --cacert /pulsar/certs/ca.crt https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443; do
+            until curl --connect-timeout 5  {{ if or .Values.secrets .Values.createCertificates.selfSigned.enabled .Values.createCertificates.selfSignedPerComponent.enabled }}--cacert /pulsar/certs/ca.crt{{ end }} https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443; do
             {{- else }}
             until curl --connect-timeout 5  --insecure https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443; do
             {{- end }}
@@ -119,7 +119,7 @@ spec:
           volumeMounts:
           - name: config-volume
             mountPath: /config
-          {{- if .Values.enableTls }}
+          {{- if and .Values.enableTls (or .Values.secrets .Values.createCertificates.selfSigned.enabled .Values.createCertificates.selfSignedPerComponent.enabled) }}
           - name: certs
             readOnly: true
             mountPath: /pulsar/certs
