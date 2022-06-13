@@ -1003,6 +1003,9 @@ brokerSts:
   # See extras section above
   functionsWorkerEnabled: false
   webSocketServiceEnabled: false
+  transactionCoordinator: 
+    enabled: false
+    initialCount: 16
   probe:
     enabled: true
     port: 8080

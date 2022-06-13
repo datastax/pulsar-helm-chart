@@ -58,7 +58,6 @@ broker:
       cpu: 0.3
   configData:
     PULSAR_MEM: "-Xms400m -Xmx400m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError"
-    PULSAR_PREFIX_transactionCoordinatorEnabled: "true"
   transactionCoordinator: 
     enabled: true
 
