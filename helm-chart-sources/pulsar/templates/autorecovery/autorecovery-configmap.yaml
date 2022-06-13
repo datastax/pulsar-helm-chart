@@ -29,6 +29,8 @@ metadata:
     component: {{ .Values.autoRecovery.component }}
     cluster: {{ template "pulsar.fullname" . }}
 data:
+  # Pulsar's metadata store based rack awareness solution
+  PULSAR_PREFIX_reppDnsResolverClass: "org.apache.pulsar.zookeeper.ZkBookieRackAffinityMapping"
   zkServers:
     {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
       {{- if .Values.extra.zookeepernp }}

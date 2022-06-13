@@ -48,6 +48,8 @@ data:
   useHostNameAsBookieID: "true"
   # HTTP server used by health check
   httpServerEnabled: "true"
+  # Pulsar's metadata store based rack awareness solution
+  PULSAR_PREFIX_reppDnsResolverClass: "org.apache.pulsar.zookeeper.ZkBookieRackAffinityMapping"
   {{- if .Values.function.enableStateStorage }}
     {{- if not (or .Values.extra.stateStorage .Values.function.stateStorageUrlOverride) }}
   # Enable function state storage
