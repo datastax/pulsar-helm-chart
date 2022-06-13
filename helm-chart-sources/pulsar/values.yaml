@@ -569,7 +569,7 @@ zookeeper:
     enabled: true
     initial: 20
     period: 30
-    timeout: 5
+    timeout: 30
   resources:
     requests:
       memory: 1Gi
@@ -659,7 +659,7 @@ zookeepernp:
     enabled: true
     initial: 20
     period: 30
-    timeout: 5
+    timeout: 30
   resources:
     requests:
       memory: 1Gi
