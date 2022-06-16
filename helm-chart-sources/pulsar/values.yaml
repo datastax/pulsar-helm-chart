@@ -1272,6 +1272,11 @@ burnell: {}
 proxy:
   component: proxy
   replicaCount: 3
+  # when authorization is enabled, proxy will check authorization before proxying requests. zookeeperClientEnabled must be set to true
+  authorizationEnabled: true
+  # when disabled, proxy won't be configured to connect to zookeeper
+  zookeeperClientEnabled: true
+  # when false, broker address will be looked up in zookeeper
   disableZookeeperDiscovery: true
   # use "brokersts" instead of "broker" to identify the broker k8s component
   useStsBrokersForDiscovery: false
