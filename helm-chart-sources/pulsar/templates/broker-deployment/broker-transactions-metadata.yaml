@@ -64,6 +64,14 @@ spec:
       - name: wait-broker-ready
         image: "{{ .Values.image.broker.repository }}:{{ .Values.image.broker.tag }}"
         imagePullPolicy: {{ .Values.image.broker.pullPolicy }}
+        {{- if and .Values.enableTls .Values.tls.broker.enabled }}
+        volumeMounts:
+        - name: certs
+          readOnly: true
+          mountPath: /pulsar/certs
+        - name: certconverter
+          mountPath: /pulsar/tools
+        {{- end }}
         command: ["sh", "-c"]
         args:
           - >-
