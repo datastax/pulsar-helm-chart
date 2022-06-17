@@ -1082,9 +1082,9 @@ brokerSts:
     usePolicy: true
     maxUnavailable: 1
 
-## Pulsar Transactions metadata setup. 
+## Pulsar Transactions metadata setup.
 ## This is the job responsible to prepare the cluster for enabling transactions.
-## Job will start as soon as one broker pod is available.
+## Job will start as soon as one broker pod is available.
 brokerTransactionsMetadata:
   component: broker-transactions-metadata
 
