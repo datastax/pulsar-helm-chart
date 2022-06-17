@@ -16,25 +16,16 @@
 #
 
 enableAntiAffinity: false
-enableTls: true
+enableTls: false
 enableTokenAuth: false
 restartOnConfigMapChange:
   enabled: true
 extra:
-  broker: false
-  brokerSts: true
   function: true
   burnell: true
   burnellLogCollector: true
   pulsarHeartbeat: true
   pulsarAdminConsole: true
-
-cert-manager:
-  enabled: true
-
-createCertificates:
-  selfSigned:
-    enabled: true
 
 zookeeper:
   replicaCount: 1
@@ -54,21 +45,21 @@ bookkeeper:
   configData:
     BOOKIE_MEM: "-Xms312m -Xmx312m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError"
 
-brokerSts:
+broker:
   component: broker
   replicaCount: 1
   ledger:
     defaultEnsembleSize: 1
     defaultAckQuorum: 1
     defaultWriteQuorum: 1
+  transactionCoordinator:
+    enabled: true
   resources:
     requests:
       memory: 600Mi
       cpu: 0.3
   configData:
     PULSAR_MEM: "-Xms400m -Xmx400m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError"
-  transactionCoordinator:
-    enabled: true
 
 autoRecovery:
   resources:
