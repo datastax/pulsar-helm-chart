@@ -14,38 +14,35 @@
 #  limitations under the License.
 #
 #
-
-# Please note that this example works only with Luna Streaming 2.8.0.1.1.5+
-
 image:
   broker:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.26
+    tag: 2.10_06
   brokerSts:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.26
+    tag: 2.10_0.6
   function:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.26
+    tag: 2.10_0.6
   zookeeper:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.26
+    tag: 2.10_0.6
   bookkeeper:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.26
+    tag: 2.10_0.6
   proxy:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.26
+    tag: 2.10_0.6
   bastion:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.0_1.1.26
+    tag: 2.10_0.6
 
 enableAntiAffinity: false
 enableTls: true
