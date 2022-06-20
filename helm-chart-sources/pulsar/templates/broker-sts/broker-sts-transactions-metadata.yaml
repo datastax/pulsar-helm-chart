@@ -65,7 +65,7 @@ spec:
       - name: wait-broker-ready
         image: "{{ .Values.image.brokerSts.repository }}:{{ .Values.image.brokerSts.tag }}"
         imagePullPolicy: {{ .Values.image.brokerSts.pullPolicy }}
-        {{- if and .Values.enableTls .Values.tls.broker.enabled }}
+        {{- if .Values.enableTls }}
         volumeMounts:
         - name: certs
           readOnly: true
@@ -76,7 +76,7 @@ spec:
         command: ["sh", "-c"]
         args:
           - >-
-            {{- if and .Values.enableTls .Values.tls.broker.enabled }}
+            {{- if .Values.enableTls }}
             until curl --connect-timeout 5 --cacert /pulsar/certs/ca.crt https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443; do
             {{- else }}
             until curl --connect-timeout 5 http://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080; do
