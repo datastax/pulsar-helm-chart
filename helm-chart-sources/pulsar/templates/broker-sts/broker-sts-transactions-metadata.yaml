@@ -77,10 +77,7 @@ spec:
         args:
           - >-
             {{- if .Values.enableTls }}
-            until \
-            CA_CERT=/pulsar/certs/ca.crt curl --connect-timeout 5  --cacert ${CA_CERT} \
-            https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443
-            ; do
+            until curl --connect-timeout 5 --cacert pulsar/certs/ca.crt https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443; do
             {{- else }}
             until curl --connect-timeout 5 http://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080; do
             {{- end }}
