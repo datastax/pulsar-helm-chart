@@ -51,7 +51,7 @@ spec:
       tolerations:
 {{ toYaml .Values.brokerSts.tolerations | indent 8 }}
     {{- end }}
-     {{- if and .Values.enableTls .Values.tls.broker.enabled }}
+     {{- if .Values.enableTls }}
       volumes:
       - name: certs
         secret:
@@ -87,7 +87,7 @@ spec:
       - name: "{{ template "pulsar.fullname" . }}-{{ .Values.brokerTransactionsMetadata.component }}"
         image: "{{ .Values.image.brokerSts.repository }}:{{ .Values.image.brokerSts.tag }}"
         imagePullPolicy: {{ .Values.image.brokerSts.pullPolicy }}
-        {{- if and .Values.enableTls .Values.tls.broker.enabled }}
+        {{- if .Values.enableTls }}
         volumeMounts:
         - name: certs
           readOnly: true
@@ -102,7 +102,7 @@ spec:
         command: ["sh", "-c"]
         args:
           - |
-            {{- if and .Values.enableTls .Values.tls.broker.enabled }}
+            {{- if .Values.enableTls }}
             /pulsar/tools/certconverter.sh &&
             {{- end }}
             bin/pulsar initialize-transaction-coordinator-metadata \
