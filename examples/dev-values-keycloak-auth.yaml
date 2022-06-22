@@ -15,6 +15,11 @@
 #
 #
 
+# Temporary solution for issue described in https://github.com/datastax/pulsar-helm-chart/issues/244
+image:
+  proxy:
+    repository: datastax/lunastreaming-all
+
 enableAntiAffinity: false
 # TLS is not included in this example. It is recommended to use TLS to ensure the authenticity and security of tokens.
 enableTls: false
