@@ -60,18 +60,18 @@ We print the port number before checking for equality because the numbers are ac
 */}}
 {{- define "pulsar.keycloak.issuer.port" -}}
 {{- if .Values.enableTls -}}
-{{- $port := printf "%v" .Values.keycloak.service.httpsPort -}}
+{{- $port := printf "%v" .Values.keycloak.service.ports.https -}}
 {{- if eq $port "443" -}}
 {{- print "" -}}
 {{- else -}}
-{{- printf ":%v" .Values.keycloak.service.httpsPort -}}
+{{- printf ":%v" .Values.keycloak.service.ports.https -}}
 {{- end -}}
 {{- else -}}
-{{- $port := printf "%v" .Values.keycloak.service.port -}}
+{{- $port := printf "%v" .Values.keycloak.service.ports.http -}}
 {{- if eq $port "80" -}}
 {{- print "" -}}
 {{- else -}}
-{{- printf ":%v" .Values.keycloak.service.port -}}
+{{- printf ":%v" .Values.keycloak.service.ports.http -}}
 {{- end -}}
 {{- end -}}
 {{- end -}}
