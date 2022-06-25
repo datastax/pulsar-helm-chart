@@ -29,6 +29,8 @@ enableTokenAuth: true
 restartOnConfigMapChange:
   enabled: true
 extra:
+  broker: false
+  brokerSts: true
   function: true
   burnell: true
   burnellLogCollector: true
@@ -93,7 +95,7 @@ bookkeeper:
   configData:
     BOOKIE_MEM: "-Xms312m -Xmx312m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError"
 
-broker:
+brokerSts:
   component: broker
   replicaCount: 1
   ledger:
@@ -158,11 +160,12 @@ pulsarAdminConsole:
   # The client id used when authenticating with keycloak
   oauthClientId: "pulsar-admin-console"
   service:
-    # Only expose the secure port
+    # Only expose the secure port. This is important because the pod itself only exposes the secure port when TLS
+    # is enabled.
     ports:
       - name: https
         port: 443
-        targetPort: "nginx-tls"
+        targetPort: https
 
 kube-prometheus-stack:
   enabled: true

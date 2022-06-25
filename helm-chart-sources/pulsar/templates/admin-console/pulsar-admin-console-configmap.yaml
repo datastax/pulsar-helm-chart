@@ -16,6 +16,8 @@
 #
 
 {{- if .Values.extra.pulsarAdminConsole }}
+# TODO this requirement is based solely on the below pulsar target addresses. Verify that this is a hard requirement.
+{{- required "Must enable Proxy (.Values.extra.proxy) in order to run Pulsar AdminConsole" .Values.extra.proxy }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -51,8 +53,14 @@ data:
           "websocket_url": "ws://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8964",
           {{- end }}
           "log_level": "{{ .Values.pulsarAdminConsole.serverLogLevel }}",
-          "k8s_namespace": "{{ .Release.Namespace }}",
+          "kubernetes": {
+            "k8s_namespace": "{{ .Release.Namespace }}",
+            "kubernetes_service_host": "",
+            "service_port": ""
+          },
           "ssl": {
+            "verify_certs": true,
+            "hostname_validation": true,
             {{- if .Values.enableTls }}
             "ca_path": "/pulsar/certs/ca.crt",
             "cert_path": "/pulsar/certs/tls.crt",
@@ -62,7 +70,13 @@ data:
             "cert_path": "",
             "key_path": ""
             {{- end }}
+          },
+          {{- if eq .Values.pulsarAdminConsole.authMode "openidconnect" }}
+          "oauth2": {
+            "identity_provider_url": "{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ template "pulsar.serviceDnsSuffix" . }}{{ template "pulsar.keycloak.issuer.port" .}}",
+            "token_endpoint": "/realms/{{.Values.keycloak.realm}}/protocol/openid-connect/token"
           }
+          {{- end }}
         },
         "api_version": "{{ .Values.pulsarAdminConsole.apiVersion }}",
         {{- if index .Values "kube-prometheus-stack" "grafana" "ingress" "enabled"}}
