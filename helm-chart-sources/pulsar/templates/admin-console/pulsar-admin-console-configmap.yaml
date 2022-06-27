@@ -89,13 +89,13 @@ data:
             "cert_path": "",
             "key_path": ""
             {{- end }}
-          },
           {{- if eq .Values.pulsarAdminConsole.authMode "openidconnect" }}
+          },
           "oauth2": {
             "identity_provider_url": "{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ template "pulsar.serviceDnsSuffix" . }}{{ template "pulsar.keycloak.issuer.port" .}}",
             "token_endpoint": "/realms/{{.Values.keycloak.realm}}/protocol/openid-connect/token"
-          }
           {{- end }}
+          }
         },
         "api_version": "{{ .Values.pulsarAdminConsole.apiVersion }}",
         {{- if index .Values "kube-prometheus-stack" "grafana" "ingress" "enabled"}}
