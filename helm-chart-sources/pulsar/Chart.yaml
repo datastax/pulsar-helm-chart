@@ -23,7 +23,7 @@ maintainers:
   - name: cdbartholomew
   - name: lhotari
   - name: michaeljmarshall
-version: 3.0.2
+version: 3.0.3
 dependencies:
 - name: kube-prometheus-stack
   version: 35.x.x
