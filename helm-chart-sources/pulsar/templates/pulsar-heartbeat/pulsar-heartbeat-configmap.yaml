@@ -89,7 +89,7 @@ data:
         {{- else }}
         pulsarUrl: "pulsar://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:6650"
         {{- end }}
-        topicName: {{ .Values.pulsarHeartbeat.config.latencyTest.intervalSeconds | default "persistent://public/default/pubsub-latency-test" }}
+        topicName: {{ .Values.pulsarHeartbeat.config.latencyTest.topicName }}
         payloadSizes: [15B]
         numberOfMessages: 1
         alertPolicy:
