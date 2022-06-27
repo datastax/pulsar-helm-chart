@@ -43,6 +43,7 @@ data:
           {{- if .Values.enableTokenAuth }}
           "token_path": "/pulsar/token-superuser/superuser.jwt",
           {{- end }}
+          {{- if .Values.extra.proxy }}
           {{- if .Values.enableTls }}
           "pulsar_url": "https://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443",
           "websocket_url": "wss://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8964",
@@ -50,9 +51,35 @@ data:
           "pulsar_url": "http://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080",
           "websocket_url": "ws://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8964",
           {{- end }}
+          {{- else }}
+          {{- if .Values.enableTls }}
+          "pulsar_url": "https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443",
+          "websocket_url": "wss://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8964",
+          {{- if .Values.extra.function }}
+          "function_worker_url": "https://{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:6751",
+          {{- end }}
+          {{- else }}
+          {{- if .Values.extra.broker }}
+          "pulsar_url": "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080",
+          "websocket_url": "ws://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8964",
+          {{- else }}
+          "pulsar_url": "http://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080",
+          "websocket_url": "ws://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8964",
+          {{- end }}
+          {{- if .Values.extra.function }}
+          "function_worker_url": "http://{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:6750",
+          {{- end }}
+          {{- end }}
+          {{- end }}
           "log_level": "{{ .Values.pulsarAdminConsole.serverLogLevel }}",
-          "k8s_namespace": "{{ .Release.Namespace }}",
+          "kubernetes": {
+            "k8s_namespace": "{{ .Release.Namespace }}",
+            "kubernetes_service_host": "",
+            "service_port": ""
+          },
           "ssl": {
+            "verify_certs": true,
+            "hostname_validation": true,
             {{- if .Values.enableTls }}
             "ca_path": "/pulsar/certs/ca.crt",
             "cert_path": "/pulsar/certs/tls.crt",
@@ -62,6 +89,12 @@ data:
             "cert_path": "",
             "key_path": ""
             {{- end }}
+          {{- if eq .Values.pulsarAdminConsole.authMode "openidconnect" }}
+          },
+          "oauth2": {
+            "identity_provider_url": "{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ template "pulsar.serviceDnsSuffix" . }}{{ template "pulsar.keycloak.issuer.port" .}}",
+            "token_endpoint": "/realms/{{.Values.keycloak.realm}}/protocol/openid-connect/token"
+          {{- end }}
           }
         },
         "api_version": "{{ .Values.pulsarAdminConsole.apiVersion }}",

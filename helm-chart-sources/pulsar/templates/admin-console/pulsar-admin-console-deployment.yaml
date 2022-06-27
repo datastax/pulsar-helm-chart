@@ -85,6 +85,11 @@ spec:
             name: token-superuser
             readOnly: true
           {{- end }}
+        {{- if .Values.enableTls }}
+        env:
+          - name: NODE_EXTRA_CA_CERTS
+            value: /pulsar/certs/ca.crt
+        {{- end }}
       volumes:
         - name: dashboardconfig
           configMap:
