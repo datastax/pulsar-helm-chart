@@ -16,8 +16,6 @@
 #
 
 {{- if .Values.extra.pulsarAdminConsole }}
-# TODO this requirement is based solely on the below pulsar target addresses. Verify that this is a hard requirement.
-{{- required "Must enable Proxy (.Values.extra.proxy) in order to run Pulsar AdminConsole" .Values.extra.proxy }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -45,12 +43,33 @@ data:
           {{- if .Values.enableTokenAuth }}
           "token_path": "/pulsar/token-superuser/superuser.jwt",
           {{- end }}
+          {{- if .Values.extra.proxy }}
           {{- if .Values.enableTls }}
           "pulsar_url": "https://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443",
           "websocket_url": "wss://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8964",
           {{- else }}
           "pulsar_url": "http://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080",
           "websocket_url": "ws://{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8964",
+          {{- end }}
+          {{- else }}
+          {{- if .Values.enableTls }}
+          "pulsar_url": "https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443",
+          "websocket_url": "wss://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8964",
+          {{- if .Values.extra.function }}
+          "function_worker_url": "https://{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:6751",
+          {{- end }}
+          {{- else }}
+          {{- if .Values.extra.broker }}
+          "pulsar_url": "http://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080",
+          "websocket_url": "ws://{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8964",
+          {{- else }}
+          "pulsar_url": "http://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080",
+          "websocket_url": "ws://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8964",
+          {{- end }}
+          {{- if .Values.extra.function }}
+          "function_worker_url": "http://{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:6750",
+          {{- end }}
+          {{- end }}
           {{- end }}
           "log_level": "{{ .Values.pulsarAdminConsole.serverLogLevel }}",
           "kubernetes": {

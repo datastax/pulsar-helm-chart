@@ -69,9 +69,6 @@ keycloak:
       keystorePassword: "kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR"
       truststoreFilename: "truststore.jks"
       keystoreFilename: "keystore.jks"
-  service:
-    port: 80
-    httpsPort: 443
   # It is recommended to override this password, as the dependent chart uses a default
   # Here is an issue requesting that the default be removed: https://github.com/bitnami/charts/issues/7279.
   postgresql:
