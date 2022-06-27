@@ -1728,6 +1728,7 @@ pulsarHeartbeat:
       intervalSeconds: 120
     latencyTest:
       intervalSeconds: 60
+      topicName: "persistent://public/default/pubsub-latency-test"
   service: {}
 
 # Deploy Keycloak
