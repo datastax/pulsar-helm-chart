@@ -431,7 +431,26 @@ metadata:
     cluster: {{ template "pulsar.fullname" . }}
     grafana_dashboard: "1"
 data:
-  sockets.json: |-
+  book-compact.json: |-
 {{ .Files.Get "grafana-dashboards/book-compact.json" | indent 4}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "grafana-tenanat-dashboard"
+  {{- if .Values.grafanaDashboards.namespaceOverride }}
+  namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
+  {{- end }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: "grafana-tenant-dashboard"
+    cluster: {{ template "pulsar.fullname" . }}
+    grafana_dashboard: "1"
+data:
+  tenant.json: |-
+{{ .Files.Get "grafana-dashboards/tenant.json" | indent 4}}
 ---
 {{- end }}
