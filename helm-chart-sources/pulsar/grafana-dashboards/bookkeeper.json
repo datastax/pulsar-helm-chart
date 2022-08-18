@@ -3,25 +3,38 @@
     "list": [
       {
         "builtIn": 1,
-        "datasource": "-- Grafana --",
+        "datasource": {
+          "type": "datasource",
+          "uid": "grafana"
+        },
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
         "type": "dashboard"
       }
     ]
   },
   "description": "Metrics of bookkeeper cluster",
   "editable": true,
-  "gnetId": null,
+  "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "iteration": 1593873242177,
+  "iteration": 1660856653362,
   "links": [],
+  "liveNow": false,
   "panels": [
     {
       "collapsed": false,
-      "datasource": null,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -34,28 +47,42 @@
       "type": "row"
     },
     {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
         },
         "overrides": []
-      },
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
       },
       "gridPos": {
         "h": 7,
@@ -64,40 +91,23 @@
         "y": 1
       },
       "id": 27,
-      "interval": null,
       "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
       "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
       },
-      "tableColumn": "",
+      "pluginVersion": "8.5.0",
       "targets": [
         {
           "expr": "count(bookie_SERVER_STATUS{job=~\"$job\"} == 1)\n   ",
@@ -107,42 +117,46 @@
           "refId": "A"
         }
       ],
-      "thresholds": "",
       "title": "Writable Bookies",
-      "type": "singlestat",
-      "valueFontSize": "80%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "avg"
+      "type": "stat"
     },
     {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#299c46",
-        "rgba(237, 129, 40, 0.89)",
-        "#d44a3a"
-      ],
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "0"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
         },
         "overrides": []
-      },
-      "format": "none",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": false,
-        "thresholdLabels": false,
-        "thresholdMarkers": true
       },
       "gridPos": {
         "h": 7,
@@ -151,42 +165,23 @@
         "y": 1
       },
       "id": 31,
-      "interval": null,
       "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "$$hashKey": "object:1794",
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "$$hashKey": "object:1795",
-          "name": "range to text",
-          "value": 2
-        }
-      ],
       "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
       },
-      "tableColumn": "",
+      "pluginVersion": "8.5.0",
       "targets": [
         {
           "expr": "count(bookie_SERVER_STATUS{job=~\"$job\", kubernetes_pod_name=~\"$instance\"} == 0)\n",
@@ -197,31 +192,23 @@
           "refId": "A"
         }
       ],
-      "thresholds": "",
       "title": "ReadOnly Bookies",
-      "type": "singlestat",
-      "valueFontSize": "80%",
-      "valueMaps": [
-        {
-          "$$hashKey": "object:1797",
-          "op": "=",
-          "text": "0",
-          "value": "null"
-        }
-      ],
-      "valueName": "avg"
+      "type": "stat"
     },
     {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "description": "success rate for different types of requests",
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -249,9 +236,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -261,27 +249,53 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "100 * sum(irate(bookkeeper_server_ADD_ENTRY_count{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\"}[60s])) / sum(irate(bookkeeper_server_ADD_ENTRY_count{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}[60s]))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(irate(bookkeeper_server_ADD_ENTRY_REQUEST_count{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}[1m]))",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "add_entry",
+          "legendFormat": "Overall",
+          "range": true,
           "refId": "A",
           "step": 2
         },
         {
-          "expr": "100 * sum(irate(bookkeeper_server_READ_ENTRY_count{job=~\"$job\", instance=~\"$instance\", success=\"true\"}[60s])) / sum(irate(bookkeeper_server_READ_ENTRY_count{job=~\"$job\", instance=~\"$instance\"}[60s]))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(irate(bookkeeper_server_ADD_ENTRY_REQUEST_count{success=\"false\"}[1m]))",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "read_entry",
+          "legendFormat": "Failure",
+          "range": true,
           "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(irate(bookkeeper_server_ADD_ENTRY_REQUEST_count{success=\"true\"}[1m]))",
+          "format": "time_series",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "Success",
+          "range": true,
+          "refId": "C",
+          "step": 2
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
-      "title": "Success Rate",
+      "title": "Write Rates",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -289,33 +303,25 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -323,11 +329,15 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
+      "description": "success rate for different types of requests",
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -338,6 +348,313 @@
         "w": 9,
         "x": 15,
         "y": 1
+      },
+      "hiddenSeries": false,
+      "id": 61,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.0",
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(irate(bookkeeper_server_READ_ENTRY_REQUEST_count{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}[1m]))",
+          "format": "time_series",
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "Overall",
+          "range": true,
+          "refId": "A",
+          "step": 2
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(irate(bookkeeper_server_READ_ENTRY_REQUEST_count{success=\"false\"}[1m]))",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "Failure",
+          "range": true,
+          "refId": "B"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(irate(bookkeeper_server_READ_ENTRY_REQUEST_count{success=\"true\"}[1m]))",
+          "format": "time_series",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "Success",
+          "range": true,
+          "refId": "C",
+          "step": 2
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "Read Rates",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "logBase": 1,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#d44a3a",
+                "value": null
+              },
+              {
+                "color": "rgba(237, 129, 40, 0.89)",
+                "value": 80
+              },
+              {
+                "color": "#299c46",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 0,
+        "y": 8
+      },
+      "id": 33,
+      "links": [],
+      "maxDataPoints": 100,
+      "options": {
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": false
+      },
+      "pluginVersion": "8.5.0",
+      "targets": [
+        {
+          "expr": "100 \n* \ncount(bookie_SERVER_STATUS{job=~\"$job\", kubernetes_pod_name=~\"$instance\"} == 1)\n/\ncount(bookie_SERVER_STATUS{job=~\"$job\", kubernetes_pod_name=~\"$instance\"})\n   ",
+          "format": "time_series",
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "writable bookies (percentage)",
+      "type": "gauge"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "decimals": 1,
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 9,
+        "x": 6,
+        "y": 8
+      },
+      "hiddenSeries": false,
+      "id": 12,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.0",
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum(rate(bookie_WRITE_BYTES{job=~\"$job\"}[60s]))",
+          "format": "time_series",
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "add entry",
+          "refId": "A",
+          "step": 2
+        },
+        {
+          "expr": "sum(rate(bookie_READ_BYTES{job=~\"$job\"}[60s]))",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "read entry",
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "Throughput (MB / s)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "Bps",
+          "logBase": 1,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "decimals": 1,
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 9,
+        "x": 15,
+        "y": 8
       },
       "hiddenSeries": false,
       "id": 13,
@@ -355,9 +672,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -417,9 +735,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Latency",
       "tooltip": {
         "shared": true,
@@ -428,133 +744,41 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "ms",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
-    },
-    {
-      "cacheTimeout": null,
-      "colorBackground": false,
-      "colorValue": false,
-      "colors": [
-        "#d44a3a",
-        "rgba(237, 129, 40, 0.89)",
-        "#299c46"
-      ],
-      "datasource": "Prometheus",
-      "fieldConfig": {
-        "defaults": {
-          "custom": {}
-        },
-        "overrides": []
-      },
-      "format": "percent",
-      "gauge": {
-        "maxValue": 100,
-        "minValue": 0,
-        "show": true,
-        "thresholdLabels": false,
-        "thresholdMarkers": false
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 6,
-        "x": 0,
-        "y": 8
-      },
-      "id": 33,
-      "interval": null,
-      "links": [],
-      "mappingType": 1,
-      "mappingTypes": [
-        {
-          "name": "value to text",
-          "value": 1
-        },
-        {
-          "name": "range to text",
-          "value": 2
-        }
-      ],
-      "maxDataPoints": 100,
-      "nullPointMode": "connected",
-      "nullText": null,
-      "postfix": "",
-      "postfixFontSize": "50%",
-      "prefix": "",
-      "prefixFontSize": "50%",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "sparkline": {
-        "fillColor": "rgba(31, 118, 189, 0.18)",
-        "full": false,
-        "lineColor": "rgb(31, 120, 193)",
-        "show": false
-      },
-      "tableColumn": "",
-      "targets": [
-        {
-          "expr": "100 \n* \ncount(bookie_SERVER_STATUS{job=~\"$job\", kubernetes_pod_name=~\"$instance\"} == 1)\n/\ncount(bookie_SERVER_STATUS{job=~\"$job\", kubernetes_pod_name=~\"$instance\"})\n   ",
-          "format": "time_series",
-          "interval": "",
-          "intervalFactor": 1,
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "thresholds": "80,90",
-      "title": "writable bookies (percentage)",
-      "type": "singlestat",
-      "valueFontSize": "80%",
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueName": "current"
     },
     {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
+      "description": "success rate for different types of requests",
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -564,10 +788,10 @@
         "h": 7,
         "w": 9,
         "x": 6,
-        "y": 8
+        "y": 15
       },
       "hiddenSeries": false,
-      "id": 12,
+      "id": 60,
       "legend": {
         "avg": false,
         "current": false,
@@ -582,9 +806,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -594,27 +819,37 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(bookie_WRITE_BYTES{job=~\"$job\"}[60s]))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(irate(bookkeeper_server_READ_ENTRY_REQUEST_count{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\"}[1m])) by (kubernetes_pod_name)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "add entry",
+          "legendFormat": "{{ kubernetes_pod_name }} read_entry",
+          "range": true,
           "refId": "A",
           "step": 2
         },
         {
-          "expr": "sum(rate(bookie_READ_BYTES{job=~\"$job\"}[60s]))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(irate(bookkeeper_server_ADD_ENTRY_REQUEST_count{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\"}[1m])) by (kubernetes_pod_name)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "read entry",
+          "legendFormat": "{{ kubernetes_pod_name }} add_entry",
+          "range": true,
           "refId": "B"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
-      "title": "Throughput (MB / s)",
+      "title": "Success Rate By Bookie",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -622,33 +857,27 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
-          "format": "Bps",
-          "label": null,
+          "$$hashKey": "object:1791",
+          "format": "short",
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
+          "$$hashKey": "object:1792",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -656,11 +885,15 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
+      "description": "success rate for different types of requests",
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -670,10 +903,10 @@
         "h": 7,
         "w": 9,
         "x": 15,
-        "y": 8
+        "y": 15
       },
       "hiddenSeries": false,
-      "id": 2,
+      "id": 59,
       "legend": {
         "avg": false,
         "current": false,
@@ -688,9 +921,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -700,28 +934,36 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(bookkeeper_server_READ_ENTRY_count{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\"}[60s]))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(irate(bookkeeper_server_ADD_ENTRY_REQUEST_count{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"false\"}[1m])) by (kubernetes_pod_name)",
           "format": "time_series",
-          "interval": "",
-          "intervalFactor": 2,
-          "legendFormat": "read entry",
-          "refId": "A",
-          "step": 2
+          "intervalFactor": 1,
+          "legendFormat": "{{ kubernetes_pod_name }} add_entry",
+          "range": true,
+          "refId": "B"
         },
         {
-          "expr": "sum(irate(bookkeeper_server_ADD_ENTRY_count{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\"}[60s]))",
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(irate(bookkeeper_server_READ_ENTRY_REQUEST_count{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"false\"}[1m])) by (kubernetes_pod_name)",
           "format": "time_series",
-          "interval": "",
+          "hide": false,
           "intervalFactor": 1,
-          "legendFormat": "add entry",
-          "refId": "B"
+          "legendFormat": "{{ kubernetes_pod_name }}  read_entry",
+          "range": true,
+          "refId": "A"
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
-      "title": "Entry Rate",
+      "title": "Failure Rate by Bookie",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -729,43 +971,391 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
+          "$$hashKey": "object:1846",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
+          "$$hashKey": "object:1847",
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
       "collapsed": false,
-      "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 22
+      },
+      "id": 63,
+      "panels": [],
+      "title": "Internal Queues",
+      "type": "row"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "decimals": 1,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 23
+      },
+      "hiddenSeries": false,
+      "id": 57,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.0",
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(bookkeeper_server_BookieWriteThreadPool_queue_0{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}) by (kubernetes_pod_name)",
+          "format": "time_series",
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{kubernetes_pod_name}} 0",
+          "range": true,
+          "refId": "A",
+          "step": 2
+        }
+      ],
+      "thresholds": [
+        {
+          "$$hashKey": "object:1631",
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": 9000,
+          "yaxis": "left"
+        }
+      ],
+      "timeRegions": [],
+      "title": "Write Thread Pool Queue Depth by Thread",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1508",
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1509",
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "decimals": 1,
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 23
+      },
+      "hiddenSeries": false,
+      "id": 58,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.0",
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:1181"
+        }
+      ],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(bookkeeper_server_BookieReadThreadPool_queue_0{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}) by (kubernetes_pod_name)",
+          "format": "time_series",
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{kubernetes_pod_name}} 0",
+          "range": true,
+          "refId": "A",
+          "step": 2
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(bookkeeper_server_BookieReadThreadPool_queue_1{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}) by (kubernetes_pod_name)",
+          "format": "time_series",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{kubernetes_pod_name}} 2",
+          "range": true,
+          "refId": "B",
+          "step": 2
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(bookkeeper_server_BookieReadThreadPool_queue_2{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}) by (kubernetes_pod_name)",
+          "format": "time_series",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{kubernetes_pod_name}} 2",
+          "range": true,
+          "refId": "C",
+          "step": 2
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(bookkeeper_server_BookieReadThreadPool_queue_3{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}) by (kubernetes_pod_name)",
+          "format": "time_series",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{kubernetes_pod_name}} 3",
+          "range": true,
+          "refId": "D",
+          "step": 2
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(bookkeeper_server_BookieReadThreadPool_queue_4{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}) by (kubernetes_pod_name)",
+          "format": "time_series",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{kubernetes_pod_name}} 4",
+          "range": true,
+          "refId": "E",
+          "step": 2
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(bookkeeper_server_BookieReadThreadPool_queue_5{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}) by (kubernetes_pod_name)",
+          "format": "time_series",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{kubernetes_pod_name}} 5",
+          "range": true,
+          "refId": "F",
+          "step": 2
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(bookkeeper_server_BookieReadThreadPool_queue_6{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}) by (kubernetes_pod_name)",
+          "format": "time_series",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{kubernetes_pod_name}} 6",
+          "range": true,
+          "refId": "G",
+          "step": 2
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(bookkeeper_server_BookieReadThreadPool_queue_7{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}) by (kubernetes_pod_name)",
+          "format": "time_series",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{kubernetes_pod_name}} 7",
+          "range": true,
+          "refId": "H",
+          "step": 2
+        }
+      ],
+      "thresholds": [
+        {
+          "$$hashKey": "object:1690",
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": 2400,
+          "yaxis": "left"
+        }
+      ],
+      "timeRegions": [],
+      "title": "Read Thread Pool Queue by Thread",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:1560",
+          "format": "short",
+          "logBase": 1,
+          "max": "2500",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:1561",
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "collapsed": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 31
       },
       "id": 23,
       "panels": [],
@@ -777,11 +1367,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -791,7 +1384,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 16
+        "y": 32
       },
       "hiddenSeries": false,
       "id": 3,
@@ -809,9 +1402,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -831,9 +1425,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Write Bytes",
       "tooltip": {
         "shared": true,
@@ -842,33 +1434,25 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "Bps",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -876,11 +1460,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -890,7 +1477,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 16
+        "y": 32
       },
       "hiddenSeries": false,
       "id": 51,
@@ -908,9 +1495,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -930,9 +1518,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Read Bytes (bytes/s)",
       "tooltip": {
         "shared": true,
@@ -941,33 +1527,25 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "Bps",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -975,11 +1553,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -989,7 +1570,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 23
+        "y": 39
       },
       "hiddenSeries": false,
       "id": 52,
@@ -1007,9 +1588,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1029,9 +1611,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Add Entry Rate",
       "tooltip": {
         "shared": true,
@@ -1040,33 +1620,25 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "Bps",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -1074,11 +1646,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -1088,7 +1663,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 23
+        "y": 39
       },
       "hiddenSeries": false,
       "id": 53,
@@ -1106,9 +1681,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1128,9 +1704,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Read Entry Rate",
       "tooltip": {
         "shared": true,
@@ -1139,33 +1713,25 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "Bps",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -1173,11 +1739,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -1187,7 +1756,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 30
+        "y": 46
       },
       "hiddenSeries": false,
       "id": 48,
@@ -1205,9 +1774,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1227,9 +1797,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Add entry latency (p50)",
       "tooltip": {
         "shared": true,
@@ -1238,33 +1806,25 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "ms",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -1272,11 +1832,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -1286,7 +1849,7 @@
         "h": 7,
         "w": 8,
         "x": 8,
-        "y": 30
+        "y": 46
       },
       "hiddenSeries": false,
       "id": 5,
@@ -1304,9 +1867,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1326,9 +1890,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Add entry latency (99pct)",
       "tooltip": {
         "shared": true,
@@ -1337,33 +1899,25 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "ms",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -1371,11 +1925,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -1385,7 +1942,7 @@
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 30
+        "y": 46
       },
       "hiddenSeries": false,
       "id": 49,
@@ -1403,9 +1960,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1425,9 +1983,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Add entry latency (p999)",
       "tooltip": {
         "shared": true,
@@ -1436,33 +1992,25 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "ms",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -1470,11 +2018,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -1484,7 +2035,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 37
+        "y": 53
       },
       "hiddenSeries": false,
       "id": 54,
@@ -1502,9 +2053,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1524,9 +2076,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Read entry latency (p50)",
       "tooltip": {
         "shared": true,
@@ -1535,33 +2085,25 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "ms",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -1569,11 +2111,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -1583,7 +2128,7 @@
         "h": 7,
         "w": 8,
         "x": 8,
-        "y": 37
+        "y": 53
       },
       "hiddenSeries": false,
       "id": 55,
@@ -1601,9 +2146,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1623,9 +2169,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Read entry latency (p99)",
       "tooltip": {
         "shared": true,
@@ -1634,33 +2178,25 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "ms",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -1668,11 +2204,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -1682,7 +2221,7 @@
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 37
+        "y": 53
       },
       "hiddenSeries": false,
       "id": 56,
@@ -1700,9 +2239,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1722,9 +2262,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Read entry latency (p999)",
       "tooltip": {
         "shared": true,
@@ -1733,43 +2271,38 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "ms",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
       "collapsed": false,
-      "datasource": null,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 44
+        "y": 60
       },
       "id": 35,
       "panels": [],
@@ -1781,11 +2314,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -1795,7 +2331,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 45
+        "y": 61
       },
       "hiddenSeries": false,
       "id": 14,
@@ -1813,9 +2349,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1835,9 +2372,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Journal Sync Rate",
       "tooltip": {
         "shared": true,
@@ -1846,33 +2381,25 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -1880,11 +2407,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -1894,7 +2424,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 45
+        "y": 61
       },
       "hiddenSeries": false,
       "id": 40,
@@ -1912,9 +2442,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -1934,9 +2465,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Journal Add Rate",
       "tooltip": {
         "shared": true,
@@ -1945,33 +2474,25 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -1979,11 +2500,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -1993,7 +2517,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 52
+        "y": 68
       },
       "hiddenSeries": false,
       "id": 11,
@@ -2011,9 +2535,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2033,9 +2558,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Journal Queue length",
       "tooltip": {
         "shared": true,
@@ -2044,33 +2567,24 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -2078,11 +2592,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -2092,7 +2609,7 @@
         "h": 7,
         "w": 8,
         "x": 8,
-        "y": 52
+        "y": 68
       },
       "hiddenSeries": false,
       "id": 36,
@@ -2110,9 +2627,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2132,9 +2650,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Journal Force Write Queue length",
       "tooltip": {
         "shared": true,
@@ -2143,33 +2659,24 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -2177,11 +2684,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -2191,7 +2701,7 @@
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 52
+        "y": 68
       },
       "hiddenSeries": false,
       "id": 37,
@@ -2209,9 +2719,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2231,9 +2742,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Journal Callback Queue length",
       "tooltip": {
         "shared": true,
@@ -2242,33 +2751,24 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -2276,11 +2776,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -2290,7 +2793,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 59
+        "y": 75
       },
       "hiddenSeries": false,
       "id": 10,
@@ -2308,9 +2811,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2330,9 +2834,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Journal Add latency (p50)",
       "tooltip": {
         "shared": true,
@@ -2341,33 +2843,25 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "ms",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -2375,11 +2869,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -2389,7 +2886,7 @@
         "h": 7,
         "w": 8,
         "x": 8,
-        "y": 59
+        "y": 75
       },
       "hiddenSeries": false,
       "id": 38,
@@ -2407,9 +2904,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2429,9 +2927,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Journal Add latency (p99)",
       "tooltip": {
         "shared": true,
@@ -2440,33 +2936,25 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "ms",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -2474,11 +2962,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -2488,7 +2979,7 @@
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 59
+        "y": 75
       },
       "hiddenSeries": false,
       "id": 39,
@@ -2506,9 +2997,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2528,9 +3020,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Journal Add latency (Max)",
       "tooltip": {
         "shared": true,
@@ -2539,33 +3029,25 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "ms",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -2573,11 +3055,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -2587,7 +3072,7 @@
         "h": 7,
         "w": 8,
         "x": 0,
-        "y": 66
+        "y": 82
       },
       "hiddenSeries": false,
       "id": 15,
@@ -2605,9 +3090,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2627,9 +3113,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Journal Sync Latency (p50)",
       "tooltip": {
         "shared": true,
@@ -2638,33 +3122,25 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "ms",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -2672,11 +3148,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -2686,7 +3165,7 @@
         "h": 7,
         "w": 8,
         "x": 8,
-        "y": 66
+        "y": 82
       },
       "hiddenSeries": false,
       "id": 41,
@@ -2704,9 +3183,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2726,9 +3206,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Journal Sync Latency (p99)",
       "tooltip": {
         "shared": true,
@@ -2737,33 +3215,25 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "ms",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -2771,11 +3241,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -2785,7 +3258,7 @@
         "h": 7,
         "w": 8,
         "x": 16,
-        "y": 66
+        "y": 82
       },
       "hiddenSeries": false,
       "id": 16,
@@ -2803,9 +3276,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2825,9 +3299,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Journal Sync Latency (Max)",
       "tooltip": {
         "shared": true,
@@ -2836,43 +3308,38 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "ms",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
       "collapsed": false,
-      "datasource": null,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 73
+        "y": 89
       },
       "id": 43,
       "panels": [],
@@ -2884,11 +3351,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -2898,7 +3368,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 74
+        "y": 90
       },
       "hiddenSeries": false,
       "id": 8,
@@ -2916,9 +3386,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -2938,9 +3409,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Ledgers count",
       "tooltip": {
         "shared": true,
@@ -2949,33 +3418,25 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -2983,11 +3444,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -2997,7 +3461,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 74
+        "y": 90
       },
       "hiddenSeries": false,
       "id": 9,
@@ -3015,9 +3479,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -3037,9 +3502,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Entries count",
       "tooltip": {
         "shared": true,
@@ -3048,33 +3511,25 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -3082,11 +3537,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -3096,7 +3554,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 81
+        "y": 97
       },
       "hiddenSeries": false,
       "id": 18,
@@ -3114,9 +3572,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -3136,9 +3595,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Write Cache Size",
       "tooltip": {
         "shared": true,
@@ -3147,33 +3604,25 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "decbytes",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -3181,11 +3630,14 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "decimals": 1,
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -3195,7 +3647,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 81
+        "y": 97
       },
       "hiddenSeries": false,
       "id": 19,
@@ -3213,9 +3665,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -3235,9 +3688,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Read Cache Size",
       "tooltip": {
         "shared": true,
@@ -3246,33 +3697,25 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "decbytes",
-          "label": null,
           "logBase": 1,
-          "max": null,
           "min": "0",
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -3280,10 +3723,209 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "decimals": 1,
+      "description": "",
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": [],
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 104
+      },
+      "hiddenSeries": false,
+      "id": 64,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.0",
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "sum(irate(bookie_read_cache_misses_count{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}[1m])) by (kubernetes_pod_name) / sum(irate(bookie_read_cache_hits_count{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}[1m])) by (kubernetes_pod_name)",
+          "hide": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "Read Cache Miss-to-Hit Ratio",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "percentunit",
+          "logBase": 1,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "decimals": 1,
+      "description": "If >1 indicates read cache thrashing.",
+      "fieldConfig": {
+        "defaults": {
+          "links": [],
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "fill": 0,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 104
+      },
+      "hiddenSeries": false,
+      "id": 65,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.5.0",
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "editorMode": "code",
+          "expr": "(sum(rate(bookie_readahead_batch_count_count[1m])) by (kubernetes_pod_name) + sum(rate(bookie_readahead_batch_count_sum[1m])) by (kubernetes_pod_name)) / sum(rate(bookie_read_entry_count[1m])) by (kubernetes_pod_name)",
+          "hide": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "Entries Read from Disk per Read Op",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "none",
+          "logBase": 1,
+          "min": "0",
+          "show": true
+        },
+        {
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "links": []
         },
         "overrides": []
       },
@@ -3293,7 +3935,7 @@
         "h": 9,
         "w": 12,
         "x": 0,
-        "y": 88
+        "y": 111
       },
       "hiddenSeries": false,
       "id": 45,
@@ -3311,9 +3953,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -3332,9 +3975,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Deleted Ledger Count",
       "tooltip": {
         "shared": true,
@@ -3343,33 +3984,24 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     },
     {
@@ -3377,10 +4009,13 @@
       "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "Prometheus",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
       "fieldConfig": {
         "defaults": {
-          "custom": {}
+          "links": []
         },
         "overrides": []
       },
@@ -3390,7 +4025,7 @@
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 88
+        "y": 111
       },
       "hiddenSeries": false,
       "id": 46,
@@ -3408,9 +4043,10 @@
       "links": [],
       "nullPointMode": "null",
       "options": {
-        "dataLinks": []
+        "alertThreshold": true
       },
       "percentage": false,
+      "pluginVersion": "8.5.0",
       "pointradius": 5,
       "points": false,
       "renderer": "flot",
@@ -3429,9 +4065,7 @@
         }
       ],
       "thresholds": [],
-      "timeFrom": null,
       "timeRegions": [],
-      "timeShift": null,
       "title": "Writable Ledger Directory Count",
       "tooltip": {
         "shared": true,
@@ -3440,38 +4074,29 @@
       },
       "type": "graph",
       "xaxis": {
-        "buckets": null,
         "mode": "time",
-        "name": null,
         "show": true,
         "values": []
       },
       "yaxes": [
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         },
         {
           "format": "short",
-          "label": null,
           "logBase": 1,
-          "max": null,
-          "min": null,
           "show": true
         }
       ],
       "yaxis": {
-        "align": false,
-        "alignLevel": null
+        "align": false
       }
     }
   ],
   "refresh": "1m",
-  "schemaVersion": 25,
+  "schemaVersion": 36,
   "style": "dark",
   "tags": [
     "pulsar"
@@ -3479,13 +4104,15 @@
   "templating": {
     "list": [
       {
-        "allValue": null,
         "current": {
           "selected": false,
           "text": "bookkeeper",
           "value": "bookkeeper"
         },
-        "datasource": "Prometheus",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
         "definition": "bookkeeper_server_ADD_ENTRY{job=~\"$job\"}",
         "hide": 0,
         "includeAll": true,
@@ -3493,28 +4120,33 @@
         "multi": false,
         "name": "job",
         "options": [],
-        "query": "bookkeeper_server_ADD_ENTRY{job=~\"$job\"}",
+        "query": {
+          "query": "bookkeeper_server_ADD_ENTRY{job=~\"$job\"}",
+          "refId": "Prometheus-job-Variable-Query"
+        },
         "refresh": 2,
         "regex": "/.*[^_]job=\\\"(bookkeeper)\\\".*/",
         "skipUrlSync": false,
         "sort": 1,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
       },
       {
-        "allValue": null,
         "current": {
           "selected": true,
-          "tags": [],
-          "text": "pulsar-bookkeeper-1",
+          "text": [
+            "All"
+          ],
           "value": [
-            "pulsar-bookkeeper-1"
+            "$__all"
           ]
         },
-        "datasource": "Prometheus",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
         "definition": "bookkeeper_server_ADD_ENTRY{job=~\"$job\", kubernetes_pod_name=~\".+\"}",
         "hide": 0,
         "includeAll": true,
@@ -3522,13 +4154,15 @@
         "multi": true,
         "name": "instance",
         "options": [],
-        "query": "bookkeeper_server_ADD_ENTRY{job=~\"$job\", kubernetes_pod_name=~\".+\"}",
+        "query": {
+          "query": "bookkeeper_server_ADD_ENTRY{job=~\"$job\", kubernetes_pod_name=~\".+\"}",
+          "refId": "Prometheus-instance-Variable-Query"
+        },
         "refresh": 2,
         "regex": "/.*[^_]kubernetes_pod_name=\\\"([^\\\"]+)\\\".*/",
         "skipUrlSync": false,
         "sort": 1,
         "tagValuesQuery": "",
-        "tags": [],
         "tagsQuery": "",
         "type": "query",
         "useTags": false
@@ -3536,7 +4170,7 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-12h",
     "to": "now"
   },
   "timepicker": {
@@ -3566,5 +4200,6 @@
   "timezone": "browser",
   "title": "Pulsar / BookKeeper",
   "uid": "ormR0-PZz",
-  "version": 1
+  "version": 1,
+  "weekStart": ""
 }
