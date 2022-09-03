@@ -1863,108 +1863,108 @@ kube-prometheus-stack:
       node: true
       prometheusOperator: true
       prometheus: true
-  additionalPrometheusRules:
-  - name: general-rules
-    groups:
-    - name: acks
-      rules:
-      - alert: unacked-message-high
-        expr: pulsar_subscription_unacked_messages > 100
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          identifier: '{{ $labels.topic }}:{{ $labels.subscription }}'
-          description: 'Unacked messages on subscription high'
-      - alert: subscription-blocked-on-unacked-messages
-        expr: pulsar_subscription_blocked_on_unacked_messages > 1
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          identifier: '{{ $labels.topic }}:{{ $labels.subscription }}'
-          description: Subscription is blocked on unacked messages
-    - name: components
-      rules:
-      - alert: zookeeper-write-latency-high
-        expr: zookeeper_server_requests_latency_ms > 500
-        for: 1m
-        labels:
-          severity: warning
-        annotations:
-          identifier: '{{ $labels.kubernetes_pod_name }}'
-          description: 'Zookeeper write latency is high'
-      - alert: bookkeeper-add-latency-high
-        expr: bookkeeper_server_ADD_ENTRY_REQUEST > 1500
-        for: 1m
-        labels:
-          severity: warning
-        annotations:
-          description: Add latency to BookKeeper is high
-          identifier: '{{ $labels.kubernetes_pod_name }}'
-      - alert: bookkeeper-read-latency-high
-        expr: bookkeeper_server_READ_ENTRY_REQUEST > 1000
-        for: 1m
-        labels:
-          severity: warning
-        annotations:
-          description: Read latency from BookKeeper is high
-          identifier: '{{ $labels.kubernetes_pod_name }}'
-      - alert: bookkeeper-bookie-readonly
-        expr: bookie_SERVER_STATUS == 0
-        for: 1m
-        labels:
-          severity: warning
-        annotations:
-          description: Bookie is read-only
-          identifier: '{{ $labels.kubernetes_pod_name }}'
-  - name: cluster-normal
-    groups:
-    - name: exp-counts-rates
-      rules:
-      - alert: producers-high
-        expr: pulsar_producers_count > 500
-        for: 1m
-        labels:
-          severity: warning
-        annotations:
-          description: Producer count is high
-          identifier: '{{ $labels.topic }}'
-      - alert: consumers-high
-        expr: pulsar_consumers_count > 500
-        for: 1m
-        labels:
-          severity: warning
-        annotations:
-          description: Consumer count is high
-          identifier: '{{ $labels.topic }}'
-      - alert: in-rate-high
-        expr: pulsar_rate_in > 5000
-        for: 1m
-        labels:
-          severity: warning
-        annotations:
-          description: Incoming message rate is high on broker
-          identifier: '{{ $labels.topic }}'
-      - alert: out-rate-high
-        expr: pulsar_rate_out > 5000
-        for: 1m
-        labels:
-          severity: warning
-        annotations:
-          description: Outgoing message rate is high on broker
-          identifier: '{{ $labels.topic }}'
-  - name: volumes
-    groups:
-    - name: volumes-filling
-      rules:
-      - alert: KubePersistentVolumeFillingUp
-        expr: kubelet_volume_stats_available_bytes{job="kubelet",metrics_path="/metrics",namespace=~".*"} / kubelet_volume_stats_capacity_bytes{job="kubelet",metrics_path="/metrics",namespace=~".*"} < 0.10
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          message: The PersistentVolume claimed by {{ $labels.persistentvolumeclaim }} in Namespace {{ $labels.namespace }} is only {{ $value | humanizePercentage }} free.
+  additionalPrometheusRulesMap:
+    general-rules:
+      groups:
+      - name: acks
+        rules:
+        - alert: unacked-message-high
+          expr: pulsar_subscription_unacked_messages > 100
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            identifier: '{{ $labels.topic }}:{{ $labels.subscription }}'
+            description: 'Unacked messages on subscription high'
+        - alert: subscription-blocked-on-unacked-messages
+          expr: pulsar_subscription_blocked_on_unacked_messages > 1
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            identifier: '{{ $labels.topic }}:{{ $labels.subscription }}'
+            description: Subscription is blocked on unacked messages
+      - name: components
+        rules:
+        - alert: zookeeper-write-latency-high
+          expr: zookeeper_server_requests_latency_ms > 500
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            identifier: '{{ $labels.kubernetes_pod_name }}'
+            description: 'Zookeeper write latency is high'
+        - alert: bookkeeper-add-latency-high
+          expr: bookkeeper_server_ADD_ENTRY_REQUEST > 1500
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: Add latency to BookKeeper is high
+            identifier: '{{ $labels.kubernetes_pod_name }}'
+        - alert: bookkeeper-read-latency-high
+          expr: bookkeeper_server_READ_ENTRY_REQUEST > 1000
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: Read latency from BookKeeper is high
+            identifier: '{{ $labels.kubernetes_pod_name }}'
+        - alert: bookkeeper-bookie-readonly
+          expr: bookie_SERVER_STATUS == 0
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: Bookie is read-only
+            identifier: '{{ $labels.kubernetes_pod_name }}'
+    cluster-normal:
+      groups:
+      - name: exp-counts-rates
+        rules:
+        - alert: producers-high
+          expr: pulsar_producers_count > 500
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: Producer count is high
+            identifier: '{{ $labels.topic }}'
+        - alert: consumers-high
+          expr: pulsar_consumers_count > 500
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: Consumer count is high
+            identifier: '{{ $labels.topic }}'
+        - alert: in-rate-high
+          expr: pulsar_rate_in > 5000
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: Incoming message rate is high on broker
+            identifier: '{{ $labels.topic }}'
+        - alert: out-rate-high
+          expr: pulsar_rate_out > 5000
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: Outgoing message rate is high on broker
+            identifier: '{{ $labels.topic }}'
+    volumes:
+      groups:
+      - name: volumes-filling
+        rules:
+        - alert: KubePersistentVolumeFillingUp
+          expr: kubelet_volume_stats_available_bytes{job="kubelet",metrics_path="/metrics",namespace=~".*"} / kubelet_volume_stats_capacity_bytes{job="kubelet",metrics_path="/metrics",namespace=~".*"} < 0.10
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            message: The PersistentVolume claimed by {{ $labels.persistentvolumeclaim }} in Namespace {{ $labels.namespace }} is only {{ $value | humanizePercentage }} free.
 
   alertmanager:
     enabled: false
