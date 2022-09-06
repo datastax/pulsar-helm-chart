@@ -454,7 +454,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "GC Pauses",
+      "title": "GC Time",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -939,7 +939,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "GC Pauses",
+      "title": "GC Time",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1424,7 +1424,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "GC Pauses",
+      "title": "GC Time",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1909,7 +1909,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "GC Pauses",
+      "title": "GC Time",
       "tooltip": {
         "shared": true,
         "sort": 0,
