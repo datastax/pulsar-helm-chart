@@ -893,6 +893,13 @@ broker:
   # See extra section above
   functionsWorkerEnabled: false
   webSocketServiceEnabled: false
+  # Enable Transactions on the Pulsar cluster.
+  # It starts the transaction coordinator module inside the broker.
+  # It runs the Transaction coordinator metadata setup job.
+  transactionCoordinator:
+    enabled: false
+    # Count of partitions used for the transaction coordinator.
+    initialCount: 16
   probe:
     enabled: true
     port: 8080
@@ -1004,6 +1011,9 @@ brokerSts:
   # See extras section above
   functionsWorkerEnabled: false
   webSocketServiceEnabled: false
+  transactionCoordinator:
+    enabled: false
+    initialCount: 16
   probe:
     enabled: true
     port: 8080
@@ -1075,6 +1085,12 @@ brokerSts:
   pdb:
     usePolicy: true
     maxUnavailable: 1
+
+## Pulsar Transactions metadata setup.
+## This is the job responsible to prepare the cluster for enabling transactions.
+## Job will start as soon as one broker pod is available.
+brokerTransactionsMetadata:
+  component: broker-transactions-metadata
 
 function:
   component: function
