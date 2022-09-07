@@ -72,7 +72,7 @@ With Helm installed to your local machine and with access to a Kubernetes cluste
 helm repo add datastax-pulsar https://datastax.github.io/pulsar-helm-chart
 helm repo update
 curl -LOs https://datastax.github.io/pulsar-helm-chart/examples/dev-values.yaml
-helm install pulsar -f dev-values.yaml datastax-pulsar/pulsar
+helm install pulsar -f dev-values.yaml datastax-pulsar/pulsar 
 ```
 
 Once all the pods are running (takes 5 to 10 minutes), you can access the admin console by forwarding to localhost: 

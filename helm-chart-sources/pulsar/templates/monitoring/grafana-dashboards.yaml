@@ -228,6 +228,25 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: "grafana-overview-by-broker-dashboard"
+  {{- if .Values.grafanaDashboards.namespaceOverride }}
+  namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
+  {{- end }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: "grafana-overview-by-broker-dashboard"
+    cluster: {{ template "pulsar.fullname" . }}
+    grafana_dashboard: "1"
+data:
+  overview.json: |-
+{{ .Files.Get "grafana-dashboards/overview-by-broker.json" | indent 4}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: "grafana-proxy-dashboard"
   {{- if .Values.grafanaDashboards.namespaceOverride }}
   namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
@@ -319,6 +338,25 @@ metadata:
 data:
   broker-cache.json: |-
 {{ .Files.Get "grafana-dashboards/broker-cache.json" | indent 4}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: "grafana-broker-cache-by-broker-dashboard"
+  {{- if .Values.grafanaDashboards.namespaceOverride }}
+  namespace: {{ .Values.grafanaDashboards.namespaceOverride }}
+  {{- end }}
+  labels:
+    app: {{ template "pulsar.name" . }}
+    chart: {{ template "pulsar.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    component: "grafana-broker-cache-by-broker-dashboard"
+    cluster: {{ template "pulsar.fullname" . }}
+    grafana_dashboard: "1"
+data:
+  broker-cache.json: |-
+{{ .Files.Get "grafana-dashboards/broker-cache-by-broker.json" | indent 4}}
 ---
 apiVersion: v1
 kind: ConfigMap
