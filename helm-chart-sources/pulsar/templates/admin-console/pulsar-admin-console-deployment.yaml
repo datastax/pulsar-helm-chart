@@ -97,12 +97,6 @@ spec:
             items:
             - key: local.json
               path: local.json
-        - name: nginxconf
-          configMap:
-            name: {{ template "pulsar.fullname" . }}-{{ .Values.pulsarAdminConsole.component }}-nginx
-            items:
-            - key: nginx.conf
-              path: nginx.conf
         {{- if .Values.enableTls }}
         - name: certs
           secret:
