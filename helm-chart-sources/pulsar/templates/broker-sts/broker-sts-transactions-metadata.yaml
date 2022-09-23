@@ -77,7 +77,11 @@ spec:
         args:
           - >-
             {{- if .Values.enableTls }}
-            until curl --connect-timeout 5 --cacert /pulsar/certs/ca.crt https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443; do
+            {{- if .Values.tls.transactionCoordinatorInitialiser.enableHostnameVerification }}
+            until curl --connect-timeout 5 {{ if or .Values.secrets .Values.createCertificates.selfSigned.enabled .Values.createCertificates.selfSignedPerComponent.enabled }}--cacert /pulsar/certs/ca.crt{{ end }} https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443; do
+            {{- else }}
+            until curl --connect-timeout 5 --insecure https://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8443; do
+            {{- end }}
             {{- else }}
             until curl --connect-timeout 5 http://{{ template "pulsar.fullname" . }}-{{ .Values.brokerSts.component }}.{{ template "pulsar.serviceDnsSuffix" . }}:8080; do
             {{- end }}
