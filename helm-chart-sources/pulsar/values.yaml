@@ -248,8 +248,11 @@ tls:
       privateKey: {}
   bastion:
     enableHostnameVerification: true
+ # enable these in case you use tls certificate stored in /pulsar/certs/ca.crt
   pulsarHeartbeat:
-    enableHostnameVerification: true
+    enableHostnameVerification: false
+  transactionCoordinatorInitialiser:
+    enableHostnameVerification: false
 
   # Configuration for the self-signed root CA Certificate. (All Pulsar components are assumed to share the same root CA.)
   ssCaCert:
