@@ -29,7 +29,7 @@ Please refer to Helm's [documentation](https://helm.sh/docs/) to get started.
 
 ## Minikube quick start
 
-Make sure you have minikube [installed](https://minikube.sigs.k8s.io/docs/start/) and running (`minikube start`).
+Make sure you have minikube [installed](https://minikube.sigs.k8s.io/docs/start/) and running (e.g., `minikube start --cpus 6 --memory 16G`.)
 
 Install the Helm chart:
 
