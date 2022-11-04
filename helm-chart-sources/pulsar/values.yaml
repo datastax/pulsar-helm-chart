@@ -447,7 +447,7 @@ image:
   burnell:
     repository: datastax/burnell
     pullPolicy: Always
-    tag: 1.0.3
+    tag: 1.0.5
   burnellLogCollector:
     repository: datastax/burnell
     pullPolicy: IfNotPresent
@@ -467,7 +467,7 @@ image:
   pulsarAdminConsole:
     repository: datastax/pulsar-admin-console
     pullPolicy: IfNotPresent
-    tag: 2.1.3
+    tag: 2.1.5
 
 ## Tiered Storage
 ##
