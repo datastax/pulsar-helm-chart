@@ -220,9 +220,9 @@ spec:
           periodSeconds:  {{ .Values.broker.probe.period }}
           timeoutSeconds:  {{ .Values.broker.probe.timeout }}
         livenessProbe:
-          exec:
-            command:
-            - "/pulsar/health/broker_health_check.sh"
+          httpGet:
+            path: /status.html
+            port: {{ .Values.broker.probe.port }}
           initialDelaySeconds: {{ .Values.broker.probe.initial }}
           periodSeconds: {{ .Values.broker.probe.period }}
           timeoutSeconds: {{ .Values.broker.probe.timeout }}
@@ -241,6 +241,7 @@ spec:
           bin/apply-config-from-env.py conf/broker.conf &&
           bin/apply-config-from-env.py conf/client.conf &&
           bin/gen-yml-from-env.py conf/functions_worker.yml &&
+          echo "OK" > status &&
           {{- if .Values.enableTokenAuth }}
           cat /pulsar/token-superuser/superuser.jwt | tr -d '\n' > /pulsar/token-superuser-stripped.jwt &&
           {{- end }}

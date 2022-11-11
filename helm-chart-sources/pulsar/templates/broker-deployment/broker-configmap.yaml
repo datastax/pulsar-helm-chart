@@ -29,6 +29,7 @@ metadata:
     component: {{ .Values.broker.component }}
     cluster: {{ template "pulsar.fullname" . }}
 data:
+  statusFilePath: "/pulsar/status"
   zookeeperServers:
     {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
       {{- if .Values.extra.zookeepernp }}
