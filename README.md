@@ -322,7 +322,7 @@ kube-prometheus-stack:
 
 ### Disabling the Prometheus stack
 
-As some  `kube-prometheus-stack` component need CRDs to be installed and `kube-prometheus-stack.enabled: false` does not alone prevent components' CRDs installation, the `kube-prometheus-stack` components should be disabled one by one, if the service account used to deploy the cluster does not have enough permissions to install CRDs.
+As some  `kube-prometheus-stack` components need CRDs to be installed and `kube-prometheus-stack.enabled: false` does not alone prevent components' CRDs installation, the `kube-prometheus-stack` components should be disabled one by one, if the service account used to deploy the cluster does not have enough permissions to install CRDs.
 
 In order to prevent all `kube-prometheus-stack` CRDs from being installed, the following should be added to `values.yaml`:
 
