@@ -1835,6 +1835,12 @@ grafanaDashboards:
   enabled: false
   # namespaceOverride: monitoring
 
+# Deploy Prometheus Operator PodMonitor to scrape metrics from all Pulsar components deployed
+# by this helm chart. This is an alternative to the default mechanism, which relies on adding
+# a scrape config to Prometheus using kubernetes_sd_configs. This configuration is helpful
+# when Prometheus is deployed separately.
+enablePulsarPodMonitor: false
+
 # Deploy the kube-prometheus-stack which includes:
 # * Prometheus (using Prometheus Operator)
 # * Alertmanager (using Prometheus Operator)

@@ -149,6 +149,8 @@ spec:
           containerPort: 2888
         - name: leader-election
           containerPort: 3888
+        - name: http
+          containerPort: 8000
         env:
         - name: ZOOKEEPER_SERVERS
           value:

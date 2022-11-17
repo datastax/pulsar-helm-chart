@@ -154,14 +154,14 @@ spec:
         readinessProbe:
           httpGet:
             path: /api/v1/bookie/is_ready
-            port: 8000
+            port: http
           initialDelaySeconds: {{ .Values.bookkeeper.probe.initial }}
           periodSeconds:  {{ .Values.bookkeeper.probe.period }}
           timeoutSeconds:  {{ .Values.bookkeeper.probe.timeout }}
         livenessProbe:
           httpGet:
             path: /api/v1/bookie/is_ready
-            port: 8000
+            port: http
           initialDelaySeconds: {{ .Values.bookkeeper.probe.initial }}
           periodSeconds:  {{ .Values.bookkeeper.probe.period }}
           timeoutSeconds:  {{ .Values.bookkeeper.probe.timeout }}
@@ -191,6 +191,8 @@ spec:
         ports:
         - name: client
           containerPort: 3181
+        - name: http
+          containerPort: 8000
         envFrom:
         - configMapRef:
             name: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}"
