@@ -258,8 +258,8 @@ spec:
           bin/apply-config-from-env.py conf/proxy.conf &&
           OPTS="${OPTS} -Dlog4j2.formatMsgNoLookups=true" exec bin/pulsar proxy
         ports:
-        - name: wss
-          containerPort: 8001
+        - name: http
+          containerPort: 8080
         {{- if and .Values.proxy.extensions.enabled .Values.proxy.extensions.containerPorts }}
 {{ toYaml .Values.proxy.extensions.containerPorts | indent 8 }}
         {{- end }}
@@ -312,8 +312,8 @@ spec:
           bin/apply-config-from-env.py conf/websocket.conf &&
           OPTS="${OPTS} -Dlog4j2.formatMsgNoLookups=true" exec bin/pulsar websocket
         ports:
-        - name: http
-          containerPort: 8080
+        - name: ws
+          containerPort: 8000
         {{- if or .Values.enableTls .Values.enableTokenAuth }}
         volumeMounts:
         {{- end }}
