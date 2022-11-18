@@ -179,6 +179,12 @@ spec:
         - name: lib-data
           emptyDir: {}
         {{- end }}
+        {{if .Values.openid.enabled }}
+        - name: openid-client-credentials
+          secret:
+            secretName: openid-client-credentials-secret
+            optional: false
+        {{- end }}
       initContainers:
       {{- if .Values.enableWaitContainers }}
       # This init container will wait for bookkeeper to be ready before
@@ -288,6 +294,11 @@ spec:
           - name: lib-data
             mountPath: {{ .Values.proxy.initContainer.emptyDirPath }}
           {{- end }}
+          {{- if .Values.openid.enabled }}
+          - name: openid-client-credentials
+            readOnly: true
+            mountPath: "/pulsar/openid-client-credentials"
+          {{- end }}
         envFrom:
         - configMapRef:
             name: "{{ template "pulsar.fullname" . }}-{{ .Values.proxy.component }}"
@@ -334,6 +345,11 @@ spec:
           - mountPath: "/pulsar/token-websocket"
             name: token-websocket
             readOnly: true
+          {{- end }}
+          {{- if .Values.openid.enabled }}
+          - name: openid-client-credentials
+            readOnly: true
+            mountPath: "/pulsar/openid-client-credentials"
           {{- end }}
         envFrom:
         - configMapRef:
@@ -391,6 +407,11 @@ spec:
           - mountPath: "/pulsar/token-public-key"
             name: token-public-key
             readOnly: true
+          {{- if .Values.openid.enabled }}
+          - name: openid-client-credentials
+            readOnly: true
+            mountPath: "/pulsar/openid-client-credentials"
+          {{- end }}
         env:
           - name: ROLES
             value: {{ .Values.tokenServer.allowedRoles }}

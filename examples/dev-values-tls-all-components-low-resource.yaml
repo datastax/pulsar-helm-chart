@@ -202,37 +202,37 @@ brokerSts:
       memory: 300Mi
       cpu: 0.3
   configData:
-    PULSAR_MEM: "-Xms400m -Xmx400m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError"
+    PULSAR_MEM: "-Xms200m -Xmx200m -XX:MaxDirectMemorySize=100m -XX:+ExitOnOutOfMemoryError"
 
 autoRecovery:
   enableProvisionContainer: true
   resources:
     requests:
       memory: 300Mi
-      cpu: 0.3
+      cpu: 0.1
 
 function:
   replicaCount: 1
   functionReplicaCount: 1
   resources:
     requests:
-      memory: 512Mi
-      cpu: 0.3
+      memory: 256Mi
+      cpu: 0.1
   configData:
-    PULSAR_MEM: "-Xms312m -Xmx312m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError"
+    PULSAR_MEM: "-Xms156m -Xmx156m -XX:MaxDirectMemorySize=100m -XX:+ExitOnOutOfMemoryError"
 
 proxy:
   replicaCount: 1
   resources:
     requests:
-      memory: 512Mi
-      cpu: 0.3
+      memory: 256Mi
+      cpu: 0.1
   wsResources:
     requests:
-      memory: 512Mi
-      cpu: 0.3
+      memory: 256Mi
+      cpu: 0.1
   configData:
-    PULSAR_MEM: "-Xms400m -Xmx400m -XX:MaxDirectMemorySize=112m"
+    PULSAR_MEM: "-Xms200m -Xmx200m -XX:MaxDirectMemorySize=56m"
   autoPortAssign:
     enablePlainTextWithTLS: true
   service:

@@ -170,6 +170,14 @@ createCertificates:
   selfSignedPerComponent:
     enabled: true
 
+openid:
+  enabled: true # If true, make sure tokenAuth is disabled.
+  # From token generated in Okta UI or other method:
+  issuerUrl: https://trial-9507854.okta.com/oauth2/aus3dms9f1rQ7BBc0697 
+  scope: pulsar_client_m2m
+  client_id: "0oa3dms738MLsIoJM697"
+  client_secret: "04g3PCC3XdabXF4ftrPntYTDv-S7UCntLSkACuPz"
+  withS4k: false
 zookeeper:
   replicaCount: 1
   resources:
@@ -183,16 +191,31 @@ bookkeeper:
   replicaCount: 1
   resources:
     requests:
-      memory: 256Mi
+      memory: 356Mi
       cpu: 0.1
   configData:
-    BOOKIE_MEM: "-Xms156m -Xmx156m -XX:MaxDirectMemorySize=100m -XX:+ExitOnOutOfMemoryError"
+    BOOKIE_MEM: "-Xms156m -Xmx156m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError"
 
 brokerSts:
   component: broker
   replicaCount: 1
   service:
     headless: true
+#    ports:
+#    - name: http
+#      port: 8080
+#    - name: pulsar
+#      port: 6650
+#    - name: https
+#      port: 8443
+#    - name: pulsarssl
+#      port: 6651
+#    - name: kafkaplaintext
+#      port: 9092
+#    - name: kafkassl
+#      port: 9093
+#    - name: kafkaschemareg
+#      port: 8001
   ledger:
     defaultEnsembleSize: 1
     defaultAckQuorum: 1
@@ -201,59 +224,134 @@ brokerSts:
     requests:
       memory: 300Mi
       cpu: 0.3
+  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderTls,org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
   configData:
-    PULSAR_MEM: "-Xms400m -Xmx400m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError"
+    PULSAR_MEM: "-Xms200m -Xmx200m -XX:MaxDirectMemorySize=100m -XX:+ExitOnOutOfMemoryError"
+    PULSAR_PREFIX_protocolHandlerDirectory: "./protocols"
+    PULSAR_PREFIX_messagingProtocols: "kafka"
+    PULSAR_PREFIX_brokerDeleteInactiveTopicsEnabled: "false"
+    PULSAR_PREFIX_saslAllowedMechanisms: OAUTHBEARER # Use PLAIN for TLS authentication
+    PULSAR_PREFIX_brokerEntryMetadataInterceptors: "org.apache.pulsar.common.intercept.AppendIndexMetadataInterceptor,org.apache.pulsar.common.intercept.AppendBrokerTimestampMetadataInterceptor"
+    PULSAR_PREFIX_kopSchemaRegistryEnable: "true"
+    PULSAR_PREFIX_allowAutoTopicCreationType: "partitioned"
+    PULSAR_PREFIX_kafkaListeners: "SASL_PLAINTEXT://0.0.0.0:9092"
+    PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://advertisedAddress:9092"
+    PULSAR_PREFIX_kafkaTransactionCoordinatorEnabled: "true"
+    PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info"
+    # Java property configuration file of OauthValidatorCallbackHandler:
+    # (Should it have a lower-case K in Kop?)
+    PULSAR_PREFIX_KopOauth2ConfigFile: "/pulsar/conf/kop-handler.properties"
+    PULSAR_PREFIX_kopOauth2ConfigFile: "/pulsar/conf/kop-handler.properties"
+    # Use the KoP's built-in handler:
+    PULSAR_PREFIX_kopOauth2AuthenticateCallbackHandler: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID"
+    
+    
+    # For the broker-to-broker OAuth config
 
 autoRecovery:
   enableProvisionContainer: true
   resources:
     requests:
       memory: 300Mi
-      cpu: 0.3
+      cpu: 0.1
 
 function:
   replicaCount: 1
   functionReplicaCount: 1
   resources:
     requests:
-      memory: 512Mi
-      cpu: 0.3
+      memory: 256Mi
+      cpu: 0.1
+  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
   configData:
-    PULSAR_MEM: "-Xms312m -Xmx312m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError"
+    PULSAR_MEM: "-Xms156m -Xmx156m -XX:MaxDirectMemorySize=100m -XX:+ExitOnOutOfMemoryError"
+    PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info"
 
 proxy:
   replicaCount: 1
   resources:
     requests:
-      memory: 512Mi
-      cpu: 0.3
+      memory: 256Mi
+      cpu: 0.1
   wsResources:
     requests:
-      memory: 512Mi
-      cpu: 0.3
+      memory: 256Mi
+      cpu: 0.1
+  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID"
+  wsAuthenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderTls,org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
   configData:
-    PULSAR_MEM: "-Xms400m -Xmx400m -XX:MaxDirectMemorySize=112m"
+    PULSAR_MEM: "-Xms200m -Xmx200m -XX:MaxDirectMemorySize=56m"
+    PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info"
+    PULSAR_PREFIX_kafkaListeners: "SASL_PLAINTEXT://0.0.0.0:9092,SASL_SSL://0.0.0.0:9093"
+    # here you have to customize the advertised name if you want to access
+    # Kafka from outside the kube    
+    # Drop the SASL_PLAINTEXT endpoint if you want to allow only TLS (here and above)
+    # The Proxy uses the same TLS certificate configured for the Pulsar protocol
+    #    PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://pulsar-proxy:9092,SASL_SSL://pulsar-proxy:9093"
+    # if you use port forwarding to localhost then you have to set 'localhost'    
+    PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://pulsar-proxy:9092,SASL_SSL://pulsar-proxy:9093"
+    PULSAR_PREFIX_saslAllowedMechanisms: OAUTHBEARER
+    PULSAR_PREFIX_kafkaProxySuperUserRole: superuser
+    PULSAR_PREFIX_kopSchemaRegistryProxyEnableTls: "true"
+    PULSAR_PREFIX_kopSchemaRegistryEnable: "true"
+    PULSAR_PREFIX_kopSchemaRegistryProxyPort: "8081"
+    PULSAR_PREFIX_kafkaTransactionCoordinatorEnabled: "true"
+    authenticateMetricsEndpoint: "true"
+    PULSAR_PREFIX_KopOauth2ConfigFile: "/pulsar/conf/kop-handler.properties"
   autoPortAssign:
     enablePlainTextWithTLS: true
   service:
+    type: ClusterIP
     autoPortAssign:
       enabled: true
+  extensions:
+    enabled: true
+    extensions: "kafka"
+    containerPorts:
+      - name: kafkaplaintext
+        containerPort: 9092
+      - name: kafkassl
+        containerPort: 9093
+      - name: kafkaschemareg
+        containerPort: 8081
+    servicePorts:
+     - name: kafkaplaintext
+       port: 9092
+       protocol: TCP
+       targetPort: kafkaplaintext
+     - name: kafkassl
+       port: 9093
+       protocol: TCP
+       targetPort: kafkassl      
+     - name: kafkaschemareg
+       port: 8081
+       protocol: TCP
+       targetPort: kafkaschemareg
 
 grafanaDashboards:
-  enabled: false
+  enabled: true
 
 pulsarAdminConsole:
   replicaCount: 1
-  authMode: k8s
+  authMode: openidconnect
   createUserSecret:
     enabled: true
     user: 'admin'
     # NOTE: use your own password
     password: 'e9JYtk83*4#PM8'
+  service:
+    type: ClusterIP
+    # Only expose the secure port. This is important because the pod itself only exposes the secure port when TLS
+    # is enabled.
+    ports:
+      - name: https
+        port: 443
+        targetPort: https
 
 kube-prometheus-stack:
-  enabled: false
+  enabled: true
   prometheusOperator:
-    enabled: false
+    enabled: true
   grafana:
-    enabled: false
+    enabled: true
+    adminPassword: e9JYtk83*4#PM8

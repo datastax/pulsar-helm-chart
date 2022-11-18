@@ -81,17 +81,55 @@ data:
   proxyRoles: "{{ .Values.proxyRoles }}"
   superUserRoles: "{{ .Values.superUserRoles }}"
   tokenPublicKey: "file:///pulsar/token-public-key/{{ .Values.tokenPublicKeyFile }}"
+  {{- if .Values.openid.enabled }}
+  brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2"
+  brokerClientAuthenticationParameters: "{\"privateKey\":\"file:///pulsar/openid-client-credentials/superuserKey.json\",\"issuerUrl\":\"{{ .Values.openid.issuerUrl }}\",\"scope\":\"{{ .Values.openid.scope }}\",\"audience\":\"{{ .Values.openid.allowedAudience }}\"}"
+  {{- else }} # There's probably a smarter way to write this so it's more readable but gets trimmed to one line so Jackson doesn't blow up on new lines when parsing.
   brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
   brokerClientAuthenticationParameters: "file:///pulsar/token-superuser/superuser.jwt"
-  {{- if .Values.brokerSts.extraAuthProvider }}
+  {{- end }}
+  {{- if .Values.brokerSts.extraAuthProvider }} # There surely is a cleaner way to do all this...
+  {{- if .Values.openid.enabled }}
+  authenticationProviders: "{{ .Values.brokerSts.authenticationProviders }},{{ .Values.brokerSts.extraAuthProvider }},{{ .Values.openid.authenticationProvider }}"
+  {{- else }}
   authenticationProviders: "{{ .Values.brokerSts.authenticationProviders }},{{ .Values.brokerSts.extraAuthProvider }}"
+  {{- end }}
+  {{- else }}
+  {{- if .Values.openid.enabled }}
+  authenticationProviders: "{{ .Values.brokerSts.authenticationProviders }},{{ .Values.openid.authenticationProvider }}"
   {{- else }}
   authenticationProviders: "{{ .Values.brokerSts.authenticationProviders }}"
+  {{- end }}
   {{- end }}
   {{- if .Values.keycloak.enabled }}
   PULSAR_PREFIX_openIDAllowedTokenIssuers: "{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ template "pulsar.serviceDnsSuffix" . }}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }}"
   {{- end }}
   {{- end }}
+
+# Putting this section down here so it's easier to read:
+{{- if .Values.openid.enabled }}
+  PULSAR_PREFIX_openIDAllowedTokenIssuers: "{{ .Values.openid.issuerUrl }}"
+  PULSAR_PREFIX_openIDAllowedAudience: "{{ .Values.openid.allowedAudience }}"
+  PULSAR_PREFIX_openIDRoleClaim: "{{ .Values.openid.roleClaim }}"
+  PULSAR_PREFIX_openIDAcceptedTimeLeewaySeconds: "{{ .Values.openid.acceptedTimeLeewaySeconds }}"
+  PULSAR_PREFIX_openIDJwkCacheSize: "{{ .Values.openid.jwk.cacheSize }}"
+  PULSAR_PREFIX_openIDJwkExpiresSeconds: "{{ .Values.openid.jwk.expiresSeconds }}"
+  PULSAR_PREFIX_openIDJwkConnectionTimeoutMillis: "{{ .Values.openid.jwk.connectionTimeoutMillis }}"
+  PULSAR_PREFIX_openIDJwkReadTimeoutMillis: "{{ .Values.openid.jwk.readTimeoutMillis }}"
+  PULSAR_PREFIX_openIDMetadataCacheSize: "{{ .Values.openid.metadata.cacheSize }}"
+  PULSAR_PREFIX_openIDMetadataExpiresSeconds: "{{ .Values.openid.metadata.expiresSeconds }}"
+  PULSAR_PREFIX_openIDMetadataConnectionTimeoutMillis: "{{ .Values.openid.metadata.connectionTimeoutMillis }}"
+  PULSAR_PREFIX_openIDMetadataReadTimeoutMillis: "{{ .Values.openid.metadata.readTimeoutMillis }}"
+  PULSAR_PREFIX_openIDRequireHttps: "{{ .Values.openid.requireHttps }}"
+  # Set following to true if admin console is configured to use Okta integration. The admin console uses the user model with local admin token, not Okta integration, according to notes from Ming-Hong Liu.
+  PULSAR_PREFIX_openIDAttemptAuthenticationProviderToken: "{{ .Values.openid.attemptAuthenticationProviderToken }}"
+
+{{- end }}
+
+{{- if and (.Values.openid.enabled) (.Values.openid.withS4k) }}
+  # It would be nice to do something like this to abstract some of the configs away from the Values file since it's pretty complex
+{{- end }}
+
 {{- if .Values.enableTls }}
   tlsEnabled: "true"
   tlsEnableHostnameVerification: "true"

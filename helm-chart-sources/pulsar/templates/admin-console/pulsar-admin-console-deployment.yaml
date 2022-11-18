@@ -85,6 +85,11 @@ spec:
             name: token-superuser
             readOnly: true
           {{- end }}
+          {{- if .Values.openid.enabled }}
+          - name: openid-client-credentials
+            readOnly: true
+            mountPath: "/pulsar/openid-client-credentials"
+          {{- end }}
         {{- if .Values.enableTls }}
         env:
           - name: NODE_EXTRA_CA_CERTS
@@ -106,5 +111,11 @@ spec:
         - name: token-superuser
           secret:
             secretName: token-superuser
+        {{- end }}
+        {{if .Values.openid.enabled }}
+        - name: openid-client-credentials
+          secret:
+            secretName: openid-client-credentials-secret
+            optional: false
         {{- end }}
 {{- end }}
