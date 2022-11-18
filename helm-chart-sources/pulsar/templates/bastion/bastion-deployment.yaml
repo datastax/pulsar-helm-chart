@@ -88,6 +88,12 @@ spec:
           secret:
             secretName: token-superuser
         {{- end }}
+        {{if .Values.openid.enabled }}
+        - name: openid-client-credentials
+          secret:
+            secretName: openid-client-credentials-secret
+            optional: false
+        {{- end }}
         {{- if and .Values.enableTls (or .Values.secrets .Values.createCertificates.selfSigned.enabled .Values.createCertificates.selfSignedPerComponent.enabled)}}
         - name: certs
           secret:
@@ -159,6 +165,11 @@ spec:
           - name: certs
             readOnly: true
             mountPath: /pulsar/certs
+          {{- end }}
+          {{- if .Values.openid.enabled }}
+          - name: openid-client-credentials
+            readOnly: true
+            mountPath: "/pulsar/openid-client-credentials"
           {{- end }}
         args:
         - >
