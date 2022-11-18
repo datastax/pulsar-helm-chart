@@ -161,7 +161,7 @@ proxy:
 # The Proxy uses the same TLS certificate configured for the Pulsar protocol
 #    PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://pulsar-proxy:9092,SASL_SSL://pulsar-proxy:9093"
 # if you use port forwarding to localhost then you have to set 'localhost'    
-    PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://localhost:9092,SASL_SSL://localhost:9093"
+    PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://pulsar-proxy:9092,SASL_SSL://pulsar-proxy:9093"
     PULSAR_PREFIX_saslAllowedMechanisms: PLAIN
     PULSAR_PREFIX_kafkaProxySuperUserRole: superuser
     PULSAR_PREFIX_kopSchemaRegistryProxyEnableTls: "true"

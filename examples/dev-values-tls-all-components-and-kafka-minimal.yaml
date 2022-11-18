@@ -202,42 +202,93 @@ brokerSts:
       memory: 300Mi
       cpu: 0.3
   configData:
-    PULSAR_MEM: "-Xms400m -Xmx400m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError"
+    PULSAR_MEM: "-Xms200m -Xmx200m -XX:MaxDirectMemorySize=100m -XX:+ExitOnOutOfMemoryError"
+    PULSAR_PREFIX_protocolHandlerDirectory: "./protocols"
+    PULSAR_PREFIX_messagingProtocols: "kafka"
+    PULSAR_PREFIX_brokerDeleteInactiveTopicsEnabled: "false"
+    PULSAR_PREFIX_saslAllowedMechanisms: PLAIN
+    PULSAR_PREFIX_brokerEntryMetadataInterceptors: "org.apache.pulsar.common.intercept.AppendIndexMetadataInterceptor,org.apache.pulsar.common.intercept.AppendBrokerTimestampMetadataInterceptor"
+    PULSAR_PREFIX_kopSchemaRegistryEnable: "true"
+    PULSAR_PREFIX_allowAutoTopicCreationType: "partitioned"
+    PULSAR_PREFIX_kafkaListeners: "SASL_PLAINTEXT://0.0.0.0:9092"
+    PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://advertisedAddress:9092"
+    PULSAR_PREFIX_kafkaTransactionCoordinatorEnabled: "true"
+    PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info"
 
 autoRecovery:
   enableProvisionContainer: true
   resources:
     requests:
       memory: 300Mi
-      cpu: 0.3
+      cpu: 0.1
 
 function:
   replicaCount: 1
   functionReplicaCount: 1
   resources:
     requests:
-      memory: 512Mi
-      cpu: 0.3
+      memory: 256Mi
+      cpu: 0.1
   configData:
-    PULSAR_MEM: "-Xms312m -Xmx312m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError"
+    PULSAR_MEM: "-Xms156m -Xmx156m -XX:MaxDirectMemorySize=100m -XX:+ExitOnOutOfMemoryError"
+    PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info"
 
 proxy:
   replicaCount: 1
   resources:
     requests:
-      memory: 512Mi
-      cpu: 0.3
+      memory: 256Mi
+      cpu: 0.1
   wsResources:
     requests:
-      memory: 512Mi
-      cpu: 0.3
+      memory: 256Mi
+      cpu: 0.1
   configData:
-    PULSAR_MEM: "-Xms400m -Xmx400m -XX:MaxDirectMemorySize=112m"
+    PULSAR_MEM: "-Xms200m -Xmx200m -XX:MaxDirectMemorySize=56m"
+    PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info"
+    PULSAR_PREFIX_kafkaListeners: "SASL_PLAINTEXT://0.0.0.0:9092,SASL_SSL://0.0.0.0:9093"
+    # here you have to customize the advertised name if you want to access
+    # Kafka from outside the kube    
+    # Drop the SASL_PLAINTEXT endpoint if you want to allow only TLS (here and above)
+    # The Proxy uses the same TLS certificate configured for the Pulsar protocol
+    #    PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://pulsar-proxy:9092,SASL_SSL://pulsar-proxy:9093"
+    # if you use port forwarding to localhost then you have to set 'localhost'    
+    PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://localhost:9092,SASL_SSL://localhost:9093"
+    PULSAR_PREFIX_saslAllowedMechanisms: PLAIN
+    PULSAR_PREFIX_kafkaProxySuperUserRole: superuser
+    PULSAR_PREFIX_kopSchemaRegistryProxyEnableTls: "true"
+    PULSAR_PREFIX_kopSchemaRegistryEnable: "true"
+    PULSAR_PREFIX_kopSchemaRegistryProxyPort: "8081"
+    PULSAR_PREFIX_kafkaTransactionCoordinatorEnabled: "true"
   autoPortAssign:
     enablePlainTextWithTLS: true
   service:
+    type: ClusterIP
     autoPortAssign:
       enabled: true
+  extensions:
+    enabled: true
+    extensions: "kafka"
+    containerPorts:
+      - name: kafkaplaintext
+        containerPort: 9092
+      - name: kafkassl
+        containerPort: 9093
+      - name: kafkaschemareg
+        containerPort: 8081
+    servicePorts:
+     - name: kafkaplaintext
+       port: 9092
+       protocol: TCP
+       targetPort: kafkaplaintext
+     - name: kafkassl
+       port: 9093
+       protocol: TCP
+       targetPort: kafkassl      
+     - name: kafkaschemareg
+       port: 8081
+       protocol: TCP
+       targetPort: kafkaschemareg
 
 grafanaDashboards:
   enabled: true
@@ -250,10 +301,19 @@ pulsarAdminConsole:
     user: 'admin'
     # NOTE: use your own password
     password: 'e9JYtk83*4#PM8'
+  service:
+    type: ClusterIP
+    # Only expose the secure port. This is important because the pod itself only exposes the secure port when TLS
+    # is enabled.
+    ports:
+      - name: https
+        port: 443
+        targetPort: https
 
 kube-prometheus-stack:
-  enabled: false
+  enabled: true
   prometheusOperator:
-    enabled: false
+    enabled: true
   grafana:
-    enabled: false
+    enabled: true
+    adminPassword: e9JYtk83*4#PM8
