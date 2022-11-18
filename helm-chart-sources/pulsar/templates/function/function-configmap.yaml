@@ -127,6 +127,9 @@ data:
       {{- if .Values.keycloak.enabled }}
       openIDAllowedTokenIssuers: "{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ template "pulsar.serviceDnsSuffix" . }}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }}"
       {{- end }}
+      {{- if .Values.openid.enabled }}
+      openIDAllowedTokenIssuers: "{{ .Values.openid.issuerUrl }}"
+      {{- end }}
       {{- if .Values.function.customProperties }}
 {{ toYaml .Values.function.customProperties | indent 6 }}
       {{- end }}
