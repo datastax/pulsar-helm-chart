@@ -15,7 +15,7 @@
 #
 #
 
-{{- if .Values.enablePulsarPodMonitor }}
+{{- if or .Values.enablePulsarPodMonitor (index .Values "kube-prometheus-stack" "enabled") }}
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
@@ -37,14 +37,28 @@ spec:
         operator: In
         values:
           - {{.Values.zookeeper.component}}
+          {{- if .Values.extra.zookeepernp }}
           - {{.Values.zookeepernp.component}}
+          {{- end }}
           - {{.Values.bookkeeper.component}}
-          - {{.Values.autoRecovery.component}}
+          {{- if .Values.extra.broker }}
           - {{.Values.broker.component}}
+          {{- end }}
+          {{- if .Values.extra.brokerSts }}
           - {{.Values.brokerSts.component}}
+          {{- end }}
+          {{- if .Values.extra.proxy }}
           - {{.Values.proxy.component}}
+          {{- end }}
+          {{- if .Values.extra.function }}
           - {{.Values.function.component}}
+          {{- end }}
+          {{- if .Values.extra.autoRecovery }}
+          - {{.Values.autoRecovery.component}}
+          {{- end }}
+          {{- if .Values.extra.pulsarHeartbeat }}
           - {{.Values.pulsarHeartbeat.component}}
+          {{- end }}
   podMetricsEndpoints:
     - port: "http"
       relabelings:
@@ -59,4 +73,19 @@ spec:
         - sourceLabels: [ __meta_kubernetes_pod_name ]
           action: replace
           targetLabel: kubernetes_pod_name
-{{- end}}
+    {{- if .Values.extra.burnell }}
+    - port: "burnell"
+      relabelings:
+        - action: labelmap
+          regex: __meta_kubernetes_pod_label_(.+)
+        - sourceLabels: [ __meta_kubernetes_namespace ]
+          action: replace
+          targetLabel: kubernetes_namespace
+        - sourceLabels: [ __meta_kubernetes_pod_label_component ]
+          action: replace
+          targetLabel: job
+        - sourceLabels: [ __meta_kubernetes_pod_name ]
+          action: replace
+          targetLabel: kubernetes_pod_name
+    {{- end }}
+{{- end }}
