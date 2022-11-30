@@ -320,6 +320,20 @@ kube-prometheus-stack:
     create: true
 ```
 
+## Deploying and Discovering a PodMonitor
+
+In order to simplify metrics gathering, the helm chart has support for deploying a `PodMonitor`. This single monitor
+configures scraping all the available metrics endpoints for a given Pulsar Cluster deployed by the helm chart. This
+`PodMonitor` can be deployed by setting the following in your values file:
+
+```yaml
+enablePulsarPodMonitor: true
+```
+
+Note that this will deploy a `PodMonitor` in the release's namespace. If you are running a Prometheus Operator in
+another Kubernetes namespace, you may need to modify the configuration to make sure that the operator can discover
+`PodMonitors` in the release's namespace.
+
 ### Disabling the Prometheus stack
 
 As some  `kube-prometheus-stack` components need CRDs to be installed and `kube-prometheus-stack.enabled: false` does not alone prevent components' CRDs installation, the `kube-prometheus-stack` components should be disabled one by one, if the service account used to deploy the cluster does not have enough permissions to install CRDs.
