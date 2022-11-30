@@ -298,7 +298,9 @@ If you don't, you will get error messages like this:
 
 > Error: INSTALLATION FAILED: unable to build kubernetes objects from release manifest: [resource mapping not found for name: "pulsar-ca-certificate" namespace: "pulsar" from "": no matches for kind "Certificate" in version "cert-manager.io/v1"
 
-## Enabling the Prometheus stack
+## Prometheus stack
+
+### Enabling the Prometheus stack
 
 You can enable a full Prometheus stack (Prometheus, Alertmanager, Grafana) from [kube-prometheus](https://github.com/prometheus-operator/kube-prometheus). This includes default Prometheus rules and Grafana dashboards for Kubernetes. 
 
@@ -331,6 +333,25 @@ enablePulsarPodMonitor: true
 Note that this will deploy a `PodMonitor` in the release's namespace. If you are running a Prometheus Operator in
 another Kubernetes namespace, you may need to modify the configuration to make sure that the operator can discover
 `PodMonitors` in the release's namespace.
+
+### Disabling the Prometheus stack
+
+As some  `kube-prometheus-stack` components need CRDs to be installed and `kube-prometheus-stack.enabled: false` does not alone prevent components' CRDs installation, the `kube-prometheus-stack` components should be disabled one by one, if the service account used to deploy the cluster does not have enough permissions to install CRDs.
+
+In order to prevent all `kube-prometheus-stack` CRDs from being installed, the following should be added to `values.yaml`:
+
+```
+kube-prometheus-stack:
+  enabled: false
+  prometheusOperator:
+    enabled: false
+  grafana:
+    enabled: false
+  alertmanager:
+    enabled: false
+  prometheus:
+    enabled: false
+```
 
 ### Grafana Dashboards
 
