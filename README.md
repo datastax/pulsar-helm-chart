@@ -318,6 +318,20 @@ kube-prometheus-stack:
     create: true
 ```
 
+## Deploying and Discovering a PodMonitor
+
+In order to simplify metrics gathering, the helm chart has support for deploying a `PodMonitor`. This single monitor
+configures scraping all the available metrics endpoints for a given Pulsar Cluster deployed by the helm chart. This
+`PodMonitor` can be deployed by setting the following in your values file:
+
+```yaml
+enablePulsarPodMonitor: true
+```
+
+Note that this will deploy a `PodMonitor` in the release's namespace. If you are running a Prometheus Operator in
+another Kubernetes namespace, you may need to modify the configuration to make sure that the operator can discover
+`PodMonitors` in the release's namespace.
+
 ### Grafana Dashboards
 
 DataStax has several custom dashboards to help interpret Pulsar metrics. These custom dashboards are installed when the
