@@ -901,6 +901,8 @@ broker:
   # It runs the Transaction coordinator metadata setup job.
   transactionCoordinator:
     enabled: false
+    # set to true to manually initialize transaction coordinator on existing cluster
+    initialize: false
     # Count of partitions used for the transaction coordinator.
     initialCount: 16
   probe:
