@@ -21,7 +21,7 @@ kind: ConfigMap
 metadata:
   name: "{{ include "pulsar.fullname" . }}-{{ .Values.pulsarHeartbeat.component }}-config"
 data:
-  runtime.yml: |-
+  runtime.yml: |
     name: {{ template "pulsar.fullname" . }}
     token: {{ .Values.pulsarHeartbeat.config.pulsarClientToken }}
     tokenFilePath: {{ .Values.pulsarHeartbeat.config.tokenFilePath }}
