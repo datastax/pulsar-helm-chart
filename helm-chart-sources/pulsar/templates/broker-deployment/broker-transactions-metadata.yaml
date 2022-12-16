@@ -15,7 +15,8 @@
 #
 #
 {{- if .Values.extra.broker }}
-{{- if and .Values.broker.transactionCoordinator.enabled (or .Release.IsInstall .Values.initialize) }}
+{{- if and .Values.broker.transactionCoordinator.enabled
+           (or .Release.IsInstall .Values.initialize .Values.broker.transactionCoordinator.initialize) }}
 apiVersion: batch/v1
 kind: Job
 metadata:
