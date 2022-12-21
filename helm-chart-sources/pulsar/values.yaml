@@ -463,7 +463,7 @@ image:
   pulsarHeartbeat:
     repository: datastax/pulsar-heartbeat
     pullPolicy: IfNotPresent
-    tag: 1.0.14
+    tag: 1.0.17
   pulsarAdminConsole:
     repository: datastax/pulsar-admin-console
     pullPolicy: IfNotPresent
