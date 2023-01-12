@@ -242,7 +242,7 @@ brokerSts:
     # (Should it have a lower-case K in Kop?)
     PULSAR_PREFIX_KopOauth2ConfigFile: "/pulsar/conf/kop-handler.properties"
     PULSAR_PREFIX_kopOauth2ConfigFile: "/pulsar/conf/kop-handler.properties"
-    # Use the KoP's built-in handler:
+    # Use the S4K's built-in handler:
     PULSAR_PREFIX_kopOauth2AuthenticateCallbackHandler: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID"
     
     
