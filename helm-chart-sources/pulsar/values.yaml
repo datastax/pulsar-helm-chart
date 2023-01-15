@@ -298,6 +298,7 @@ tls:
 tlsCaPath: /etc/ssl/certs
 tlsCaCert: ca-certificates.crt
 
+kafkaProxySuperUserRole: admin
 superUserRoles: superuser,admin,websocket,proxy
 proxyRoles: proxy
 
@@ -1759,7 +1760,6 @@ openid:
   allowedAudience: api://pulsarClient
   roleClaim: sub
   attemptAuthenticationProviderToken: "true"
-  authenticationProvider: com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID
   # Example issuerUrl: https://example.okta.com/oauth2/au...97 
   issuerUrl: ""
   # Example scope: pulsar_client_m2m

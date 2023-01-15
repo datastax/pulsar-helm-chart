@@ -59,10 +59,6 @@ data:
   clusterName: {{ template "pulsar.fullname" . }}
   webServicePort: "{{ .Values.proxy.wsProxyPort }}"
   {{- if .Values.enableTokenAuth }}
-  {{- if .Values.openid.enabled }}
-  brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2"
-  brokerClientAuthenticationParameters: "{\"privateKey\":\"file:///pulsar/openid-client-credentials/superuserKey.json\",\"issuerUrl\":\"{{ .Values.openid.issuerUrl }}\",\"scope\":\"{{ .Values.openid.scope }}\",\"audience\":\"{{ .Values.openid.allowedAudience }}\"}"
-  {{- else }}
   brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
   brokerClientAuthenticationParameters: "file:///pulsar/token-websocket/websocket.jwt"
   {{- end }}
@@ -73,16 +69,15 @@ data:
   {{- if .Values.keycloak.enabled }}
   PULSAR_PREFIX_openIDAllowedTokenIssuers: "{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ template "pulsar.serviceDnsSuffix" . }}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }}"
   {{- end }}
-{{- else if .Values.openid.enabled }}
-  brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2"
-  brokerClientAuthenticationParameters: "{\"privateKey\":\"file:///pulsar/openid-client-credentials/superuserKey.json\",\"issuerUrl\":\"{{ .Values.openid.issuerUrl }}\",\"scope\":\"{{ .Values.openid.scope }}\",\"audience\":\"{{ .Values.openid.allowedAudience }}\"}"
-{{- end }}
+#{{- else if .Values.openid.enabled }} Not using oauth between Pulsar components for now
+#  brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2"
+#  brokerClientAuthenticationParameters: "{\"privateKey\":\"file:///pulsar/openid-client-credentials/superuserKey.json\",\"issuerUrl\":\"{{ .Values.openid.issuerUrl }}\",\"scope\":\"{{ .Values.openid.scope }}\",\"audience\":\"{{ .Values.openid.allowedAudience }}\"}"
 # Putting this here to make the above conditionals easier to read:
 {{- if .Values.openid.enabled }}
   PULSAR_PREFIX_openIDAllowedTokenIssuers: "{{ .Values.openid.issuerUrl }}"
   PULSAR_PREFIX_openIDAllowedAudience: "{{ .Values.openid.allowedAudience }}"
   PULSAR_PREFIX_openIDRoleClaim: "{{ .Values.openid.roleClaim }}"
-  authenticationProviders: "{{ .Values.proxy.wsAuthenticationProviders }},{{ .Values.openid.authenticationProvider }}"
+  authenticationProviders: "{{ .Values.proxy.wsAuthenticationProviders }},com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID"
 {{- else}}
   authenticationProviders: "{{ .Values.proxy.wsAuthenticationProviders }}"
 {{- end }}

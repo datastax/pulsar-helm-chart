@@ -29,6 +29,6 @@ metadata:
     cluster: {{ template "pulsar.fullname" . }}
 data:
   kop-handler.properties: |
-    oauth.validate.method=token # or should this be openid ?
+    oauth.validate.method=token
 
 {{- end }}

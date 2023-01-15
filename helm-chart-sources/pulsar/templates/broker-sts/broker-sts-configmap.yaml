@@ -81,26 +81,16 @@ data:
   proxyRoles: "{{ .Values.proxyRoles }}"
   superUserRoles: "{{ .Values.superUserRoles }}"
   tokenPublicKey: "file:///pulsar/token-public-key/{{ .Values.tokenPublicKeyFile }}"
-  {{- if .Values.openid.enabled }}
-  brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2"
-  brokerClientAuthenticationParameters: "{\"privateKey\":\"file:///pulsar/openid-client-credentials/superuserKey.json\",\"issuerUrl\":\"{{ .Values.openid.issuerUrl }}\",\"scope\":\"{{ .Values.openid.scope }}\",\"audience\":\"{{ .Values.openid.allowedAudience }}\"}"
-  {{- else }} # There's probably a smarter way to write this so it's more readable but gets trimmed to one line so Jackson doesn't blow up on new lines when parsing.
   brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
   brokerClientAuthenticationParameters: "file:///pulsar/token-superuser/superuser.jwt"
-  {{- end }}
-  {{- if .Values.brokerSts.extraAuthProvider }} # There surely is a cleaner way to do all this...
-  {{- if .Values.openid.enabled }}
-  authenticationProviders: "{{ .Values.brokerSts.authenticationProviders }},{{ .Values.brokerSts.extraAuthProvider }},{{ .Values.openid.authenticationProvider }}"
-  {{- else }}
-  authenticationProviders: "{{ .Values.brokerSts.authenticationProviders }},{{ .Values.brokerSts.extraAuthProvider }}"
-  {{- end }}
-  {{- else }}
-  {{- if .Values.openid.enabled }}
-  authenticationProviders: "{{ .Values.brokerSts.authenticationProviders }},{{ .Values.openid.authenticationProvider }}"
-  {{- else }}
-  authenticationProviders: "{{ .Values.brokerSts.authenticationProviders }}"
-  {{- end }}
-  {{- end }}
+  # Use the following block if we want to also enable OAuth2 between Pulsar components, not just between clients and Pulsar:
+  #{{- if .Values.openid.enabled }}
+  #brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2"
+  #brokerClientAuthenticationParameters: "{\"privateKey\":\"file:///pulsar/openid-client-credentials/superuserKey.json\",\"issuerUrl\":\"{{ .Values.openid.issuerUrl }}\",\"scope\":\"{{ .Values.openid.scope }}\",\"audience\":\"{{ .Values.openid.allowedAudience }}\"}"
+  #{{- else }} # There's probably a smarter way to write this so it's more readable but gets trimmed to one line so Jackson doesn't blow up on new lines when parsing.
+  #brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
+  #brokerClientAuthenticationParameters: "file:///pulsar/token-superuser/superuser.jwt"
+  #{{- end }}
   {{- if .Values.keycloak.enabled }}
   PULSAR_PREFIX_openIDAllowedTokenIssuers: "{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ template "pulsar.serviceDnsSuffix" . }}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }}"
   {{- end }}
@@ -123,13 +113,40 @@ data:
   PULSAR_PREFIX_openIDRequireHttps: "{{ .Values.openid.requireHttps }}"
   # Set following to true if admin console is configured to use Okta integration. The admin console uses the user model with local admin token, not Okta integration, according to notes from Ming-Hong Liu.
   PULSAR_PREFIX_openIDAttemptAuthenticationProviderToken: "{{ .Values.openid.attemptAuthenticationProviderToken }}"
-
+  PULSAR_PREFIX_authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,{{ .Values.brokerSts.authenticationProviders }}"
+{{- else }}
+  PULSAR_PREFIX_authenticationProviders: "{{ .Values.brokerSts.authenticationProviders }}"
 {{- end }}
 
-{{- if and (.Values.openid.enabled) (.Values.openid.withS4k) }}
-  # It would be nice to do something like this to abstract some of the configs away from the Values file since it's pretty complex
+{{- if and .Values.openid.enabled .Values.openid.withS4k }}
+  PULSAR_PREFIX_brokerEntryMetadataInterceptors: "org.apache.pulsar.common.intercept.AppendIndexMetadataInterceptor,org.apache.pulsar.common.intercept.AppendBrokerTimestampMetadataInterceptor"
+  PULSAR_PREFIX_kopOauth2AuthenticateCallbackHandler: "io.streamnative.pulsar.handlers.kop.security.oauth.OauthValidatorCallbackHandler"
+  PULSAR_PREFIX_kopOauth2ConfigFile: "/pulsar/conf/kop-handler.properties"
+  PULSAR_PREFIX_kafkaTransactionCoordinatorEnabled: "true"
+  PULSAR_PREFIX_kafkaProxySuperUserRole: "{{ .Values.kafkaProxySuperUserRole }}"
+  PULSAR_PREFIX_messagingProtocols: "kafka"
+  PULSAR_PREFIX_brokerDeleteInactiveTopicsEnabled: "false"
+  # Allow broker to accept both JWT and OAUTH2:
+  # PULSAR_PREFIX_openIDAttemptAuthenticationProviderToken: "true" # Not sure what to do about this since we've already exposed the parameter
+  PULSAR_PREFIX_saslAllowedMechanisms: "OAUTHBEARER,PLAIN"
+  PULSAR_PREFIX_kopOauth2AuthenticateCallbackHandler: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID"
+  PULSAR_PREFIX_kopSchemaRegistryEnable: "true"
+  PULSAR_PREFIX_allowAutoTopicCreationType: "partitioned"
+  PULSAR_PREFIX_protocolHandlerDirectory: "./protocols"
+  # Java property configuration file of OauthValidatorCallbackHandler (should it have a lower-case K in Kop?):
+  PULSAR_PREFIX_KopOauth2ConfigFile: "/pulsar/conf/kop-handler.properties"
+  PULSAR_PREFIX_kopOauth2ConfigFile: "/pulsar/conf/kop-handler.properties"
 {{- end }}
-
+{{- if and .Values.openid.enabled .Values.openid.withS4k .Values.enableTls }}
+  PULSAR_PREFIX_kopTlsEnabledWithBroker: "true"
+  PULSAR_PREFIX_kafkaListeners: "SASL_PLAINTEXT://0.0.0.0:9092,SASL_SSL://0.0.0.0:9093" 
+  PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://advertisedAddress:9092,SASL_SSL://advertisedAddress:9093" 
+{{- end }}
+{{- if and .Values.openid.enabled .Values.openid.withS4k (not .Values.enableTls ) }}
+  PULSAR_PREFIX_kopTlsEnabledWithBroker: "true"
+  PULSAR_PREFIX_kafkaListeners: "SASL_PLAINTEXT://0.0.0.0:9092"
+  PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://advertisedAddress:9092"
+{{- end }}
 {{- if .Values.enableTls }}
   tlsEnabled: "true"
   tlsEnableHostnameVerification: "true"
