@@ -171,7 +171,7 @@ createCertificates:
     enabled: true
 
 openid:
-  enabled: true # If true, make sure tokenAuth is disabled.
+  enabled: true 
   # From token generated in Okta UI or other method:
   issuerUrl: https://dev-4223436.okta.com/oauth2/aus7ypffff
   scope: pulsar_client_m2m
