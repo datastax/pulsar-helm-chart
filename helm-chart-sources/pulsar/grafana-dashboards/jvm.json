@@ -87,11 +87,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "irate(process_cpu_seconds_total{kubernetes_pod_name=~\"$instance\"}[60s]) * 100\n\n",
+          "expr": "irate(process_cpu_seconds_total{instance=~\"$instance\"}[60s]) * 100\n\n",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{instance}}",
           "metric": "process_cpu_seconds_total",
           "refId": "A",
           "step": 20
@@ -199,7 +199,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(jvm_memory_bytes_committed{kubernetes_pod_name=~\"$instance\"})",
+          "expr": "sum(jvm_memory_bytes_committed{instance=~\"$instance\"})",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -210,7 +210,7 @@
           "step": 20
         },
         {
-          "expr": "sum(jvm_memory_bytes_used{kubernetes_pod_name=~\"$instance\"})",
+          "expr": "sum(jvm_memory_bytes_used{instance=~\"$instance\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -220,7 +220,7 @@
           "step": 20
         },
         {
-          "expr": "sum(jvm_memory_bytes_max{kubernetes_pod_name=~\"$instance\"})",
+          "expr": "sum(jvm_memory_bytes_max{instance=~\"$instance\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -320,7 +320,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "jvm_memory_direct_bytes_used{kubernetes_pod_name=~\"$instance\"}",
+          "expr": "jvm_memory_direct_bytes_used{instance=~\"$instance\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -330,7 +330,7 @@
           "step": 20
         },
         {
-          "expr": "jvm_memory_direct_bytes_max{kubernetes_pod_name=~\"$instance\"}",
+          "expr": "jvm_memory_direct_bytes_max{instance=~\"$instance\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -439,7 +439,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(jvm_gc_collection_seconds_sum{kubernetes_pod_name=~\"$instance\"}[60s]))",
+          "expr": "sum(increase(jvm_gc_collection_seconds_sum{instance=~\"$instance\"}[60s]))",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -563,11 +563,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "irate(process_cpu_seconds_total{kubernetes_pod_name=~\"$instance\"}[60s]) * 100\n\n",
+          "expr": "irate(process_cpu_seconds_total{instance=~\"$instance\"}[60s]) * 100\n\n",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{instance}}",
           "metric": "process_cpu_seconds_total",
           "refId": "A",
           "step": 20
@@ -678,7 +678,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(jvm_memory_bytes_committed{kubernetes_pod_name=~\"$instance\"})",
+          "expr": "sum(jvm_memory_bytes_committed{instance=~\"$instance\"})",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -689,7 +689,7 @@
           "step": 20
         },
         {
-          "expr": "sum(jvm_memory_bytes_used{kubernetes_pod_name=~\"$instance\"})",
+          "expr": "sum(jvm_memory_bytes_used{instance=~\"$instance\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -699,7 +699,7 @@
           "step": 20
         },
         {
-          "expr": "sum(jvm_memory_bytes_max{kubernetes_pod_name=~\"$instance\"})",
+          "expr": "sum(jvm_memory_bytes_max{instance=~\"$instance\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -802,7 +802,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "jvm_memory_direct_bytes_used{kubernetes_pod_name=~\"$instance\"}",
+          "expr": "jvm_memory_direct_bytes_used{instance=~\"$instance\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -812,7 +812,7 @@
           "step": 20
         },
         {
-          "expr": "jvm_memory_direct_bytes_max{kubernetes_pod_name=~\"$instance\"}",
+          "expr": "jvm_memory_direct_bytes_max{instance=~\"$instance\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -924,7 +924,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(jvm_gc_collection_seconds_sum{kubernetes_pod_name=~\"$instance\"}[60s]))",
+          "expr": "sum(increase(jvm_gc_collection_seconds_sum{instance=~\"$instance\"}[60s]))",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -1048,11 +1048,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "irate(process_cpu_seconds_total{kubernetes_pod_name=~\"$instance\"}[60s]) * 100\n\n",
+          "expr": "irate(process_cpu_seconds_total{instance=~\"$instance\"}[60s]) * 100\n\n",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{instance}}",
           "metric": "process_cpu_seconds_total",
           "refId": "A",
           "step": 20
@@ -1163,7 +1163,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(jvm_memory_bytes_committed{kubernetes_pod_name=~\"$instance\"})",
+          "expr": "sum(jvm_memory_bytes_committed{instance=~\"$instance\"})",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -1174,7 +1174,7 @@
           "step": 20
         },
         {
-          "expr": "sum(jvm_memory_bytes_used{kubernetes_pod_name=~\"$instance\"})",
+          "expr": "sum(jvm_memory_bytes_used{instance=~\"$instance\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1184,7 +1184,7 @@
           "step": 20
         },
         {
-          "expr": "sum(jvm_memory_bytes_max{kubernetes_pod_name=~\"$instance\"})",
+          "expr": "sum(jvm_memory_bytes_max{instance=~\"$instance\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1287,7 +1287,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "jvm_memory_direct_bytes_used{kubernetes_pod_name=~\"$instance\"}",
+          "expr": "jvm_memory_direct_bytes_used{instance=~\"$instance\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1297,7 +1297,7 @@
           "step": 20
         },
         {
-          "expr": "jvm_memory_direct_bytes_max{kubernetes_pod_name=~\"$instance\"}",
+          "expr": "jvm_memory_direct_bytes_max{instance=~\"$instance\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1409,7 +1409,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(jvm_gc_collection_seconds_sum{kubernetes_pod_name=~\"$instance\"}[60s]))",
+          "expr": "sum(increase(jvm_gc_collection_seconds_sum{instance=~\"$instance\"}[60s]))",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -1533,11 +1533,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "irate(process_cpu_seconds_total{kubernetes_pod_name=~\"$instance\"}[60s]) * 100\n\n",
+          "expr": "irate(process_cpu_seconds_total{instance=~\"$instance\"}[60s]) * 100\n\n",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{instance}}",
           "metric": "process_cpu_seconds_total",
           "refId": "A",
           "step": 20
@@ -1648,7 +1648,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(jvm_memory_bytes_committed{kubernetes_pod_name=~\"$instance\"})",
+          "expr": "sum(jvm_memory_bytes_committed{instance=~\"$instance\"})",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -1659,7 +1659,7 @@
           "step": 20
         },
         {
-          "expr": "sum(jvm_memory_bytes_used{kubernetes_pod_name=~\"$instance\"})",
+          "expr": "sum(jvm_memory_bytes_used{instance=~\"$instance\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1669,7 +1669,7 @@
           "step": 20
         },
         {
-          "expr": "sum(jvm_memory_bytes_max{kubernetes_pod_name=~\"$instance\"})",
+          "expr": "sum(jvm_memory_bytes_max{instance=~\"$instance\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1772,7 +1772,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "jvm_memory_direct_bytes_used{kubernetes_pod_name=~\"$instance\"}",
+          "expr": "jvm_memory_direct_bytes_used{instance=~\"$instance\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1782,7 +1782,7 @@
           "step": 20
         },
         {
-          "expr": "jvm_memory_direct_bytes_max{kubernetes_pod_name=~\"$instance\"}",
+          "expr": "jvm_memory_direct_bytes_max{instance=~\"$instance\"}",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1894,7 +1894,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(jvm_gc_collection_seconds_sum{kubernetes_pod_name=~\"$instance\"}[60s]))",
+          "expr": "sum(increase(jvm_gc_collection_seconds_sum{instance=~\"$instance\"}[60s]))",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -2015,16 +2015,16 @@
           "value": "$__all"
         },
         "datasource": "Prometheus",
-        "definition": "jvm_memory_bytes_used{job=~\"$job\", kubernetes_pod_name=~\".+\"}",
+        "definition": "jvm_memory_bytes_used{job=~\"$job\", instance=~\".+\"}",
         "hide": 0,
         "includeAll": true,
         "label": "Instance",
         "multi": true,
         "name": "instance",
         "options": [],
-        "query": "jvm_memory_bytes_used{job=~\"$job\", kubernetes_pod_name=~\".+\"}",
+        "query": "jvm_memory_bytes_used{job=~\"$job\", instance=~\".+\"}",
         "refresh": 2,
-        "regex": "/.*[^_]kubernetes_pod_name=\\\"([^\\\"]+)\\\".*/",
+        "regex": "/.*[^_]instance=\\\"([^\\\"]+)\\\".*/",
         "skipUrlSync": false,
         "sort": 1,
         "tagValuesQuery": "",

@@ -66,7 +66,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(bookie_read_entry_sum[1m])) by (kubernetes_pod_name)",
+          "expr": "sum(irate(bookie_read_entry_sum[1m])) by (instance)",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -162,7 +162,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(bookkeeper_server_BookieReadThreadPool_task_execution_sum[1m])) by (kubernetes_pod_name)",
+          "expr": "sum(irate(bookkeeper_server_BookieReadThreadPool_task_execution_sum[1m])) by (instance)",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -257,49 +257,49 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bookkeeper_server_BookieReadThreadPool_queue_0) by (kubernetes_pod_name)",
+          "expr": "sum(bookkeeper_server_BookieReadThreadPool_queue_0) by (instance)",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
         },
         {
-          "expr": "sum(bookkeeper_server_BookieReadThreadPool_queue_1) by (kubernetes_pod_name)",
+          "expr": "sum(bookkeeper_server_BookieReadThreadPool_queue_1) by (instance)",
           "interval": "",
           "legendFormat": "",
           "refId": "B"
         },
         {
-          "expr": "sum(bookkeeper_server_BookieReadThreadPool_queue_2) by (kubernetes_pod_name)",
+          "expr": "sum(bookkeeper_server_BookieReadThreadPool_queue_2) by (instance)",
           "interval": "",
           "legendFormat": "",
           "refId": "C"
         },
         {
-          "expr": "sum(bookkeeper_server_BookieReadThreadPool_queue_3) by (kubernetes_pod_name)",
+          "expr": "sum(bookkeeper_server_BookieReadThreadPool_queue_3) by (instance)",
           "interval": "",
           "legendFormat": "",
           "refId": "D"
         },
         {
-          "expr": "sum(bookkeeper_server_BookieReadThreadPool_queue_4) by (kubernetes_pod_name)",
+          "expr": "sum(bookkeeper_server_BookieReadThreadPool_queue_4) by (instance)",
           "interval": "",
           "legendFormat": "",
           "refId": "E"
         },
         {
-          "expr": "sum(bookkeeper_server_BookieReadThreadPool_queue_5) by (kubernetes_pod_name)",
+          "expr": "sum(bookkeeper_server_BookieReadThreadPool_queue_5) by (instance)",
           "interval": "",
           "legendFormat": "",
           "refId": "F"
         },
         {
-          "expr": "sum(bookkeeper_server_BookieReadThreadPool_queue_6) by (kubernetes_pod_name)",
+          "expr": "sum(bookkeeper_server_BookieReadThreadPool_queue_6) by (instance)",
           "interval": "",
           "legendFormat": "",
           "refId": "G"
         },
         {
-          "expr": "sum(bookkeeper_server_BookieReadThreadPool_queue_7) by (kubernetes_pod_name)",
+          "expr": "sum(bookkeeper_server_BookieReadThreadPool_queue_7) by (instance)",
           "interval": "",
           "legendFormat": "",
           "refId": "H"
@@ -394,7 +394,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bookkeeper_server_BookieReadThreadPool_task_queued{success=\"true\",quantile=\"0.99\"}) by (kubernetes_pod_name)",
+          "expr": "sum(bookkeeper_server_BookieReadThreadPool_task_queued{success=\"true\",quantile=\"0.99\"}) by (instance)",
           "interval": "",
           "legendFormat": "",
           "refId": "A"

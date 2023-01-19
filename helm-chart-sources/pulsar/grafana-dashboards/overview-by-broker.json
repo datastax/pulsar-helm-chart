@@ -1214,10 +1214,10 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_storage_size{job=~\"broker\",kubernetes_pod_name=~\"$broker\"}) by (kubernetes_pod_name)",
+          "expr": "sum(pulsar_storage_size{job=~\"broker\",instance=~\"$broker\"}) by (instance)",
           "format": "time_series",
           "intervalFactor": 2,
-          "legendFormat": "{{ kubernetes_pod_name }}",
+          "legendFormat": "{{ instance }}",
           "range": true,
           "refId": "A"
         },
@@ -1227,7 +1227,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_storage_size{job=~\"broker\",kubernetes_pod_name=~\"$broker\"}) ",
+          "expr": "sum(pulsar_storage_size{job=~\"broker\",instance=~\"$broker\"}) ",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
@@ -1337,11 +1337,11 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_rate_in{job=~\"broker\", kubernetes_pod_name=~\"$broker\"}) by (kubernetes_pod_name)",
+          "expr": "sum(pulsar_rate_in{job=~\"broker\", instance=~\"$broker\"}) by (instance)",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
-          "legendFormat": "{{ kubernetes_pod_name }} - In",
+          "legendFormat": "{{ instance }} - In",
           "range": true,
           "refId": "C"
         },
@@ -1364,11 +1364,11 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_rate_out{job=~\"broker\", kubernetes_pod_name=~\"$broker\"}) by (kubernetes_pod_name)",
+          "expr": "sum(pulsar_rate_out{job=~\"broker\", instance=~\"$broker\"}) by (instance)",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 1,
-          "legendFormat": "{{ kubernetes_pod_name }} - Out",
+          "legendFormat": "{{ instance }} - Out",
           "range": true,
           "refId": "D"
         }
@@ -1468,7 +1468,7 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "kubernetes_pod_name"
+              "options": "instance"
             },
             "properties": [
               {
@@ -1532,7 +1532,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": " topk(10, sum(pulsar_msg_backlog{job=~\"broker\", kubernetes_pod_name=~\"$broker\"}) by (kubernetes_pod_name,topic))",
+          "expr": " topk(10, sum(pulsar_msg_backlog{job=~\"broker\", instance=~\"$broker\"}) by (instance,topic))",
           "format": "table",
           "instant": true,
           "intervalFactor": 2,
@@ -1552,11 +1552,11 @@
             "indexByName": {
               "Time": 0,
               "Value": 3,
-              "kubernetes_pod_name": 2,
+              "instance": 2,
               "topic": 1
             },
             "renameByName": {
-              "kubernetes_pod_name": "Broker"
+              "instance": "Broker"
             }
           }
         }
@@ -1648,10 +1648,10 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_msg_backlog{job=~\"broker\", kubernetes_pod_name=~\"$broker\"}) by (kubernetes_pod_name)",
+          "expr": "sum(pulsar_msg_backlog{job=~\"broker\", instance=~\"$broker\"}) by (instance)",
           "format": "time_series",
           "intervalFactor": 2,
-          "legendFormat": "{{ kubernetes_pod_name }}",
+          "legendFormat": "{{ instance }}",
           "range": true,
           "refId": "A"
         },
@@ -1661,7 +1661,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_msg_backlog{job=~\"broker\", kubernetes_pod_name=~\"$broker\"}) ",
+          "expr": "sum(pulsar_msg_backlog{job=~\"broker\", instance=~\"$broker\"}) ",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
@@ -1730,10 +1730,10 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_throughput_in{job=~\"broker\", kubernetes_pod_name=~\"$broker\"}) by (kubernetes_pod_name)",
+          "expr": "sum(pulsar_throughput_in{job=~\"broker\", instance=~\"$broker\"}) by (instance)",
           "format": "time_series",
           "intervalFactor": 2,
-          "legendFormat": "{{ kubernetes_pod_name }} - In",
+          "legendFormat": "{{ instance }} - In",
           "range": true,
           "refId": "A"
         },
@@ -1757,10 +1757,10 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_throughput_out{job=~\"broker\", kubernetes_pod_name=~\"$broker\"}) by (kubernetes_pod_name)",
+          "expr": "sum(pulsar_throughput_out{job=~\"broker\", instance=~\"$broker\"}) by (instance)",
           "format": "time_series",
           "intervalFactor": 1,
-          "legendFormat": "{{ kubernetes_pod_name }} - Out",
+          "legendFormat": "{{ instance }} - Out",
           "range": true,
           "refId": "B"
         },
@@ -1896,7 +1896,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_subscription_unacked_messages{job=~\"broker\", kubernetes_pod_name=~\"$broker\"}) by (cluster)",
+          "expr": "sum(pulsar_subscription_unacked_messages{job=~\"broker\", instance=~\"$broker\"}) by (cluster)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Total In",
@@ -1909,11 +1909,11 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_subscription_unacked_messages{job=~\"broker\", kubernetes_pod_name=~\"$broker\"}) by (kubernetes_pod_name)",
+          "expr": "sum(pulsar_subscription_unacked_messages{job=~\"broker\", instance=~\"$broker\"}) by (instance)",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
-          "legendFormat": "{{ kubernetes_pod_name }} - In",
+          "legendFormat": "{{ instance }} - In",
           "range": true,
           "refId": "B"
         }
@@ -1978,7 +1978,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_producers_count{job=~\"broker\",  kubernetes_pod_name=~\"$broker\"}) by (cluster)",
+          "expr": "sum(pulsar_producers_count{job=~\"broker\",  instance=~\"$broker\"}) by (cluster)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Total In",
@@ -1991,11 +1991,11 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_producers_count{job=~\"broker\", kubernetes_pod_name=~\"$broker\"}) by (kubernetes_pod_name)",
+          "expr": "sum(pulsar_producers_count{job=~\"broker\", instance=~\"$broker\"}) by (instance)",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
-          "legendFormat": "{{ kubernetes_pod_name }} - In",
+          "legendFormat": "{{ instance }} - In",
           "range": true,
           "refId": "B"
         }
@@ -2204,7 +2204,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": " topk(10, sum(pulsar_subscription_unacked_messages{job=~\"broker\", kubernetes_pod_name=~\"$broker\"}) by (topic,kubernetes_pod_name))",
+          "expr": " topk(10, sum(pulsar_subscription_unacked_messages{job=~\"broker\", instance=~\"$broker\"}) by (topic,instance))",
           "format": "table",
           "instant": true,
           "intervalFactor": 2,
@@ -2223,11 +2223,11 @@
             "indexByName": {
               "Time": 0,
               "Value": 3,
-              "kubernetes_pod_name": 2,
+              "instance": 2,
               "topic": 1
             },
             "renameByName": {
-              "kubernetes_pod_name": "Broker"
+              "instance": "Broker"
             }
           }
         }
@@ -2319,7 +2319,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_consumers_count{job=~\"broker\", kubernetes_pod_name=~\"$broker\"}) by (cluster)",
+          "expr": "sum(pulsar_consumers_count{job=~\"broker\", instance=~\"$broker\"}) by (cluster)",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "Total In",
@@ -2332,11 +2332,11 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_consumers_count{job=~\"broker\", kubernetes_pod_name=~\"$broker\"}) by (kubernetes_pod_name)",
+          "expr": "sum(pulsar_consumers_count{job=~\"broker\", instance=~\"$broker\"}) by (instance)",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
-          "legendFormat": "{{ kubernetes_pod_name }} - In",
+          "legendFormat": "{{ instance }} - In",
           "range": true,
           "refId": "B"
         }
@@ -2429,10 +2429,10 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_subscriptions_count{job=~\"broker\", kubernetes_pod_name=~\"$broker\"}) by (kubernetes_pod_name)",
+          "expr": "sum(pulsar_subscriptions_count{job=~\"broker\", instance=~\"$broker\"}) by (instance)",
           "format": "time_series",
           "intervalFactor": 2,
-          "legendFormat": "{{ kubernetes_pod_name }} - In",
+          "legendFormat": "{{ instance }} - In",
           "range": true,
           "refId": "A"
         },
@@ -2442,7 +2442,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_subscriptions_count{job=~\"broker\", kubernetes_pod_name=~\"$broker\"}) by (cluster)",
+          "expr": "sum(pulsar_subscriptions_count{job=~\"broker\", instance=~\"$broker\"}) by (cluster)",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 2,
@@ -2511,7 +2511,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(increase(pulsar_in_messages_total{kubernetes_pod_name=~\"$broker\"}[1d])) by (cluster)",
+          "expr": "sum(increase(pulsar_in_messages_total{instance=~\"$broker\"}[1d])) by (cluster)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -2525,12 +2525,12 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(increase(pulsar_in_messages_total{kubernetes_pod_name=~\"$broker\"}[1d])) by (kubernetes_pod_name)",
+          "expr": "sum(increase(pulsar_in_messages_total{instance=~\"$broker\"}[1d])) by (instance)",
           "format": "time_series",
           "hide": false,
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}} - In",
+          "legendFormat": "{{instance}} - In",
           "range": true,
           "refId": "C"
         },
@@ -2540,7 +2540,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(increase(pulsar_out_messages_total{kubernetes_pod_name=~\"$broker\"}[1d])) by (cluster)",
+          "expr": "sum(increase(pulsar_out_messages_total{instance=~\"$broker\"}[1d])) by (cluster)",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -2555,12 +2555,12 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(increase(pulsar_out_messages_total{kubernetes_pod_name=~\"$broker\"}[1d])) by (kubernetes_pod_name)",
+          "expr": "sum(increase(pulsar_out_messages_total{instance=~\"$broker\"}[1d])) by (instance)",
           "format": "time_series",
           "hide": false,
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{ kubernetes_pod_name }} - Out",
+          "legendFormat": "{{ instance }} - Out",
           "range": true,
           "refId": "D"
         }
@@ -2654,7 +2654,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(increase(pulsar_in_bytes_total{kubernetes_pod_name=~\"$broker\"}[1d])) by (cluster)",
+          "expr": "sum(increase(pulsar_in_bytes_total{instance=~\"$broker\"}[1d])) by (cluster)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -2668,12 +2668,12 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(increase(pulsar_in_bytes_total{kubernetes_pod_name=~\"$broker\"}[1d])) by (kubernetes_pod_name)",
+          "expr": "sum(increase(pulsar_in_bytes_total{instance=~\"$broker\"}[1d])) by (instance)",
           "format": "time_series",
           "hide": false,
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{ kubernetes_pod_name }} - In",
+          "legendFormat": "{{ instance }} - In",
           "range": true,
           "refId": "D"
         },
@@ -2683,7 +2683,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(increase(pulsar_out_bytes_total{kubernetes_pod_name=~\"$broker\"}[1d])) by (cluster)",
+          "expr": "sum(increase(pulsar_out_bytes_total{instance=~\"$broker\"}[1d])) by (cluster)",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -2698,12 +2698,12 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(increase(pulsar_out_bytes_total{kubernetes_pod_name=~\"$broker\"}[1d])) by (kubernetes_pod_name)",
+          "expr": "sum(increase(pulsar_out_bytes_total{instance=~\"$broker\"}[1d])) by (instance)",
           "format": "time_series",
           "hide": false,
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{ kubernetes_pod_name }} - Out",
+          "legendFormat": "{{ instance }} - Out",
           "range": true,
           "refId": "C"
         }
@@ -2970,7 +2970,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": " topk(10, sum(pulsar_storage_size{job=~\"broker\",kubernetes_pod_name=~\"$broker\"}) by (topic,kubernetes_pod_name))",
+          "expr": " topk(10, sum(pulsar_storage_size{job=~\"broker\",instance=~\"$broker\"}) by (topic,instance))",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -2990,11 +2990,11 @@
             "indexByName": {
               "Time": 0,
               "Value": 3,
-              "kubernetes_pod_name": 2,
+              "instance": 2,
               "topic": 1
             },
             "renameByName": {
-              "kubernetes_pod_name": "Broker"
+              "instance": "Broker"
             }
           }
         },
@@ -3139,7 +3139,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_storage_offloaded_size{kubernetes_pod_name=~\"$broker\"}) by (cluster)",
+          "expr": "sum(pulsar_storage_offloaded_size{instance=~\"$broker\"}) by (cluster)",
           "interval": "",
           "legendFormat": "Total",
           "range": true,
@@ -3151,10 +3151,10 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_storage_offloaded_size{kubernetes_pod_name=~\"$broker\"}) by (kubernetes_pod_name)",
+          "expr": "sum(pulsar_storage_offloaded_size{instance=~\"$broker\"}) by (instance)",
           "hide": false,
           "interval": "",
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "B"
         }
@@ -3247,7 +3247,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_subscription_msg_rate_redeliver{kubernetes_pod_name=~\"$broker\"}) by (cluster)",
+          "expr": "sum(pulsar_subscription_msg_rate_redeliver{instance=~\"$broker\"}) by (cluster)",
           "interval": "",
           "legendFormat": "Total",
           "range": true,
@@ -3259,10 +3259,10 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_subscription_msg_rate_redeliver{kubernetes_pod_name=~\"$broker\"}) by (kubernetes_pod_name)",
+          "expr": "sum(pulsar_subscription_msg_rate_redeliver{instance=~\"$broker\"}) by (instance)",
           "hide": false,
           "interval": "",
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "B"
         }
@@ -3457,7 +3457,7 @@
             "type": "prometheus",
             "uid": "prometheus"
           },
-          "expr": " topk(10, sum(pulsar_storage_offloaded_size{job=~\"broker\", kubernetes_pod_name=~\"$broker\"}) by (topic,kubernetes_pod_name))",
+          "expr": " topk(10, sum(pulsar_storage_offloaded_size{job=~\"broker\", instance=~\"$broker\"}) by (topic,instance))",
           "format": "table",
           "instant": true,
           "interval": "",
@@ -3477,11 +3477,11 @@
             "indexByName": {
               "Time": 0,
               "Value": 3,
-              "kubernetes_pod_name": 2,
+              "instance": 2,
               "topic": 1
             },
             "renameByName": {
-              "kubernetes_pod_name": "Broker"
+              "instance": "Broker"
             }
           }
         }
@@ -3685,14 +3685,14 @@
           "type": "prometheus",
           "uid": "prometheus"
         },
-        "definition": "label_values(pulsar_msg_backlog, kubernetes_pod_name)",
+        "definition": "label_values(pulsar_msg_backlog, instance)",
         "hide": 0,
         "includeAll": true,
         "multi": true,
         "name": "broker",
         "options": [],
         "query": {
-          "query": "label_values(pulsar_msg_backlog, kubernetes_pod_name)",
+          "query": "label_values(pulsar_msg_backlog, instance)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,

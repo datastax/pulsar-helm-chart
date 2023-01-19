@@ -68,9 +68,9 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(pulsar_producers_count{job=~\"broker\"}) by (kubernetes_pod_name)",
+          "expr": "sum(pulsar_producers_count{job=~\"broker\"}) by (instance)",
           "interval": "",
-          "legendFormat": "{{ kubernetes_pod_name }}",
+          "legendFormat": "{{ instance }}",
           "refId": "A"
         }
       ],
@@ -165,9 +165,9 @@
       "targets": [
         {
           "exemplar": true,
-          "expr": "sum(pulsar_consumers_count{job=~\"broker\"}) by (kubernetes_pod_name)",
+          "expr": "sum(pulsar_consumers_count{job=~\"broker\"}) by (instance)",
           "interval": "",
-          "legendFormat": "{{ kubernetes_pod_name }}",
+          "legendFormat": "{{ instance }}",
           "refId": "A"
         }
       ],

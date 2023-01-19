@@ -68,7 +68,7 @@
         {
           "expr": "rate(bookie_RECLAIMED_COMPACTION_SPACE_BYTES[5m]) ",
           "interval": "",
-          "legendFormat": "{{ kubernetes_pod_name }}",
+          "legendFormat": "{{ instance }}",
           "refId": "A"
         }
       ],
@@ -163,7 +163,7 @@
         {
           "expr": "rate(bookie_RECLAIMED_DELETION_SPACE_BYTES[5m]) ",
           "interval": "",
-          "legendFormat": "{{ kubernetes_pod_name }}",
+          "legendFormat": "{{ instance }}",
           "refId": "A"
         }
       ],
@@ -258,7 +258,7 @@
         {
           "expr": "rate(bookie_MAJOR_COMPACTION_COUNT[5m])",
           "interval": "",
-          "legendFormat": "{{ kubernetes_pod_name }}",
+          "legendFormat": "{{ instance }}",
           "refId": "A"
         }
       ],
@@ -353,7 +353,7 @@
         {
           "expr": "rate(bookie_MAJOR_COMPACTION_COUNT[5m])",
           "interval": "",
-          "legendFormat": "{{ kubernetes_pod_name }}",
+          "legendFormat": "{{ instance }}",
           "refId": "A"
         }
       ],
@@ -448,7 +448,7 @@
         {
           "expr": "bookie_ACTIVE_ENTRY_LOG_COUNT",
           "interval": "",
-          "legendFormat": "{{ kubernetes_pod_name }}",
+          "legendFormat": "{{ instance }}",
           "refId": "B"
         }
       ],
@@ -543,7 +543,7 @@
         {
           "expr": "bookie_ACTIVE_ENTRY_LOG_COUNT",
           "interval": "",
-          "legendFormat": "{{ kubernetes_pod_name }}",
+          "legendFormat": "{{ instance }}",
           "refId": "B"
         }
       ],
@@ -638,7 +638,7 @@
         {
           "expr": "bookie_ACTIVE_LEDGER_COUNT",
           "interval": "",
-          "legendFormat": "{{ kubernetes_pod_name }}",
+          "legendFormat": "{{ instance }}",
           "refId": "B"
         }
       ],
@@ -733,7 +733,7 @@
         {
           "expr": "bookie_DELETED_LEDGER_COUNT",
           "interval": "",
-          "legendFormat": "{{ kubernetes_pod_name }}",
+          "legendFormat": "{{ instance }}",
           "refId": "B"
         }
       ],

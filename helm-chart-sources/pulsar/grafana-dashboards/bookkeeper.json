@@ -189,7 +189,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(bookie_SERVER_STATUS{job=~\"$job\", kubernetes_pod_name=~\"$instance\"} == 0)\n",
+          "expr": "count(bookie_SERVER_STATUS{job=~\"$job\", instance=~\"$instance\"} == 0)\n",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -261,7 +261,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "100 * sum(irate(bookkeeper_server_ADD_ENTRY_count{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\"}[60s])) / sum(irate(bookkeeper_server_ADD_ENTRY_count{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}[60s]))",
+          "expr": "100 * sum(irate(bookkeeper_server_ADD_ENTRY_count{job=~\"$job\", instance=~\"$instance\", success=\"true\"}[60s])) / sum(irate(bookkeeper_server_ADD_ENTRY_count{job=~\"$job\", instance=~\"$instance\"}[60s]))",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -367,7 +367,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "avg(bookkeeper_server_ADD_ENTRY_REQUEST{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\", quantile=\"0.99\"})",
+          "expr": "avg(bookkeeper_server_ADD_ENTRY_REQUEST{job=~\"$job\", instance=~\"$instance\", success=\"true\", quantile=\"0.99\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -376,7 +376,7 @@
           "step": 2
         },
         {
-          "expr": "avg(bookkeeper_server_ADD_ENTRY_REQUEST{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\", quantile=\"0.999\"})",
+          "expr": "avg(bookkeeper_server_ADD_ENTRY_REQUEST{job=~\"$job\", instance=~\"$instance\", success=\"true\", quantile=\"0.999\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -384,7 +384,7 @@
           "refId": "B"
         },
         {
-          "expr": "avg(bookkeeper_server_ADD_ENTRY_REQUEST{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\", quantile=\"0.5\"})",
+          "expr": "avg(bookkeeper_server_ADD_ENTRY_REQUEST{job=~\"$job\", instance=~\"$instance\", success=\"true\", quantile=\"0.5\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -392,7 +392,7 @@
           "refId": "C"
         },
         {
-          "expr": "avg(bookkeeper_server_READ_ENTRY_REQUEST{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\", quantile=\"0.99\"})",
+          "expr": "avg(bookkeeper_server_READ_ENTRY_REQUEST{job=~\"$job\", instance=~\"$instance\", success=\"true\", quantile=\"0.99\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -400,7 +400,7 @@
           "refId": "D"
         },
         {
-          "expr": "avg(bookkeeper_server_READ_ENTRY_REQUEST{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\", quantile=\"0.999\"})",
+          "expr": "avg(bookkeeper_server_READ_ENTRY_REQUEST{job=~\"$job\", instance=~\"$instance\", success=\"true\", quantile=\"0.999\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -408,7 +408,7 @@
           "refId": "E"
         },
         {
-          "expr": "avg(bookkeeper_server_READ_ENTRY_REQUEST{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\", quantile=\"0.5\"})",
+          "expr": "avg(bookkeeper_server_READ_ENTRY_REQUEST{job=~\"$job\", instance=~\"$instance\", success=\"true\", quantile=\"0.5\"})",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -524,7 +524,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "100 \n* \ncount(bookie_SERVER_STATUS{job=~\"$job\", kubernetes_pod_name=~\"$instance\"} == 1)\n/\ncount(bookie_SERVER_STATUS{job=~\"$job\", kubernetes_pod_name=~\"$instance\"})\n   ",
+          "expr": "100 \n* \ncount(bookie_SERVER_STATUS{job=~\"$job\", instance=~\"$instance\"} == 1)\n/\ncount(bookie_SERVER_STATUS{job=~\"$job\", instance=~\"$instance\"})\n   ",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -700,7 +700,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(bookkeeper_server_READ_ENTRY_count{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\"}[60s]))",
+          "expr": "sum(irate(bookkeeper_server_READ_ENTRY_count{job=~\"$job\", instance=~\"$instance\", success=\"true\"}[60s]))",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -709,7 +709,7 @@
           "step": 2
         },
         {
-          "expr": "sum(irate(bookkeeper_server_ADD_ENTRY_count{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\"}[60s]))",
+          "expr": "sum(irate(bookkeeper_server_ADD_ENTRY_count{job=~\"$job\", instance=~\"$instance\", success=\"true\"}[60s]))",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -821,7 +821,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(bookie_WRITE_BYTES{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}[60s])) by (kubernetes_pod_name) ",
+          "expr": "sum(irate(bookie_WRITE_BYTES{job=~\"$job\", instance=~\"$instance\"}[60s])) by (instance) ",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -920,7 +920,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(bookie_READ_BYTES{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}[60s])) by (kubernetes_pod_name)",
+          "expr": "sum(irate(bookie_READ_BYTES{job=~\"$job\", instance=~\"$instance\"}[60s])) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1019,7 +1019,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(bookkeeper_server_ADD_ENTRY_REQUEST_count{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}[60s])) by (kubernetes_pod_name)",
+          "expr": "sum(irate(bookkeeper_server_ADD_ENTRY_REQUEST_count{job=~\"$job\", instance=~\"$instance\"}[60s])) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1118,7 +1118,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(bookkeeper_server_READ_ENTRY_REQUEST_count{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}[60s])) by (kubernetes_pod_name)",
+          "expr": "sum(irate(bookkeeper_server_READ_ENTRY_REQUEST_count{job=~\"$job\", instance=~\"$instance\"}[60s])) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1217,7 +1217,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bookkeeper_server_ADD_ENTRY_REQUEST{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\", quantile=\"0.5\"}) by (kubernetes_pod_name)",
+          "expr": "sum(bookkeeper_server_ADD_ENTRY_REQUEST{job=~\"$job\", instance=~\"$instance\", success=\"true\", quantile=\"0.5\"}) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1316,7 +1316,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bookkeeper_server_ADD_ENTRY_REQUEST{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\", quantile=\"0.99\"}) by (kubernetes_pod_name)",
+          "expr": "sum(bookkeeper_server_ADD_ENTRY_REQUEST{job=~\"$job\", instance=~\"$instance\", success=\"true\", quantile=\"0.99\"}) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1415,7 +1415,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bookkeeper_server_ADD_ENTRY_REQUEST{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\", quantile=\"0.999\"}) by (kubernetes_pod_name)",
+          "expr": "sum(bookkeeper_server_ADD_ENTRY_REQUEST{job=~\"$job\", instance=~\"$instance\", success=\"true\", quantile=\"0.999\"}) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1514,7 +1514,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bookkeeper_server_READ_ENTRY_REQUEST{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\", quantile=\"0.5\"}) by (kubernetes_pod_name)",
+          "expr": "sum(bookkeeper_server_READ_ENTRY_REQUEST{job=~\"$job\", instance=~\"$instance\", success=\"true\", quantile=\"0.5\"}) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1613,7 +1613,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bookkeeper_server_READ_ENTRY_REQUEST{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\", quantile=\"0.99\"}) by (kubernetes_pod_name)",
+          "expr": "sum(bookkeeper_server_READ_ENTRY_REQUEST{job=~\"$job\", instance=~\"$instance\", success=\"true\", quantile=\"0.99\"}) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1712,7 +1712,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bookkeeper_server_READ_ENTRY_REQUEST{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\", quantile=\"0.999\"}) by (kubernetes_pod_name)",
+          "expr": "sum(bookkeeper_server_READ_ENTRY_REQUEST{job=~\"$job\", instance=~\"$instance\", success=\"true\", quantile=\"0.999\"}) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1825,7 +1825,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(bookie_journal_JOURNAL_SYNC_count{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\"}[60s])) by (kubernetes_pod_name)",
+          "expr": "sum(irate(bookie_journal_JOURNAL_SYNC_count{job=~\"$job\", instance=~\"$instance\", success=\"true\"}[60s])) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -1924,7 +1924,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(bookie_journal_JOURNAL_ADD_ENTRY_count{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\"}[60s])) by (kubernetes_pod_name)",
+          "expr": "sum(irate(bookie_journal_JOURNAL_ADD_ENTRY_count{job=~\"$job\", instance=~\"$instance\", success=\"true\"}[60s])) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -2023,11 +2023,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bookie_journal_JOURNAL_QUEUE_SIZE{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}) by (kubernetes_pod_name)",
+          "expr": "sum(bookie_journal_JOURNAL_QUEUE_SIZE{job=~\"$job\", instance=~\"$instance\"}) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{instance}}",
           "refId": "A",
           "step": 2
         }
@@ -2122,11 +2122,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bookie_journal_JOURNAL_FORCE_WRITE_QUEUE_SIZE{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}) by (kubernetes_pod_name)",
+          "expr": "sum(bookie_journal_JOURNAL_FORCE_WRITE_QUEUE_SIZE{job=~\"$job\", instance=~\"$instance\"}) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{instance}}",
           "refId": "A",
           "step": 2
         }
@@ -2221,11 +2221,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bookie_journal_JOURNAL_CB_QUEUE_SIZE{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}) by (kubernetes_pod_name)",
+          "expr": "sum(bookie_journal_JOURNAL_CB_QUEUE_SIZE{job=~\"$job\", instance=~\"$instance\"}) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{instance}}",
           "refId": "A",
           "step": 2
         }
@@ -2320,11 +2320,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bookie_journal_JOURNAL_ADD_ENTRY{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\", quantile=\"0.5\"}) by (kubernetes_pod_name)",
+          "expr": "sum(bookie_journal_JOURNAL_ADD_ENTRY{job=~\"$job\", instance=~\"$instance\", success=\"true\", quantile=\"0.5\"}) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{instance}}",
           "refId": "A",
           "step": 2
         }
@@ -2419,7 +2419,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bookie_journal_JOURNAL_ADD_ENTRY{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\", quantile=\"0.99\"}) by (kubernetes_pod_name)",
+          "expr": "sum(bookie_journal_JOURNAL_ADD_ENTRY{job=~\"$job\", instance=~\"$instance\", success=\"true\", quantile=\"0.99\"}) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
@@ -2518,11 +2518,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bookie_journal_JOURNAL_ADD_ENTRY{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\", quantile=\"1.0\"}) by (kubernetes_pod_name)",
+          "expr": "sum(bookie_journal_JOURNAL_ADD_ENTRY{job=~\"$job\", instance=~\"$instance\", success=\"true\", quantile=\"1.0\"}) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{instance}}",
           "refId": "A",
           "step": 2
         }
@@ -2617,11 +2617,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bookie_journal_JOURNAL_SYNC{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\", quantile=\"0.5\"}) by (kubernetes_pod_name)",
+          "expr": "sum(bookie_journal_JOURNAL_SYNC{job=~\"$job\", instance=~\"$instance\", success=\"true\", quantile=\"0.5\"}) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{instance}}",
           "refId": "A",
           "step": 4
         }
@@ -2716,11 +2716,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bookie_journal_JOURNAL_SYNC{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\", quantile=\"0.99\"}) by (kubernetes_pod_name)",
+          "expr": "sum(bookie_journal_JOURNAL_SYNC{job=~\"$job\", instance=~\"$instance\", success=\"true\", quantile=\"0.99\"}) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{instance}}",
           "refId": "A",
           "step": 4
         }
@@ -2815,11 +2815,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bookie_journal_JOURNAL_SYNC{job=~\"$job\", kubernetes_pod_name=~\"$instance\", success=\"true\", quantile=\"1.0\"}) by (kubernetes_pod_name)",
+          "expr": "sum(bookie_journal_JOURNAL_SYNC{job=~\"$job\", instance=~\"$instance\", success=\"true\", quantile=\"1.0\"}) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{instance}}",
           "refId": "A",
           "step": 4
         }
@@ -2928,11 +2928,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bookie_ledgers_count{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}) by (kubernetes_pod_name)",
+          "expr": "sum(bookie_ledgers_count{job=~\"$job\", instance=~\"$instance\"}) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{instance}}",
           "refId": "A",
           "step": 2
         }
@@ -3027,11 +3027,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bookie_entries_count{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}) by (kubernetes_pod_name)",
+          "expr": "sum(bookie_entries_count{job=~\"$job\", instance=~\"$instance\"}) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{instance}}",
           "refId": "A",
           "step": 2
         }
@@ -3126,11 +3126,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bookie_write_cache_size{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}) by (kubernetes_pod_name)",
+          "expr": "sum(bookie_write_cache_size{job=~\"$job\", instance=~\"$instance\"}) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{instance}}",
           "refId": "A",
           "step": 2
         }
@@ -3225,11 +3225,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bookie_read_cache_size{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}) by (kubernetes_pod_name)",
+          "expr": "sum(bookie_read_cache_size{job=~\"$job\", instance=~\"$instance\"}) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 2,
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{instance}}",
           "refId": "A",
           "step": 2
         }
@@ -3323,11 +3323,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bookie_DELETED_LEDGER_COUNT{job=~\"$job\", kubernetes_pod_name=~\"$$instance\"}) by (kubernetes_pod_name)",
+          "expr": "sum(bookie_DELETED_LEDGER_COUNT{job=~\"$job\", instance=~\"$$instance\"}) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{instance}}",
           "refId": "A"
         }
       ],
@@ -3420,11 +3420,11 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(bookie_ledger_writable_dirs{job=~\"$job\", kubernetes_pod_name=~\"$instance\"}) by (kubernetes_pod_name)",
+          "expr": "sum(bookie_ledger_writable_dirs{job=~\"$job\", instance=~\"$instance\"}) by (instance)",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{instance}}",
           "refId": "A"
         }
       ],
@@ -3515,16 +3515,16 @@
           ]
         },
         "datasource": "Prometheus",
-        "definition": "bookkeeper_server_ADD_ENTRY{job=~\"$job\", kubernetes_pod_name=~\".+\"}",
+        "definition": "bookkeeper_server_ADD_ENTRY{job=~\"$job\", instance=~\".+\"}",
         "hide": 0,
         "includeAll": true,
         "label": "Bookie",
         "multi": true,
         "name": "instance",
         "options": [],
-        "query": "bookkeeper_server_ADD_ENTRY{job=~\"$job\", kubernetes_pod_name=~\".+\"}",
+        "query": "bookkeeper_server_ADD_ENTRY{job=~\"$job\", instance=~\".+\"}",
         "refresh": 2,
-        "regex": "/.*[^_]kubernetes_pod_name=\\\"([^\\\"]+)\\\".*/",
+        "regex": "/.*[^_]instance=\\\"([^\\\"]+)\\\".*/",
         "skipUrlSync": false,
         "sort": 1,
         "tagValuesQuery": "",

@@ -113,7 +113,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_ml_cache_hits_rate{kubernetes_pod_name=~\"$broker\"}) ",
+          "expr": "sum(pulsar_ml_cache_hits_rate{instance=~\"$broker\"}) ",
           "hide": false,
           "interval": "",
           "legendFormat": "Cache Hit ",
@@ -126,7 +126,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_ml_cache_misses_rate{kubernetes_pod_name=~\"$broker\"})",
+          "expr": "sum(pulsar_ml_cache_misses_rate{instance=~\"$broker\"})",
           "interval": "",
           "legendFormat": "Miss Rate",
           "range": true,
@@ -138,7 +138,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(avg(pulsar_rate_in{kubernetes_pod_name=~\"$broker\"}) by (topic)) ",
+          "expr": "sum(avg(pulsar_rate_in{instance=~\"$broker\"}) by (topic)) ",
           "interval": "",
           "legendFormat": "Rate In",
           "range": true,
@@ -150,7 +150,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(avg(pulsar_rate_out{kubernetes_pod_name=~\"$broker\"}) by (topic)) ",
+          "expr": "sum(avg(pulsar_rate_out{instance=~\"$broker\"}) by (topic)) ",
           "interval": "",
           "legendFormat": "Rate Out",
           "range": true,
@@ -217,7 +217,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_ml_cache_hits_rate{kubernetes_pod_name=~\"$broker\"}) / (sum(pulsar_ml_cache_hits_rate{kubernetes_pod_name=~\"$broker\"}) + sum(pulsar_ml_cache_misses_rate{kubernetes_pod_name=~\"$broker\"})) * 100",
+          "expr": "sum(pulsar_ml_cache_hits_rate{instance=~\"$broker\"}) / (sum(pulsar_ml_cache_hits_rate{instance=~\"$broker\"}) + sum(pulsar_ml_cache_misses_rate{instance=~\"$broker\"})) * 100",
           "interval": "",
           "legendFormat": "Cache Hit %",
           "range": true,
@@ -337,9 +337,9 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_ml_cache_misses_rate{kubernetes_pod_name=~\"$broker\"}) by (kubernetes_pod_name)",
+          "expr": "sum(pulsar_ml_cache_misses_rate{instance=~\"$broker\"}) by (instance)",
           "interval": "",
-          "legendFormat": "{{ kubernetes_pod_name }}",
+          "legendFormat": "{{ instance }}",
           "range": true,
           "refId": "A"
         }
@@ -403,9 +403,9 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_ml_cache_hits_rate{kubernetes_pod_name=~\"$broker\"}) by (kubernetes_pod_name)",
+          "expr": "sum(pulsar_ml_cache_hits_rate{instance=~\"$broker\"}) by (instance)",
           "interval": "",
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
@@ -497,9 +497,9 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_ml_cache_hits_throughput{kubernetes_pod_name=~\"$broker\"}) by (kubernetes_pod_name)",
+          "expr": "sum(pulsar_ml_cache_hits_throughput{instance=~\"$broker\"}) by (instance)",
           "interval": "",
-          "legendFormat": "{{ kubernetes_pod_name }}",
+          "legendFormat": "{{ instance }}",
           "range": true,
           "refId": "A"
         }
@@ -591,9 +591,9 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_ml_cache_misses_throughput{kubernetes_pod_name=~\"$broker\"}) by (kubernetes_pod_name)",
+          "expr": "sum(pulsar_ml_cache_misses_throughput{instance=~\"$broker\"}) by (instance)",
           "interval": "",
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
@@ -685,9 +685,9 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_ml_cache_used_size{kubernetes_pod_name=~\"$broker\"}) by (kubernetes_pod_name)",
+          "expr": "sum(pulsar_ml_cache_used_size{instance=~\"$broker\"}) by (instance)",
           "interval": "",
-          "legendFormat": "{{kubernetes_pod_name}}",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
@@ -778,9 +778,9 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum(pulsar_ml_cache_evictions{kubernetes_pod_name=~\"$broker\"}) by (kubernetes_pod_name)",
+          "expr": "sum(pulsar_ml_cache_evictions{instance=~\"$broker\"}) by (instance)",
           "interval": "",
-          "legendFormat": "{{ kubernetes_pod_name }}",
+          "legendFormat": "{{ instance }}",
           "range": true,
           "refId": "A"
         }
@@ -840,14 +840,14 @@
           "type": "prometheus",
           "uid": "prometheus"
         },
-        "definition": "label_values(pulsar_ml_AddEntryBytesRate, kubernetes_pod_name)",
+        "definition": "label_values(pulsar_ml_AddEntryBytesRate, instance)",
         "hide": 0,
         "includeAll": true,
         "multi": true,
         "name": "broker",
         "options": [],
         "query": {
-          "query": "label_values(pulsar_ml_AddEntryBytesRate, kubernetes_pod_name)",
+          "query": "label_values(pulsar_ml_AddEntryBytesRate, instance)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,

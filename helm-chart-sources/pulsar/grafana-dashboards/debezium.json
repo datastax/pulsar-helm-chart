@@ -66,9 +66,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (kubernetes_pod_name) (rate(debezium_postgres_connector_metrics_TotalNumberOfEventsSeen[5m]))",
+          "expr": "sum by (instance) (rate(debezium_postgres_connector_metrics_TotalNumberOfEventsSeen[5m]))",
           "interval": "",
-          "legendFormat": "{{ kubernetes_pod_name  }}",
+          "legendFormat": "{{ instance  }}",
           "refId": "A"
         }
       ],
@@ -162,9 +162,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (kubernetes_pod_name) (rate(debezium_postgres_connector_metrics_NumberOfCommittedTransactions[5m]))",
+          "expr": "sum by (instance) (rate(debezium_postgres_connector_metrics_NumberOfCommittedTransactions[5m]))",
           "interval": "",
-          "legendFormat": "{{ kubernetes_pod_name  }}",
+          "legendFormat": "{{ instance  }}",
           "refId": "A"
         }
       ],
@@ -257,9 +257,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (kubernetes_pod_name) (debezium_postgres_connector_metrics_Connected)",
+          "expr": "sum by (instance) (debezium_postgres_connector_metrics_Connected)",
           "interval": "",
-          "legendFormat": "{{ kubernetes_pod_name  }}",
+          "legendFormat": "{{ instance  }}",
           "refId": "A"
         }
       ],
@@ -352,9 +352,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (kubernetes_pod_name) (debezium_postgres_connector_metrics_NumberOfCommittedTransactions)",
+          "expr": "sum by (instance) (debezium_postgres_connector_metrics_NumberOfCommittedTransactions)",
           "interval": "",
-          "legendFormat": "{{ kubernetes_pod_name }}",
+          "legendFormat": "{{ instance }}",
           "refId": "A"
         }
       ],
@@ -448,9 +448,9 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (kubernetes_pod_name) (debezium_postgres_connector_metrics_TotalNumberOfEventsSeen)",
+          "expr": "sum by (instance) (debezium_postgres_connector_metrics_TotalNumberOfEventsSeen)",
           "interval": "",
-          "legendFormat": "{{ kubernetes_pod_name }}",
+          "legendFormat": "{{ instance }}",
           "refId": "A"
         },
         {

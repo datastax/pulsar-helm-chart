@@ -66,7 +66,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(sum(rate(bookie_readahead_batch_count_count[1m])) by (kubernetes_pod_name) + sum(rate(bookie_readahead_batch_count_sum[1m])) by (kubernetes_pod_name)) / sum(rate(bookie_read_entry_count[1m])) by (kubernetes_pod_name)",
+          "expr": "(sum(rate(bookie_readahead_batch_count_count[1m])) by (instance) + sum(rate(bookie_readahead_batch_count_sum[1m])) by (instance)) / sum(rate(bookie_read_entry_count[1m])) by (instance)",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -161,7 +161,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(bookkeeper_server_READ_ENTRY_REQUEST_count{success=\"false\"}[1m])) by (kubernetes_pod_name)",
+          "expr": "sum(irate(bookkeeper_server_READ_ENTRY_REQUEST_count{success=\"false\"}[1m])) by (instance)",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -256,7 +256,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(bookkeeper_server_READ_ENTRY_REQUEST_count[1m])) by (kubernetes_pod_name)",
+          "expr": "sum(irate(bookkeeper_server_READ_ENTRY_REQUEST_count[1m])) by (instance)",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -351,7 +351,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(bookie_READ_BYTES[1m])) by (kubernetes_pod_name)",
+          "expr": "sum(irate(bookie_READ_BYTES[1m])) by (instance)",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -446,7 +446,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(bookkeeper_server_READ_ENTRY_count[1m])) by (kubernetes_pod_name)",
+          "expr": "sum(irate(bookkeeper_server_READ_ENTRY_count[1m])) by (instance)",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -636,7 +636,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(bookie_read_cache_hits_count[1m])) by (kubernetes_pod_name)",
+          "expr": "sum(irate(bookie_read_cache_hits_count[1m])) by (instance)",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -731,7 +731,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(bookie_read_cache_misses_count[1m])) by (kubernetes_pod_name)",
+          "expr": "sum(irate(bookie_read_cache_misses_count[1m])) by (instance)",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
@@ -826,7 +826,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(sum(irate(bookie_read_cache_misses_count[1m])) by (kubernetes_pod_name) / sum(irate(bookie_read_cache_hits_count[1m])) by (kubernetes_pod_name)) * 100",
+          "expr": "(sum(irate(bookie_read_cache_misses_count[1m])) by (instance) / sum(irate(bookie_read_cache_hits_count[1m])) by (instance)) * 100",
           "interval": "",
           "legendFormat": "",
           "refId": "A"
