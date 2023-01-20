@@ -240,7 +240,7 @@ proxy:
       enabled: true
 
 grafanaDashboards:
-  enabled: false
+  enabled: true
 
 pulsarAdminConsole:
   replicaCount: 1
