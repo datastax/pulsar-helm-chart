@@ -20,27 +20,27 @@ image:
     # If not using tiered storage, you can use the smaller pulsar image for the broker
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.10_3.0
+    tag: 2.10_3.1
   function:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.10_3.0
+    tag: 2.10_3.1
   zookeeper:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.10_3.0
+    tag: 2.10_3.1
   bookkeeper:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.10_3.0
+    tag: 2.10_3.1
   proxy:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.10_3.0
+    tag: 2.10_3.1
   bastion:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.10_3.0
+    tag: 2.10_3.1
   pulsarBeam:
     repository: kesque/pulsar-beam
     pullPolicy: IfNotPresent
@@ -55,7 +55,7 @@ image:
     tag: logcollector_latest
   pulsarSQL:
     repository: datastax/lunastreaming-all
-    tag: 2.10_3.0
+    tag: 2.10_3.1
     pullPolicy: IfNotPresent
   tardigrade:
     repository: storjlabs/gateway
@@ -110,7 +110,7 @@ tls:
         size: 256
   proxy:
     enableTlsWithBroker: true
-    enableHostnameVerification: true
+    enableHostnameVerification: false
     createCertificates: true
     tlsSecretName: "pulsar-proxy-tls"
     certSpec:
@@ -178,6 +178,8 @@ openid:
   client_id: "0oa7ypwvxnvo9xnDd5d7"
   client_secret: "CL08ZNhF91fsCUm7rtYqHs-XUak5H7gLY01tF2bP"
   withS4k: true
+  tls:
+    password: "kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR"
 zookeeper:
   replicaCount: 1
   resources:

@@ -132,6 +132,7 @@ data:
   #brokerClientAuthenticationParameters: "file:///pulsar/token-superuser/superuser.jwt"
   #{{- end }}
   {{- if and .Values.openid.enabled .Values.openid.withS4k }}
+  # TODO: Abstract out the TLS configs:
   PULSAR_PREFIX_kopOauth2AuthenticateCallbackHandler: "io.streamnative.pulsar.handlers.kop.security.oauth.OauthValidatorCallbackHandler"
   PULSAR_PREFIX_kopOauth2ConfigFile: "/pulsar/conf/kop-handler.properties"
   PULSAR_PREFIX_kafkaTransactionCoordinatorEnabled: "true"
@@ -139,12 +140,18 @@ data:
   PULSAR_PREFIX_messagingProtocols: "kafka"
   PULSAR_PREFIX_proxyExtensions: "kafka"
   PULSAR_PREFIX_brokerDeleteInactiveTopicsEnabled: "false"
-  PULSAR_PREFIX_kopTlsEnabledWithBroker: "true"
   {{- end }}
+
+  {{- if and .Values.openid.enabled .Values.openid.withS4k .Values.enableTls }}
+  PULSAR_PREFIX_kopTlsEnabledWithBroker: "true"
+  #PULSAR_PREFIX_kopSslTruststoreLocation: "/pulsar/tls.truststore.jks"
+  #PULSAR_PREFIX_kopSslTruststorePassword: ""
+  {{- end }}
+
 {{- end }}
 {{- if .Values.openid.enabled }}
   PULSAR_PREFIX_openIDAttemptAuthenticationProviderToken: "false"
-  PULSAR_PREFIX_saslAllowedMechanisms: "OAUTHBEARER"
+  PULSAR_PREFIX_saslAllowedMechanisms: "OAUTHBEARER,PLAIN"
   PULSAR_PREFIX_authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID"
 
   PULSAR_PREFIX_openIDAllowedTokenIssuers: "{{ .Values.openid.issuerUrl }}"
