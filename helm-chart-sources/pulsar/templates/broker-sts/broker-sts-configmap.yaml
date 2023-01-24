@@ -133,8 +133,7 @@ data:
   PULSAR_PREFIX_kopSchemaRegistryEnable: "true"
   PULSAR_PREFIX_allowAutoTopicCreationType: "partitioned"
   PULSAR_PREFIX_protocolHandlerDirectory: "./protocols"
-  # Java property configuration file of OauthValidatorCallbackHandler (should it have a lower-case K in Kop?):
-  PULSAR_PREFIX_KopOauth2ConfigFile: "/pulsar/conf/kop-handler.properties"
+  # Java property configuration file of OauthValidatorCallbackHandler:
   PULSAR_PREFIX_kopOauth2ConfigFile: "/pulsar/conf/kop-handler.properties"
 {{- end }}
 {{- if and .Values.openid.enabled .Values.openid.withS4k .Values.enableTls }}
