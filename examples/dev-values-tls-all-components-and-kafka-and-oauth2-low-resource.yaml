@@ -178,8 +178,6 @@ openid:
   client_id: "0oa7...nDd5d7"
   client_secret: "CL08ZNh...tF2bP"
   withS4k: true
-  tls:
-    password: "kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR"
 zookeeper:
   replicaCount: 1
   resources:
