@@ -120,7 +120,7 @@ data:
 
 {{- if and .Values.openid.enabled .Values.openid.withS4k }}
   PULSAR_PREFIX_brokerEntryMetadataInterceptors: "org.apache.pulsar.common.intercept.AppendIndexMetadataInterceptor,org.apache.pulsar.common.intercept.AppendBrokerTimestampMetadataInterceptor"
-  PULSAR_PREFIX_kopOauth2AuthenticateCallbackHandler: "org.apache.kafka.common.security.oauthbearer.OauthValidatorCallbackHandler"
+  PULSAR_PREFIX_kopOauth2AuthenticateCallbackHandler: "io.streamnative.pulsar.handlers.kop.security.auth.OauthValidatorCallbackHandler"
   PULSAR_PREFIX_kopOauth2ConfigFile: "/pulsar/conf/kop-handler.properties"
   PULSAR_PREFIX_kafkaTransactionCoordinatorEnabled: "true"
   PULSAR_PREFIX_kafkaProxySuperUserRole: "{{ .Values.kafkaProxySuperUserRole }}"
@@ -129,7 +129,7 @@ data:
   # Allow broker to accept both JWT and OAUTH2:
   # PULSAR_PREFIX_openIDAttemptAuthenticationProviderToken: "true" # Not sure what to do about this since we've already exposed the parameter
   PULSAR_PREFIX_saslAllowedMechanisms: "OAUTHBEARER,PLAIN"
-  PULSAR_PREFIX_kopOauth2AuthenticateCallbackHandler: "org.apache.kafka.common.security.oauthbearer.OauthValidatorCallbackHandler"
+  PULSAR_PREFIX_kopOauth2AuthenticateCallbackHandler: "io.streamnative.pulsar.handlers.kop.security.auth.OauthValidatorCallbackHandler"
   PULSAR_PREFIX_kopSchemaRegistryEnable: "true"
   PULSAR_PREFIX_allowAutoTopicCreationType: "partitioned"
   PULSAR_PREFIX_protocolHandlerDirectory: "./protocols"
