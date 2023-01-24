@@ -228,9 +228,9 @@ spec:
           {{- end }}
           OPTS="${OPTS} -Dlog4j2.formatMsgNoLookups=true" exec bin/pulsar functions-worker
         ports:
-        - name: functiontls
+        - name: https
           containerPort: 6751
-        - name: function
+        - name: http
           containerPort: 6750
         envFrom:
         - configMapRef:

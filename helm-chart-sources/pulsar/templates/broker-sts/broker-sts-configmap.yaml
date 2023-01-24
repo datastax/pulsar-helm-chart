@@ -277,6 +277,29 @@ data:
   gcsManagedLedgerOffloadReadBufferSizeInBytes: "{{ .Values.storageOffload.readBufferSizeInBytes }}"
   {{- end }}
 {{- end }}
+{{- if eq .Values.storageOffload.driver "azureblob" }}
+  managedLedgerOffloadDriver: "{{ .Values.storageOffload.driver }}"
+  managedLedgerOffloadBucket: "{{ .Values.storageOffload.bucket }}"
+  # workaround to inject it in the broker.conf (problem: gets injected also in client.conf)
+  PULSAR_PREFIX_managedLedgerOffloadBucket: "{{ .Values.storageOffload.bucket }}"
+  AZURE_STORAGE_ACCOUNT: "{{ .Values.storageOffload.storageAccount }}"
+  AZURE_STORAGE_ACCESS_KEY: "{{ .Values.storageOffload.storageAccountKey }}"
+  {{- if .Values.storageOffload.managedLedgerOffloadAutoTriggerSizeThresholdBytes }}
+  # Pre 2.6.0 value
+  managedLedgerOffloadAutoTriggerSizeThresholdBytes: "{{ .Values.storageOffload.managedLedgerOffloadAutoTriggerSizeThresholdBytes }}"
+  # Post 2.6.0 value
+  PULSAR_PREFIX_managedLedgerOffloadThresholdInBytes: "{{ .Values.storageOffload.managedLedgerOffloadAutoTriggerSizeThresholdBytes }}"
+  {{- end }}
+  {{- if .Values.storageOffload.managedLedgerOffloadDeletionLagMs }}
+  # Pre 2.6.0 value
+  managedLedgerOffloadDeletionLagMs: "{{ .Values.storageOffload.managedLedgerOffloadDeletionLagMs }}"
+  # Post 2.6.0 value
+  PULSAR_PREFIX_managedLedgerOffloadDeletionLagInMillis: "{{ .Values.storageOffload.managedLedgerOffloadDeletionLagMs }}"
+  {{- end }}
+  {{- if .Values.storageOffload.maxBlockSizeInBytes }}
+  managedLedgerOffloadMaxBlockSizeInBytes: "{{ .Values.storageOffload.maxBlockSizeInBytes }}"
+  {{- end }}
+{{- end }}
 {{- end }}
   # Transactions
 {{- if .Values.brokerSts.transactionCoordinator.enabled }}

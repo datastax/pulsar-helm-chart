@@ -464,7 +464,7 @@ image:
   pulsarHeartbeat:
     repository: datastax/pulsar-heartbeat
     pullPolicy: IfNotPresent
-    tag: 1.0.14
+    tag: 1.0.17
   pulsarAdminConsole:
     repository: datastax/pulsar-admin-console
     pullPolicy: IfNotPresent
@@ -902,6 +902,8 @@ broker:
   # It runs the Transaction coordinator metadata setup job.
   transactionCoordinator:
     enabled: false
+    # set to true to manually initialize transaction coordinator on existing cluster
+    initialize: false
     # Count of partitions used for the transaction coordinator.
     initialCount: 16
   probe:
@@ -1863,6 +1865,11 @@ grafanaDashboards:
   enabled: false
   # namespaceOverride: monitoring
 
+# Deploy a Prometheus Operator PodMonitor to enable scraping metrics from all
+# Pulsar components deployed by this helm chart.
+# Note: when kube-prometheus-stack.enabled is true, the PodMonitor is deployed to enable monitoring the cluster.
+enablePulsarPodMonitor: false
+
 # Deploy the kube-prometheus-stack which includes:
 # * Prometheus (using Prometheus Operator)
 # * Alertmanager (using Prometheus Operator)
@@ -2096,35 +2103,4 @@ kube-prometheus-stack:
       #       resources:
       #         requests:
       #           storage: 50Gi
-      additionalScrapeConfigs:
-      - job_name: 'pulsar-pods'
-        honor_labels: true
-        kubernetes_sd_configs:
-        - role: pod
-          # namespaces:
-          #   names:
-          #   - pulsar
-        relabel_configs:
-        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
-          action: keep
-          regex: true
-        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
-          action: replace
-          target_label: __metrics_path__
-          regex: (.+)
-        - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
-          action: replace
-          regex: ([^:]+)(?::\d+)?;(\d+)
-          replacement: $1:$2
-          target_label: __address__
-        - action: labelmap
-          regex: __meta_kubernetes_pod_label_(.+)
-        - source_labels: [__meta_kubernetes_namespace]
-          action: replace
-          target_label: kubernetes_namespace
-        - source_labels: [__meta_kubernetes_pod_label_component]
-          action: replace
-          target_label: job
-        - source_labels: [__meta_kubernetes_pod_name]
-          action: replace
-          target_label: kubernetes_pod_name
+      additionalScrapeConfigs: []
