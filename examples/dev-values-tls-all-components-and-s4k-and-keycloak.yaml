@@ -20,27 +20,27 @@ image:
     # If not using tiered storage, you can use the smaller pulsar image for the broker
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.10_3.1
+    tag: 2.10_2.3
   function:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.10_3.1
+    tag: 2.10_2.3
   zookeeper:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.10_3.1
+    tag: 2.10_2.3
   bookkeeper:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.10_3.1
+    tag: 2.10_2.3
   proxy:
-    repository: datastax/lunastreaming-all
+    repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.10_3.1
+    tag: 2.10_2.3
   bastion:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.10_3.1
+    tag: 2.10_2.3
   pulsarBeam:
     repository: kesque/pulsar-beam
     pullPolicy: IfNotPresent
@@ -55,7 +55,7 @@ image:
     tag: logcollector_latest
   pulsarSQL:
     repository: datastax/lunastreaming-all
-    tag: 2.10_3.1
+    tag: 2.10_2.3
     pullPolicy: IfNotPresent
   tardigrade:
     repository: storjlabs/gateway
@@ -110,7 +110,7 @@ tls:
         size: 256
   proxy:
     enableTlsWithBroker: true
-    enableHostnameVerification: false
+    enableHostnameVerification: true
     createCertificates: true
     tlsSecretName: "pulsar-proxy-tls"
     certSpec:
@@ -170,20 +170,42 @@ createCertificates:
   selfSignedPerComponent:
     enabled: true
 
-openid:
+keycloak:
   enabled: true
-  # From token generated in Okta UI or other method:
-  issuerUrl: https://dev-42..16.okta.com/oauth2/au...15d7
-  scope: pulsar_client_m2m
-  client_id: "0oa7...nDd5d7"
-  client_secret: "CL08ZNh...tF2bP"
-  withS4k: true
+  replicaCount: 2
+  # Required for > 1 replica
+  serviceDiscovery:
+    enabled: true
+  # Required for service discovery
+  rbac:
+    create: true
+  auth:
+    adminUser: "admin"
+    adminPassword: "F3LVqnxqMmkCQkvyPdJiwXodqQncK@"
+    tls:
+      enabled: true
+      # Must match the "keycloak-{{ .Values.tlsSecretName }}"
+      # When using Cert Manager, we generate a separate keystore.jks for keycloak than for the rest of pulsar.
+      # They are all share the same root ca cert mounted as the truststore.jks ensuring that the rest of the
+      # pulsar components trust Keycloak's cert chain.:ke:
+      jksSecret: "keycloak-pulsar-tls"
+      # These must be the same because the cert manager will use the keystorePassword to protect both
+      # the keystore.jks and the truststore.jks.
+      truststorePassword: "kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR"
+      keystorePassword: "kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR"
+      truststoreFilename: "truststore.jks"
+      keystoreFilename: "keystore.jks"
+  # It is recommended to override this password, as the dependent chart uses a default
+  # Here is an issue requesting that the default be removed: https://github.com/bitnami/charts/issues/7279.
+  postgresql:
+    postgresqlPassword: "xinf-2-doHTG._sMJi3*kZgQAabuet"
+
 zookeeper:
   replicaCount: 1
   resources:
     requests:
       memory: 300Mi
-      cpu: 0.2
+      cpu: 0.3
   configData:
     PULSAR_MEM: "-Xms300m -Xmx300m -Djute.maxbuffer=10485760 -XX:+ExitOnOutOfMemoryError"
 
@@ -191,62 +213,90 @@ bookkeeper:
   replicaCount: 1
   resources:
     requests:
-      memory: 356Mi
-      cpu: 0.1
+      memory: 512Mi
+      cpu: 0.3
   configData:
-    BOOKIE_MEM: "-Xms156m -Xmx156m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError"
+    BOOKIE_MEM: "-Xms312m -Xmx312m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError"
 
 brokerSts:
   component: broker
   replicaCount: 1
   service:
-    headless: true
+    headless: false
+    annotations: {}
+    type: ClusterIP
+    ports:
+    - name: http
+      port: 8080
+    - name: pulsar
+      port: 6650
+    - name: https
+      port: 8443
+    - name: pulsarssl
+      port: 6651
+    - name: kafkaplaintext
+      port: 9092
+    - name: kafkassl
+      port: 9093
+    - name: kafkaschemareg
+      port: 8001
   ledger:
     defaultEnsembleSize: 1
     defaultAckQuorum: 1
     defaultWriteQuorum: 1
   resources:
     requests:
-      memory: 300Mi
+      memory: 600Mi
       cpu: 0.3
+  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID"
   configData:
-    PULSAR_MEM: "-Xms200m -Xmx200m -XX:MaxDirectMemorySize=100m -XX:+ExitOnOutOfMemoryError"
-    PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info"
+    PULSAR_MEM: "-Xms400m -Xmx400m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError"
+    PULSAR_PREFIX_protocolHandlerDirectory: "./protocols"
+    PULSAR_PREFIX_messagingProtocols: "kafka"
+    PULSAR_PREFIX_brokerDeleteInactiveTopicsEnabled: "false"
+    PULSAR_PREFIX_saslAllowedMechanisms: PLAIN
+    PULSAR_PREFIX_brokerEntryMetadataInterceptors: "org.apache.pulsar.common.intercept.AppendIndexMetadataInterceptor,org.apache.pulsar.common.intercept.AppendBrokerTimestampMetadataInterceptor"
+    PULSAR_PREFIX_kopSchemaRegistryEnable: "true"
+    PULSAR_PREFIX_allowAutoTopicCreationType: "partitioned"
+    PULSAR_PREFIX_kafkaListeners: "SASL_PLAINTEXT://0.0.0.0:9092"
+    PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://advertisedAddress:9092"
+    PULSAR_PREFIX_kafkaTransactionCoordinatorEnabled: "true"
+    PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info -Djavax.net.ssl.keyStore=/pulsar/certs/keystore.jks -Djavax.net.ssl.trustStore=/pulsar/certs/truststore.jks -Djavax.net.ssl.trustStorePassword=kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR -Djavax.net.ssl.keyStorePassword=kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR"
 
 autoRecovery:
   enableProvisionContainer: true
   resources:
     requests:
       memory: 300Mi
-      cpu: 0.1
+      cpu: 0.3
 
 function:
   replicaCount: 1
   functionReplicaCount: 1
   resources:
     requests:
-      memory: 256Mi
-      cpu: 0.1
-  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
+      memory: 512Mi
+      cpu: 0.3
+  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
   configData:
-    PULSAR_MEM: "-Xms156m -Xmx156m -XX:MaxDirectMemorySize=100m -XX:+ExitOnOutOfMemoryError"
-    PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info"
+    PULSAR_MEM: "-Xms312m -Xmx312m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError"
+    PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info -Djavax.net.ssl.keyStore=/pulsar/certs/keystore.jks -Djavax.net.ssl.trustStore=/pulsar/certs/truststore.jks -Djavax.net.ssl.trustStorePassword=kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR -Djavax.net.ssl.keyStorePassword=kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR"
 
 proxy:
   replicaCount: 1
   resources:
     requests:
-      memory: 256Mi
-      cpu: 0.1
+      memory: 512Mi
+      cpu: 0.3
   wsResources:
     requests:
-      memory: 256Mi
-      cpu: 0.1
-  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
-  wsAuthenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
+      memory: 512Mi
+      cpu: 0.3
+  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID"
+  wsAuthenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
   configData:
-    PULSAR_MEM: "-Xms200m -Xmx200m -XX:MaxDirectMemorySize=56m"
-    PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info"
+    PULSAR_MEM: "-Xms400m -Xmx400m -XX:MaxDirectMemorySize=112m"
+    PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info -Djavax.net.ssl.keyStore=/pulsar/certs/keystore.jks -Djavax.net.ssl.trustStore=/pulsar/certs/truststore.jks -Djavax.net.ssl.trustStorePassword=kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR -Djavax.net.ssl.keyStorePassword=kU4Fv3Qb8zfe-BK7drdhsX.pmau9FR"
     PULSAR_PREFIX_kafkaListeners: "SASL_PLAINTEXT://0.0.0.0:9092,SASL_SSL://0.0.0.0:9093"
     # here you have to customize the advertised name if you want to access
     # Kafka from outside the kube    
@@ -254,11 +304,13 @@ proxy:
     # The Proxy uses the same TLS certificate configured for the Pulsar protocol
     #    PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://pulsar-proxy:9092,SASL_SSL://pulsar-proxy:9093"
     # if you use port forwarding to localhost then you have to set 'localhost'    
-    PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://pulsar-proxy:9092,SASL_SSL://pulsar-proxy:9093"
+    PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://localhost:9092,SASL_SSL://localhost:9093"
+    PULSAR_PREFIX_saslAllowedMechanisms: PLAIN
+    PULSAR_PREFIX_kafkaProxySuperUserRole: superuser
     PULSAR_PREFIX_kopSchemaRegistryProxyEnableTls: "true"
     PULSAR_PREFIX_kopSchemaRegistryEnable: "true"
     PULSAR_PREFIX_kopSchemaRegistryProxyPort: "8081"
-    authenticateMetricsEndpoint: "true"
+    PULSAR_PREFIX_kafkaTransactionCoordinatorEnabled: "true"
   autoPortAssign:
     enablePlainTextWithTLS: true
   service:
@@ -295,6 +347,9 @@ grafanaDashboards:
 pulsarAdminConsole:
   replicaCount: 1
   authMode: openidconnect
+  # The client id used when authenticating with keycloak
+  oauthClientId: "pulsar-admin-console"
+#  authMode: k8s
   createUserSecret:
     enabled: true
     user: 'admin'
@@ -316,5 +371,3 @@ kube-prometheus-stack:
   grafana:
     enabled: true
     adminPassword: e9JYtk83*4#PM8
-
-enablePulsarPodMonitor: true

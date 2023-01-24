@@ -50,5 +50,35 @@ bin/pulsar-client consume persistent://public/default/test --subscription-name t
 
 # To watch logs in case there are any issues when producing:
 k logs pod/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="proxy")].metadata.name}') --follow
+k logs pod/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="broker")].metadata.name}') --follow
 k exec -it pod/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}') -- sh
 cd /pulsar/kafka/kafka_2.12-3.3.1; bin/kafka-console-producer.sh --bootstrap-server PLAINTEXT://pulsar-proxy:9092 --topic test --producer.config /pulsar/kafka/kafka_2.12-3.3.1/config/producer.properties
+
+
+#####
+# To test against TLS endpoint from Kafka:
+# Copy truststore from broker to bastion by first copying to local system. (Make sure you're not still in the bastion.)
+k cp pulsar/pulsar-broker-0:/pulsar/tls.truststore.jks ~/Downloads/tls.truststore.jks
+# Provide the expected bastion path (substitute for your pod name):
+k cp ~/Downloads/tls.truststore.jks pulsar/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}'):/pulsar/tls.truststore.jks 
+
+# Connect again to bastion pod:
+k exec -it pod/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}') -- sh
+
+cat > /pulsar/kafka/kafka_2.12-3.3.1/config/producer.properties
+# Update issuer url with your actual issuer url.
+bootstrap.servers=pulsar-proxy:9093
+compression.type=none
+sasl.login.callback.handler.class=com.datastax.oss.kafka.oauth.OauthLoginCallbackHandler
+security.protocol=SASL_SSL
+sasl.mechanism=OAUTHBEARER
+sasl.jaas.config=org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule \
+   required oauth.issuer.url="https://dev-42..16.okta.com/oauth2/aus7..l615d7"\
+   oauth.credentials.url="file:///pulsar/conf/creds.json"\
+   oauth.audience="api://pulsarClient"\
+   oauth.scope="pulsar_client_m2m";
+ssl.truststore.location=/pulsar/tls.truststore.jks 
+# The identification algorithm must be empty
+ssl.endpoint.identification.algorithm=
+ctrl + d
+cd /pulsar/kafka/kafka_2.12-3.3.1; bin/kafka-console-producer.sh --bootstrap-server SSL://pulsar-proxy:9093 --topic test --producer.config /pulsar/kafka/kafka_2.12-3.3.1/config/producer.properties
