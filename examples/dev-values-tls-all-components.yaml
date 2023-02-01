@@ -20,27 +20,27 @@ image:
     # If not using tiered storage, you can use the smaller pulsar image for the broker
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.10_2.4
+    tag: 2.8.3_1.0.7
   function:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.10_2.4
+    tag: 2.8.3_1.0.7
   zookeeper:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.10_2.4
+    tag: 2.8.3_1.0.7
   bookkeeper:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.10_2.4
+    tag: 2.8.3_1.0.7
   proxy:
-    repository: datastax/lunastreaming-all
+    repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.10_2.4
+    tag: 2.8.3_1.0.7
   bastion:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.10_2.4
+    tag: 2.8.3_1.0.7
   pulsarBeam:
     repository: kesque/pulsar-beam
     pullPolicy: IfNotPresent
@@ -55,7 +55,7 @@ image:
     tag: logcollector_latest
   pulsarSQL:
     repository: datastax/lunastreaming-all
-    tag: 2.10_2.4
+    tag: 2.8.3_1.0.7
     pullPolicy: IfNotPresent
   tardigrade:
     repository: storjlabs/gateway
@@ -175,7 +175,7 @@ zookeeper:
   resources:
     requests:
       memory: 300Mi
-      cpu: 0.2
+      cpu: 0.3
   configData:
     PULSAR_MEM: "-Xms300m -Xmx300m -Djute.maxbuffer=10485760 -XX:+ExitOnOutOfMemoryError"
 
@@ -183,10 +183,10 @@ bookkeeper:
   replicaCount: 1
   resources:
     requests:
-      memory: 256Mi
-      cpu: 0.1
+      memory: 512Mi
+      cpu: 0.3
   configData:
-    BOOKIE_MEM: "-Xms156m -Xmx156m -XX:MaxDirectMemorySize=100m -XX:+ExitOnOutOfMemoryError"
+    BOOKIE_MEM: "-Xms312m -Xmx312m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError"
 
 brokerSts:
   component: broker
@@ -199,7 +199,7 @@ brokerSts:
     defaultWriteQuorum: 1
   resources:
     requests:
-      memory: 300Mi
+      memory: 600Mi
       cpu: 0.3
   configData:
     PULSAR_MEM: "-Xms400m -Xmx400m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError"
@@ -240,7 +240,7 @@ proxy:
       enabled: true
 
 grafanaDashboards:
-  enabled: true
+  enabled: false
 
 pulsarAdminConsole:
   replicaCount: 1

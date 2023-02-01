@@ -1,13 +1,14 @@
 # Walk through this script manually, don't run the entire thing.
-# This script is intended for use with examples/dev-values-tls-all-components-and-kafka-and-oauth2-low-resource.yaml.
+# This script is intended for use with examples/kafka/dev-values-tls-all-components-and-kafka-and-oauth2-low-resource.yaml.
 # Works as of Pulsar 2.10_3.1
 alias k=kubectl
 kubectl config set-context -current -namespace=pulsar
 
 # To redeploy cluster:
-helm upgrade pulsar /Users/devin.bost/proj/repos/pulsar-helm-chart/helm-chart-sources/pulsar --namespace pulsar --values /Users/devin.bost/proj/repos/pulsar-helm-chart/examples/dev-values-tls-all-components-and-kafka-and-oauth2-low-resource.yaml --create-namespace --debug
+BASEDIR=/Users/devin.bost/proj/repos
+helm upgrade pulsar $BASEDIR/pulsar-helm-chart/helm-chart-sources/pulsar --namespace pulsar --values $BASEDIR/pulsar-helm-chart/examples/kafka/dev-values-tls-all-components-and-kafka-and-oauth2-low-resource.yaml --create-namespace --debug
 # Or, for full redeploy:
-helm delete pulsar; k delete pvc --all; helm install pulsar /Users/devin.bost/proj/repos/pulsar-helm-chart/helm-chart-sources/pulsar --namespace pulsar --values /Users/devin.bost/proj/repos/pulsar-helm-chart/examples/dev-values-tls-all-components-and-kafka-and-oauth2-low-resource.yaml --create-namespace --debug
+helm delete pulsar; k delete pvc --all; helm install pulsar $BASEDIR/pulsar-helm-chart/helm-chart-sources/pulsar --namespace pulsar --values $BASEDIR/pulsar-helm-chart/examples/kafka/dev-values-tls-all-components-and-kafka-and-oauth2-low-resource.yaml --create-namespace --debug
 
 # SSH to bastion:
 k exec -it pod/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}') -- sh
