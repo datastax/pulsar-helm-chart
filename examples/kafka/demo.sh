@@ -23,6 +23,12 @@ helm upgrade pulsar $BASEDIR/pulsar-helm-chart/helm-chart-sources/pulsar --names
 # Or, for full redeploy:
 helm delete pulsar; k delete pvc --all; helm install pulsar $BASEDIR/pulsar-helm-chart/helm-chart-sources/pulsar --namespace pulsar --values $BASEDIR/pulsar-helm-chart/examples/kafka/dev-values-tls-all-components-and-kafka-and-oauth2-low-resource.yaml --create-namespace --debug
 
+# To test against TLS endpoint from Kafka:
+# Copy truststore from broker to bastion by first copying to local system. (Make sure you're not still in the bastion.)
+k cp pulsar/pulsar-broker-0:/pulsar/tls.truststore.jks ~/Downloads/tls.truststore.jks
+# Provide the expected bastion path:
+k cp ~/Downloads/tls.truststore.jks pulsar/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}'):/pulsar/tls.truststore.jks 
+
 # SSH to bastion:
 k exec -it pod/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}') -- sh
 
@@ -38,13 +44,6 @@ tar -zxvf /pulsar/kafka/kafka_2.12-3.3.2.tgz
 cd /pulsar/kafka/kafka_2.12-3.3.2/libs
 curl -LOs https://github.com/datastax/starlight-for-kafka/releases/download/v2.10.3.0/oauth-client-2.10.3.0.jar
 cd ..
-
-# To test against TLS endpoint from Kafka:
-# Copy truststore from broker to bastion by first copying to local system. (Make sure you're not still in the bastion.)
-k cp pulsar/pulsar-broker-0:/pulsar/tls.truststore.jks ~/Downloads/tls.truststore.jks
-# Provide the expected bastion path:
-k cp ~/Downloads/tls.truststore.jks pulsar/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}'):/pulsar/tls.truststore.jks 
-
 
 ########
 # To test OpenID/OAuth2 on non-TLS endpoint:
