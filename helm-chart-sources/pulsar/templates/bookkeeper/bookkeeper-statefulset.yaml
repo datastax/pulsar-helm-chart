@@ -140,10 +140,26 @@ spec:
         args:
         - >
           bin/apply-config-from-env.py conf/bookkeeper.conf &&
+          {{- if and .Values.enableTls .Values.tls.bookkeeper.enabled }}
+          openssl pkcs8 -topk8 -inform PEM -outform PEM -in /pulsar/certs/tls.key -out /pulsar/tls-pk8.key -nocrypt &&
+          {{- end }}
+          {{- if and .Values.enableTls .Values.tls.zookeeper.enabled }}
+          /pulsar/tools/certconverter.sh &&
+          {{- end }}
           bin/bookkeeper shell metaformat --nonInteractive || true;
         envFrom:
         - configMapRef:
             name: "{{ template "pulsar.fullname" . }}-{{ .Values.bookkeeper.component }}"
+        volumeMounts:
+        {{- if .Values.enableTls}}
+        - name: certs
+          readOnly: true
+          mountPath: /pulsar/certs
+          {{- if .Values.tls.zookeeper.enabled}}
+        - name: certconverter
+          mountPath: /pulsar/tools
+          {{- end }}
+        {{- end }}
       securityContext:
         fsGroup: 0
       containers:
