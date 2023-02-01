@@ -298,7 +298,6 @@ tls:
 tlsCaPath: /etc/ssl/certs
 tlsCaCert: ca-certificates.crt
 
-kafkaProxySuperUserRole: admin
 superUserRoles: superuser,admin,websocket,proxy
 proxyRoles: proxy
 
