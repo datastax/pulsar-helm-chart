@@ -68,6 +68,7 @@ data:
   {{- if .Values.keycloak.enabled }}
   PULSAR_PREFIX_openIDAllowedTokenIssuers: "{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ template "pulsar.serviceDnsSuffix" . }}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }}"
   {{- end }}
+  {{- end }}
 {{- if .Values.enableTls }}
   webServicePortTls: "{{ .Values.proxy.wsProxyPortTls }}"
   tlsEnabled: "true"

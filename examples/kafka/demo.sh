@@ -39,6 +39,13 @@ cd /pulsar/kafka/kafka_2.12-3.3.2/libs
 curl -LOs https://github.com/datastax/starlight-for-kafka/releases/download/v2.10.3.0/oauth-client-2.10.3.0.jar
 cd ..
 
+# To test against TLS endpoint from Kafka:
+# Copy truststore from broker to bastion by first copying to local system. (Make sure you're not still in the bastion.)
+k cp pulsar/pulsar-broker-0:/pulsar/tls.truststore.jks ~/Downloads/tls.truststore.jks
+# Provide the expected bastion path:
+k cp ~/Downloads/tls.truststore.jks pulsar/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}'):/pulsar/tls.truststore.jks 
+
+
 ########
 # To test OpenID/OAuth2 on non-TLS endpoint:
 # Make sure that the oauth parameters below map to your actual configs in the helm values file!
@@ -53,7 +60,7 @@ sasl.jaas.config=org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginMo
    oauth.credentials.url="file:///pulsar/conf/creds.json"\
    oauth.audience="api://pulsarClient"\
    oauth.scope="pulsar_client_m2m";
-ctrl + d
+ctrl + c
 
 cd /pulsar/kafka/kafka_2.12-3.3.2; bin/kafka-console-producer.sh --bootstrap-server PLAINTEXT://pulsar-proxy:9092 --topic test --producer.config /pulsar/kafka/kafka_2.12-3.3.2/config/producer.properties
 
@@ -69,12 +76,6 @@ k logs pod/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="proxy"
 k logs pod/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="broker")].metadata.name}') --follow
 k exec -it pod/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}') -- sh
 cd /pulsar/kafka/kafka_2.12-3.3.2; bin/kafka-console-producer.sh --bootstrap-server PLAINTEXT://pulsar-proxy:9092 --topic test --producer.config /pulsar/kafka/kafka_2.12-3.3.2/config/producer.properties
-
-# To test against TLS endpoint from Kafka:
-# Copy truststore from broker to bastion by first copying to local system. (Make sure you're not still in the bastion.)
-k cp pulsar/pulsar-broker-0:/pulsar/tls.truststore.jks ~/Downloads/tls.truststore.jks
-# Provide the expected bastion path:
-k cp ~/Downloads/tls.truststore.jks pulsar/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}'):/pulsar/tls.truststore.jks 
 
 # Connect again to bastion pod:
 k exec -it pod/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}') -- sh

@@ -173,10 +173,10 @@ createCertificates:
 openid:
   enabled: true
   # From token generated in Okta UI or other method:
-  issuerUrl: https://dev-42..16.okta.com/oauth2/au...15d7
+  issuerUrl: https://dev-42506116.okta.com/oauth2/aus7ypk6sjvgF4l615d7
   scope: pulsar_client_m2m
-  client_id: "0oa7...nDd5d7"
-  client_secret: "CL08ZNh...tF2bP"
+  client_id: "0oa7ypwvxnvo9xnDd5d7"
+  client_secret: "CL08ZNhF91fsCUm7rtYqHs-XUak5H7gLY01tF2bP"
   withS4k: true
 zookeeper:
   replicaCount: 1
