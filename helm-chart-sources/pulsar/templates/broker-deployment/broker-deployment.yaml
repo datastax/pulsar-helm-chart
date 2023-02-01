@@ -177,12 +177,6 @@ spec:
         - name: lib-data
           emptyDir: {}
         {{- end }}
-        {{if .Values.openid.enabled }}
-        - name: openid-client-credentials
-          secret:
-            secretName: openid-client-credentials-secret
-            optional: false
-        {{- end }}
       initContainers:
       {{- if .Values.enableWaitContainers }}
       # This init container will wait for bookkeeper to be ready before
@@ -284,11 +278,6 @@ spec:
             readOnly: true
             mountPath: /pulsar/gcp-service-account
           {{- end }}
-          {{- end }}
-          {{- if .Values.openid.enabled }}
-          - name: openid-client-credentials
-            readOnly: true
-            mountPath: "/pulsar/openid-client-credentials"
           {{- end }}
         envFrom:
         - configMapRef:

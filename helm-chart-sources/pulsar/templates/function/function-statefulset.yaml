@@ -158,12 +158,6 @@ spec:
         - name: extra-data
           emptyDir: {}
       {{- end }}
-      {{if .Values.openid.enabled }}
-        - name: openid-client-credentials
-          secret:
-            secretName: openid-client-credentials-secret
-            optional: false
-      {{- end }}
       {{- if .Values.function.initContainer }}
       initContainers:
       - name: add-libs
@@ -274,11 +268,6 @@ spec:
           {{- if .Values.function.initContainer }}
           - name: extra-data
             mountPath: {{ .Values.function.initContainer.emptyDirPath }}
-          {{- end }}
-          {{- if .Values.openid.enabled }}
-          - name: openid-client-credentials
-            readOnly: true
-            mountPath: "/pulsar/openid-client-credentials"
           {{- end }}
 {{- if .Values.extra.burnellLogCollector }}
       - name: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-burnell"

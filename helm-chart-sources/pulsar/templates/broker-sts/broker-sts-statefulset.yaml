@@ -174,17 +174,11 @@ spec:
         - name: lib-data
           emptyDir: {}
         {{- end }}
-        {{if .Values.openid.enabled }}
-        - name: openid-client-credentials
-          secret:
-            secretName: openid-client-credentials-secret
-            optional: false
         {{- if and .Values.openid.enabled .Values.openid.withS4k }}
         - name: openid-s4k
           configMap:
             name: openid-s4k-config
           {{- end}}
-        {{- end }}
       initContainers:
       {{- if .Values.enableWaitContainers }}
       # This init container will wait for bookkeeper to be ready before

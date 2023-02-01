@@ -1752,18 +1752,14 @@ pulsarHeartbeat:
       topicName: "persistent://public/default/pubsub-latency-test"
   service: {}
 
-# Deploy OpenID (set to false if Keycloak is enabled)
 # For configuring OpenID in Okta for Pulsar, instructions are here: https://www.youtube.com/watch?v=UQBrecHOXxU&ab_channel=DataStaxDevelopers
 # Then, use the values from the Payload generated to populate these fields:
 openid:
-  # If openid is enabled, make sure tokenAuth is disabled.
   enabled: false
   allowedAudience: api://pulsarClient
   roleClaim: sub
   attemptAuthenticationProviderToken: "true"
-  # Example issuerUrl: https://example.okta.com/oauth2/au...97 
   issuerUrl: ""
-  # Example scope: pulsar_client_m2m
   scope: ""
   client_id: ""
   client_secret: ""
