@@ -268,15 +268,10 @@ spec:
           - name: certconverter
             mountPath: /pulsar/tools
           {{- end }}
-          {{- if .Values.openid.enabled }}
-          - name: openid-client-credentials
-            readOnly: true
-            mountPath: "/pulsar/openid-client-credentials"
           {{- if and .Values.openid.enabled .Values.openid.withS4k }}
           - name: openid-s4k
             mountPath: "/pulsar/conf/kop-handler.properties"
             subPath: "kop-handler.properties"
-          {{- end }}
           {{- end }}
           {{- if .Values.brokerSts.initContainer }}
           - name: lib-data
