@@ -121,80 +121,17 @@ data:
   {{- end }}
   tokenPublicKey: "file:///pulsar/token-public-key/{{ .Values.tokenPublicKeyFile }}"
   brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
-  # TODO: Replace with a proxy-specific JWT:
-  brokerClientAuthenticationParameters: "file:///pulsar/token-superuser/superuser.jwt"
-  # Use the following block if we want to also enable OAuth2 between Pulsar components, not just between clients and Pulsar:
-  #{{- if .Values.openid.enabled }}
-  #brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2"
-  #brokerClientAuthenticationParameters: "{\"privateKey\":\"file:///pulsar/openid-client-credentials/superuserKey.json\",\"issuerUrl\":\"{{ .Values.openid.issuerUrl }}\",\"scope\":\"{{ .Values.openid.scope }}\",\"audience\":\"{{ .Values.openid.allowedAudience }}\"}"
-  #{{- else }} # There's probably a smarter way to write this so it's more readable but gets trimmed to one line so Jackson doesn't blow up on new lines when parsing.
-  #brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
-  #brokerClientAuthenticationParameters: "file:///pulsar/token-superuser/superuser.jwt"
-  #{{- end }}
-  {{- if and .Values.openid.enabled .Values.openid.withS4k }}
-  # TODO: Abstract out the TLS configs:
-  PULSAR_PREFIX_kopOauth2AuthenticateCallbackHandler: "io.streamnative.pulsar.handlers.kop.security.auth.OauthValidatorCallbackHandler"
-  PULSAR_PREFIX_kopOauth2ConfigFile: "/pulsar/conf/kop-handler.properties"
-  PULSAR_PREFIX_kafkaTransactionCoordinatorEnabled: "true"
-  PULSAR_PREFIX_kafkaProxySuperUserRole: "{{ .Values.kafkaProxySuperUserRole }}"
-  PULSAR_PREFIX_messagingProtocols: "kafka"
-  PULSAR_PREFIX_proxyExtensions: "kafka"
-  PULSAR_PREFIX_brokerDeleteInactiveTopicsEnabled: "false"
-  {{- end }}
-
-  {{- if and .Values.openid.enabled .Values.openid.withS4k .Values.enableTls }}
-  PULSAR_PREFIX_kopTlsEnabledWithBroker: "true"
-  #PULSAR_PREFIX_kopSslTruststoreLocation: "/pulsar/tls.truststore.jks"
-  #PULSAR_PREFIX_kopSslTruststorePassword: ""
-  {{- end }}
-
-{{- end }}
-{{- if .Values.openid.enabled }}
-  PULSAR_PREFIX_openIDAttemptAuthenticationProviderToken: "false"
-  PULSAR_PREFIX_saslAllowedMechanisms: "OAUTHBEARER,PLAIN"
-  PULSAR_PREFIX_authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID"
-
-  PULSAR_PREFIX_openIDAllowedTokenIssuers: "{{ .Values.openid.issuerUrl }}"
-  PULSAR_PREFIX_openIDAllowedAudience: "{{ .Values.openid.allowedAudience }}"
-  PULSAR_PREFIX_openIDRoleClaim: "{{ .Values.openid.roleClaim }}"
-  {{- else }}
-  brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
   brokerClientAuthenticationParameters: "file:///pulsar/token-proxy/proxy.jwt"
-  # Use the following block if we want to also enable OAuth2 between Pulsar components, not just between clients and Pulsar:
-  #{{- if .Values.openid.enabled }}
-  #brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2"
-  #brokerClientAuthenticationParameters: "{\"privateKey\":\"file:///pulsar/openid-client-credentials/superuserKey.json\",\"issuerUrl\":\"{{ .Values.openid.issuerUrl }}\",\"scope\":\"{{ .Values.openid.scope }}\",\"audience\":\"{{ .Values.openid.allowedAudience }}\"}"
-  #{{- else }} # There's probably a smarter way to write this so it's more readable but gets trimmed to one line so Jackson doesn't blow up on new lines when parsing.
-  #brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
-  #brokerClientAuthenticationParameters: "file:///pulsar/token-superuser/superuser.jwt"
-  #{{- end }}
-  {{- if and .Values.openid.enabled .Values.openid.withS4k }}
-  # TODO: Abstract out the TLS configs:
-  PULSAR_PREFIX_kopOauth2AuthenticateCallbackHandler: "io.streamnative.pulsar.handlers.kop.security.auth.OauthValidatorCallbackHandler"
-  PULSAR_PREFIX_kopOauth2ConfigFile: "/pulsar/conf/kop-handler.properties"
-  PULSAR_PREFIX_kafkaTransactionCoordinatorEnabled: "true"
-  PULSAR_PREFIX_kafkaProxySuperUserRole: "{{ .Values.kafkaProxySuperUserRole }}"
-  PULSAR_PREFIX_messagingProtocols: "kafka"
-  PULSAR_PREFIX_proxyExtensions: "kafka"
-  PULSAR_PREFIX_brokerDeleteInactiveTopicsEnabled: "false"
-  {{- end }}
-
-  {{- if and .Values.openid.enabled .Values.openid.withS4k .Values.enableTls }}
-  PULSAR_PREFIX_kopTlsEnabledWithBroker: "true"
-  #PULSAR_PREFIX_kopSslTruststoreLocation: "/pulsar/tls.truststore.jks"
-  #PULSAR_PREFIX_kopSslTruststorePassword: ""
-  {{- end }}
-
 {{- end }}
 {{- if .Values.openid.enabled }}
   PULSAR_PREFIX_openIDAttemptAuthenticationProviderToken: "false"
   PULSAR_PREFIX_saslAllowedMechanisms: "OAUTHBEARER,PLAIN"
   PULSAR_PREFIX_authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID"
+  PULSAR_PREFIX_authenticationProviders: "{{ .Values.proxy.authenticationProviders }},com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID"
 
   PULSAR_PREFIX_openIDAllowedTokenIssuers: "{{ .Values.openid.issuerUrl }}"
   PULSAR_PREFIX_openIDAllowedAudience: "{{ .Values.openid.allowedAudience }}"
   PULSAR_PREFIX_openIDRoleClaim: "{{ .Values.openid.roleClaim }}"
-  PULSAR_PREFIX_authenticationProviders: "{{ .Values.proxy.wsAuthenticationProviders }},{{ .Values.openid.authenticationProvider }}"
 
   PULSAR_PREFIX_openIDAcceptedTimeLeewaySeconds: "{{ .Values.openid.acceptedTimeLeewaySeconds }}"
   PULSAR_PREFIX_openIDJwkCacheSize: "{{ .Values.openid.jwk.cacheSize }}"
@@ -208,15 +145,28 @@ data:
   PULSAR_PREFIX_openIDRequireHttps: "{{ .Values.openid.requireHttps }}"
   # Set following to true if admin console is configured to use Okta integration. The admin console uses the user model with local admin token, not Okta integration, according to notes from Ming-Hong Liu.
   PULSAR_PREFIX_openIDAttemptAuthenticationProviderToken: "{{ .Values.openid.attemptAuthenticationProviderToken }}"
-  PULSAR_PREFIX_authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID"
-{{- else }}
-  PULSAR_PREFIX_authenticationProviders: "{{ .Values.brokerSts.authenticationProviders }}"
 {{- end }}
+{{- if and .Values.openid.enabled .Values.openid.withS4k }}
+  PULSAR_PREFIX_kopOauth2AuthenticateCallbackHandler: "io.streamnative.pulsar.handlers.kop.security.auth.OauthValidatorCallbackHandler"
+  PULSAR_PREFIX_kopOauth2ConfigFile: "/pulsar/conf/kop-handler.properties"
+  PULSAR_PREFIX_kafkaTransactionCoordinatorEnabled: "true"
+  PULSAR_PREFIX_kafkaProxySuperUserRole: "admin"
+  PULSAR_PREFIX_messagingProtocols: "kafka"
+  PULSAR_PREFIX_proxyExtensions: "kafka"
+  PULSAR_PREFIX_brokerDeleteInactiveTopicsEnabled: "false"
+{{- end }}
+{{- if and .Values.openid.enabled .Values.openid.withS4k .Values.enableTls }}
+  PULSAR_PREFIX_kopTlsEnabledWithBroker: "true"
+  #PULSAR_PREFIX_kopSslTruststoreLocation: "/pulsar/tls.truststore.jks"
+  #PULSAR_PREFIX_kopSslTruststorePassword: ""
+{{- end }}
+
 {{- range $key, $val := $.Values.proxy.configData }}
   {{ $key }}: {{ $val | replace "\"" "" | trim | quote }}
 {{- end }}
-{{- end }}
+
 {{- if .Values.proxy.extensions.enabled }}
   PULSAR_PREFIX_proxyExtensionsDirectory: "{{ .Values.proxy.extensions.directory }}"
   PULSAR_PREFIX_proxyExtensions: "{{ .Values.proxy.extensions.extensions }}"
+{{- end }}
 {{- end }}
