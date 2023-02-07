@@ -23,6 +23,23 @@ helm upgrade pulsar $BASEDIR/pulsar-helm-chart/helm-chart-sources/pulsar --names
 # Or, for full redeploy:
 helm delete pulsar; k delete pvc --all; helm install pulsar $BASEDIR/pulsar-helm-chart/helm-chart-sources/pulsar --namespace pulsar --values $BASEDIR/pulsar-helm-chart/examples/kafka/dev-values-tls-all-components-and-kafka-and-oauth2-low-resource.yaml --create-namespace --debug
 
+### Use Pulsar client with non-TLS endpoint in Pulsar with token auth:
+? bin/pulsar-perf produce -r 1000 --size 1024 --auth_plugin org.apache.pulsar.client.impl.auth.AuthenticationToken --auth-params file:///pulsar/token-superuser-stripped.jwt --service-url pulsar://pulsar-proxy.pulsar.svc.cluster.local:6650/ tenants list
+? bin/pulsar-perf produce -r 1000 --size 1024 --auth_plugin org.apache.pulsar.client.impl.auth.AuthenticationToken --auth-params file:///pulsar/token-superuser-stripped.jwt --service-url pulsar+ssl://pulsar-proxy.pulsar.svc.cluster.local:6651/ tenants list
+
+### Use Pulsar client with TLS endpoint in Pulsar with token auth:
+? bin/pulsar-perf produce -r 1000 --size 1024 --auth_plugin org.apache.pulsar.client.impl.auth.AuthenticationToken --auth-params file:///pulsar/token-superuser-stripped.jwt persistent://public/default/test
+
+## OIDC Setup:
+cat > /pulsar/conf/creds.json
+{"client_id":"0oa7ypwvxnvo9xnDd5d7","client_secret":"CL08ZNhF91fsCUm7rtYqHs-XUak5H7gLY01tF2bP","grant_type": "client_credentials"}
+
+### Use Pulsar client with non-TLS endpoint in Pulsar with OIDC:
+? bin/pulsar-admin --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params '{"privateKey":"conf/creds.json","issuerUrl":"https://dev-42506116.okta.com/oauth2/aus3thh6rqs3FU45X697","scope":"pulsar_client_m2m"}' --admin-url pulsar://pulsar-proxy.pulsar.svc.cluster.local:8080/ tenants list
+### Use Pulsar client with TLS endpoint in Pulsar with OIDC:
+? bin/pulsar-admin --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params '{"privateKey":"conf/creds.json","issuerUrl":"https://dev-42506116.okta.com/oauth2/aus3thh6rqs3FU45X697","scope":"pulsar_client_m2m"}' --admin-url pulsar+ssl://pulsar-proxy.pulsar.svc.cluster.local:8443/ tenants list
+
+
 # To test against TLS endpoint from Kafka:
 # Copy truststore from broker to bastion by first copying to local system. (Make sure you're not still in the bastion.)
 k cp pulsar/pulsar-broker-0:/pulsar/tls.truststore.jks ~/Downloads/tls.truststore.jks
@@ -33,9 +50,6 @@ k cp ~/Downloads/tls.truststore.jks pulsar/$(kg pods -o=jsonpath='{.items[?(@.me
 k exec -it pod/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}') -- sh
 
 # Deploy credentials obtained from Okta (https://www.youtube.com/watch?v=UQBrecHOXxU&ab_channel=DataStaxDevelopers) or other provider.
-cat > /pulsar/conf/creds.json
-{"client_id":"0oa7ypwvxnvo9xnDd5d7","client_secret":"CL08ZNhF91fsCUm7rtYqHs-XUak5H7gLY01tF2bP","grant_type": "client_credentials"}
-
 # Note: The Kafka endpoints occasionally change as they lifecycle versions of Kafka releases. If you have an error when unpacking
 #     the tarball, you might be curling a 404, so be sure to check that the URL hasn't changed.
 mkdir /pulsar/kafka && cd /pulsar/kafka
