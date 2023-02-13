@@ -23,6 +23,16 @@ helm upgrade pulsar $BASEDIR/pulsar-helm-chart/helm-chart-sources/pulsar --names
 # Or, for full redeploy:
 helm delete pulsar; k delete pvc --all; helm install pulsar $BASEDIR/pulsar-helm-chart/helm-chart-sources/pulsar --namespace pulsar --values $BASEDIR/pulsar-helm-chart/examples/kafka/dev-values-tls-all-components-and-kafka-and-oauth2-low-resource.yaml --create-namespace --debug
 
+# To test against TLS endpoint from Kafka:
+# Copy truststore from broker to bastion by first copying to local system. (Make sure you're not still in the bastion.)
+k cp pulsar/pulsar-broker-0:/pulsar/tls.truststore.jks ~/Downloads/tls.truststore.jks
+# Provide the expected bastion path:
+k cp ~/Downloads/tls.truststore.jks pulsar/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}'):/pulsar/tls.truststore.jks 
+
+# SSH to bastion:
+k exec -it pod/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}') -- bash
+
+
 ### Use Pulsar client with non-TLS endpoint in Pulsar with token auth:
 ? bin/pulsar-perf produce -r 1000 --size 1024 --auth_plugin org.apache.pulsar.client.impl.auth.AuthenticationToken --auth-params file:///pulsar/token-superuser-stripped.jwt --service-url pulsar://pulsar-proxy.pulsar.svc.cluster.local:6650/ tenants list
 ? bin/pulsar-perf produce -r 1000 --size 1024 --auth_plugin org.apache.pulsar.client.impl.auth.AuthenticationToken --auth-params file:///pulsar/token-superuser-stripped.jwt --service-url pulsar+ssl://pulsar-proxy.pulsar.svc.cluster.local:6651/ tenants list
@@ -39,15 +49,6 @@ cat > /pulsar/conf/creds.json
 ### Use Pulsar client with TLS endpoint in Pulsar with OIDC:
 ? bin/pulsar-admin --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params '{"privateKey":"conf/creds.json","issuerUrl":"https://dev-42506116.okta.com/oauth2/aus3thh6rqs3FU45X697","scope":"pulsar_client_m2m"}' --admin-url pulsar+ssl://pulsar-proxy.pulsar.svc.cluster.local:8443/ tenants list
 
-
-# To test against TLS endpoint from Kafka:
-# Copy truststore from broker to bastion by first copying to local system. (Make sure you're not still in the bastion.)
-k cp pulsar/pulsar-broker-0:/pulsar/tls.truststore.jks ~/Downloads/tls.truststore.jks
-# Provide the expected bastion path:
-k cp ~/Downloads/tls.truststore.jks pulsar/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}'):/pulsar/tls.truststore.jks 
-
-# SSH to bastion:
-k exec -it pod/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}') -- sh
 
 # Deploy credentials obtained from Okta (https://www.youtube.com/watch?v=UQBrecHOXxU&ab_channel=DataStaxDevelopers) or other provider.
 # Note: The Kafka endpoints occasionally change as they lifecycle versions of Kafka releases. If you have an error when unpacking
@@ -79,7 +80,7 @@ cd /pulsar/kafka/kafka_2.12-3.3.2; bin/kafka-console-producer.sh --bootstrap-ser
 
 
 # Connect to bastion from another tab so we can watch the data come through:
-k exec -it pod/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}') -- sh
+k exec -it pod/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}') -- bash
 cd /pulsar
 bin/pulsar-client consume persistent://public/default/test --subscription-name test-kafka2 --num-messages 0
 
@@ -87,11 +88,11 @@ bin/pulsar-client consume persistent://public/default/test --subscription-name t
 # To watch logs in case there are any issues when producing:
 k logs pod/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="proxy")].metadata.name}') --follow
 k logs pod/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="broker")].metadata.name}') --follow
-k exec -it pod/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}') -- sh
+k exec -it pod/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}') -- bash
 cd /pulsar/kafka/kafka_2.12-3.3.2; bin/kafka-console-producer.sh --bootstrap-server PLAINTEXT://pulsar-proxy:9092 --topic test --producer.config /pulsar/kafka/kafka_2.12-3.3.2/config/producer.properties
 
 # Connect again to bastion pod:
-k exec -it pod/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}') -- sh
+k exec -it pod/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}') -- bash
 
 
 ##### 
@@ -112,7 +113,7 @@ sasl.jaas.config=org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginMo
    oauth.scope="pulsar_client_m2m";
 # ssl.truststore.password=pulsar
 
-ctrl + d
+ctrl + c
 cd /pulsar/kafka/kafka_2.12-3.3.2; bin/kafka-console-producer.sh --bootstrap-server SSL://pulsar-proxy:9093 --topic test --producer.config /pulsar/kafka/kafka_2.12-3.3.2/config/producer.properties
 
 # Import Grafana dashboard via UI for S4K on local machine:

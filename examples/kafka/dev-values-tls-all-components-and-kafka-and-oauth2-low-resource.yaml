@@ -209,6 +209,7 @@ brokerSts:
     requests:
       memory: 300Mi
       cpu: 0.3
+  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
   configData:
     PULSAR_MEM: "-Xms200m -Xmx200m -XX:MaxDirectMemorySize=100m -XX:+ExitOnOutOfMemoryError"
     PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info"
@@ -242,7 +243,7 @@ proxy:
     requests:
       memory: 256Mi
       cpu: 0.1
-  authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
+  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
   wsAuthenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
   configData:
     PULSAR_MEM: "-Xms200m -Xmx200m -XX:MaxDirectMemorySize=56m"

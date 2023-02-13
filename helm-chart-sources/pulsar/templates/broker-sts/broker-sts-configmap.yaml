@@ -83,14 +83,11 @@ data:
   tokenPublicKey: "file:///pulsar/token-public-key/{{ .Values.tokenPublicKeyFile }}"
   brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
   brokerClientAuthenticationParameters: "file:///pulsar/token-superuser/superuser.jwt"
-  # Use the following block if we want to also enable OAuth2 between Pulsar components, not just between clients and Pulsar:
-  #{{- if .Values.openid.enabled }}
-  #brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2"
-  #brokerClientAuthenticationParameters: "{\"privateKey\":\"file:///pulsar/openid-client-credentials/superuserKey.json\",\"issuerUrl\":\"{{ .Values.openid.issuerUrl }}\",\"scope\":\"{{ .Values.openid.scope }}\",\"audience\":\"{{ .Values.openid.allowedAudience }}\"}"
-  #{{- else }} # There's probably a smarter way to write this so it's more readable but gets trimmed to one line so Jackson doesn't blow up on new lines when parsing.
-  #brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
-  #brokerClientAuthenticationParameters: "file:///pulsar/token-superuser/superuser.jwt"
-  #{{- end }}
+  {{- if .Values.brokerSts.extraAuthProvider }}
+  authenticationProviders: "{{ .Values.brokerSts.authenticationProviders }},{{ .Values.brokerSts.extraAuthProvider }}"
+  {{- else }}
+  authenticationProviders: "{{ .Values.brokerSts.authenticationProviders }}"
+  {{- end }}
   {{- if .Values.keycloak.enabled }}
   PULSAR_PREFIX_openIDAllowedTokenIssuers: "{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ template "pulsar.serviceDnsSuffix" . }}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }}"
   {{- end }}
@@ -112,9 +109,6 @@ data:
   PULSAR_PREFIX_openIDMetadataReadTimeoutMillis: "{{ .Values.openid.metadata.readTimeoutMillis }}"
   PULSAR_PREFIX_openIDRequireHttps: "{{ .Values.openid.requireHttps }}"
   PULSAR_PREFIX_openIDAttemptAuthenticationProviderToken: "{{ .Values.openid.attemptAuthenticationProviderToken }}"
-  PULSAR_PREFIX_authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID"
-{{- else }}
-  PULSAR_PREFIX_authenticationProviders: "{{ .Values.brokerSts.authenticationProviders }}"
 {{- end }}
 
 {{- if and .Values.openid.enabled .Values.openid.withS4k }}
