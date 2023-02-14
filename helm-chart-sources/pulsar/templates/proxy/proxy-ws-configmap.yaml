@@ -68,8 +68,30 @@ data:
   superUserRoles: "{{ .Values.superUserRoles }}"
   {{- if .Values.keycloak.enabled }}
   PULSAR_PREFIX_openIDAllowedTokenIssuers: "{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ template "pulsar.serviceDnsSuffix" . }}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }}"
+  {{- else }}
+  PULSAR_PREFIX_openIDAllowedTokenIssuers: "{{ .Values.openid.issuerUrl }}"
   {{- end }}
   {{- end }}
+{{- if .Values.openid.enabled }}
+  PULSAR_PREFIX_openIDAttemptAuthenticationProviderToken: "false"
+  PULSAR_PREFIX_saslAllowedMechanisms: "OAUTHBEARER,PLAIN"
+  
+  PULSAR_PREFIX_openIDAllowedAudience: "{{ .Values.openid.allowedAudience }}"
+  PULSAR_PREFIX_openIDRoleClaim: "{{ .Values.openid.roleClaim }}"
+
+  PULSAR_PREFIX_openIDAcceptedTimeLeewaySeconds: "{{ .Values.openid.acceptedTimeLeewaySeconds }}"
+  PULSAR_PREFIX_openIDJwkCacheSize: "{{ .Values.openid.jwk.cacheSize }}"
+  PULSAR_PREFIX_openIDJwkExpiresSeconds: "{{ .Values.openid.jwk.expiresSeconds }}"
+  PULSAR_PREFIX_openIDJwkConnectionTimeoutMillis: "{{ .Values.openid.jwk.connectionTimeoutMillis }}"
+  PULSAR_PREFIX_openIDJwkReadTimeoutMillis: "{{ .Values.openid.jwk.readTimeoutMillis }}"
+  PULSAR_PREFIX_openIDMetadataCacheSize: "{{ .Values.openid.metadata.cacheSize }}"
+  PULSAR_PREFIX_openIDMetadataExpiresSeconds: "{{ .Values.openid.metadata.expiresSeconds }}"
+  PULSAR_PREFIX_openIDMetadataConnectionTimeoutMillis: "{{ .Values.openid.metadata.connectionTimeoutMillis }}"
+  PULSAR_PREFIX_openIDMetadataReadTimeoutMillis: "{{ .Values.openid.metadata.readTimeoutMillis }}"
+  PULSAR_PREFIX_openIDRequireHttps: "{{ .Values.openid.requireHttps }}"
+  # Set following to true if admin console is configured to use Okta integration. The admin console uses the user model with local admin token, not Okta integration, according to notes from Ming-Hong Liu.
+  PULSAR_PREFIX_openIDAttemptAuthenticationProviderToken: "{{ .Values.openid.attemptAuthenticationProviderToken }}"
+{{- end }}
 {{- if .Values.enableTls }}
   webServicePortTls: "{{ .Values.proxy.wsProxyPortTls }}"
   tlsEnabled: "true"

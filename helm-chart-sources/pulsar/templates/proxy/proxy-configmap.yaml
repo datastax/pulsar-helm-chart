@@ -123,6 +123,8 @@ data:
   {{- end }}
   {{- if .Values.keycloak.enabled }}
   PULSAR_PREFIX_openIDAllowedTokenIssuers: "{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ template "pulsar.serviceDnsSuffix" . }}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }}"
+  {{- else }}
+  PULSAR_PREFIX_openIDAllowedTokenIssuers: "{{ .Values.openid.issuerUrl }}"
   {{- end }}
   tokenPublicKey: "file:///pulsar/token-public-key/{{ .Values.tokenPublicKeyFile }}"
   brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
@@ -131,8 +133,7 @@ data:
 {{- if .Values.openid.enabled }}
   PULSAR_PREFIX_openIDAttemptAuthenticationProviderToken: "false"
   PULSAR_PREFIX_saslAllowedMechanisms: "OAUTHBEARER,PLAIN"
-  
-  PULSAR_PREFIX_openIDAllowedTokenIssuers: "{{ .Values.openid.issuerUrl }}"
+
   PULSAR_PREFIX_openIDAllowedAudience: "{{ .Values.openid.allowedAudience }}"
   PULSAR_PREFIX_openIDRoleClaim: "{{ .Values.openid.roleClaim }}"
 
