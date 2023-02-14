@@ -18,7 +18,7 @@ openid:
   withS4k: true
 
 # To redeploy cluster:
-BASEDIR=/Users/devin.bost/proj/repos
+BASEDIR=/Users/YOUR_USER/proj/repos
 helm upgrade pulsar $BASEDIR/pulsar-helm-chart/helm-chart-sources/pulsar --namespace pulsar --values $BASEDIR/pulsar-helm-chart/examples/kafka/dev-values-tls-all-components-and-kafka-and-oauth2-low-resource.yaml --create-namespace --debug
 # Or, for full redeploy:
 helm delete pulsar; k delete pvc --all; helm install pulsar $BASEDIR/pulsar-helm-chart/helm-chart-sources/pulsar --namespace pulsar --values $BASEDIR/pulsar-helm-chart/examples/kafka/dev-values-tls-all-components-and-kafka-and-oauth2-low-resource.yaml --create-namespace --debug
@@ -43,9 +43,9 @@ cat > /pulsar/conf/creds.json
 {"client_id":"0oa7ypwvxnvo9xnDd5d7","client_secret":"CL08ZNhF91fsCUm7rtYqHs-XUak5H7gLY01tF2bP","grant_type": "client_credentials"}
 
 ### Use Pulsar client with non-TLS endpoint in Pulsar with OIDC:
-? bin/pulsar-admin --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params '{"privateKey":"conf/creds.json","issuerUrl":"https://dev-42506116.okta.com/oauth2/aus3thh6rqs3FU45X697","scope":"pulsar_client_m2m"}' --admin-url pulsar://pulsar-proxy.pulsar.svc.cluster.local:8080/ tenants list
+bin/pulsar-admin --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params '{"privateKey":"conf/creds.json","issuerUrl":"https://dev-42506116.okta.com/oauth2/aus3thh6rqs3FU45X697","scope":"pulsar_client_m2m"}' --admin-url pulsar://pulsar-proxy.pulsar.svc.cluster.local:8080/ tenants list
 ### Use Pulsar client with TLS endpoint in Pulsar with OIDC:
-? bin/pulsar-admin --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params '{"privateKey":"conf/creds.json","issuerUrl":"https://dev-42506116.okta.com/oauth2/aus3thh6rqs3FU45X697","scope":"pulsar_client_m2m"}' --admin-url pulsar+ssl://pulsar-proxy.pulsar.svc.cluster.local:8443/ tenants list
+bin/pulsar-admin --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params '{"privateKey":"conf/creds.json","issuerUrl":"https://dev-42506116.okta.com/oauth2/aus3thh6rqs3FU45X697","scope":"pulsar_client_m2m"}' --admin-url pulsar+ssl://pulsar-proxy.pulsar.svc.cluster.local:8443/ tenants list
 
 
 # Deploy credentials obtained from Okta (https://www.youtube.com/watch?v=UQBrecHOXxU&ab_channel=DataStaxDevelopers) or other provider.
