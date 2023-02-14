@@ -14,7 +14,6 @@
 #  limitations under the License.
 #
 #
-# Reminder to merge changes into this file for the PR if everything else looks good.
 {{- if .Values.extra.wsproxy }}
 apiVersion: v1
 kind: ConfigMap
