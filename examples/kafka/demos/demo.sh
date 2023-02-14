@@ -109,7 +109,6 @@ sasl.jaas.config=org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginMo
    oauth.credentials.url="file:///pulsar/conf/creds.json"\
    oauth.audience="api://pulsarClient"\
    oauth.scope="pulsar_client_m2m";
-# ssl.truststore.password=pulsar
 
 ctrl + c
 cd /pulsar/kafka/kafka_2.12-3.3.2; bin/kafka-console-producer.sh --bootstrap-server SSL://pulsar-proxy:9093 --topic test --producer.config /pulsar/kafka/kafka_2.12-3.3.2/config/producer.properties
