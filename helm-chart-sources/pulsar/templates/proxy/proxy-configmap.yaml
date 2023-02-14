@@ -161,8 +161,6 @@ data:
 {{- end }}
 {{- if and .Values.openid.enabled .Values.openid.withS4k .Values.enableTls }}
   PULSAR_PREFIX_kopTlsEnabledWithBroker: "true"
-  #PULSAR_PREFIX_kopSslTruststoreLocation: "/pulsar/tls.truststore.jks"
-  #PULSAR_PREFIX_kopSslTruststorePassword: ""
 {{- end }}
 
 {{- range $key, $val := $.Values.proxy.configData }}
