@@ -168,9 +168,9 @@ data:
 {{- range $key, $val := $.Values.proxy.configData }}
   {{ $key }}: {{ $val | replace "\"" "" | trim | quote }}
 {{- end }}
+{{- end }}
 
 {{- if .Values.proxy.extensions.enabled }}
   PULSAR_PREFIX_proxyExtensionsDirectory: "{{ .Values.proxy.extensions.directory }}"
   PULSAR_PREFIX_proxyExtensions: "{{ .Values.proxy.extensions.extensions }}"
-{{- end }}
 {{- end }}
