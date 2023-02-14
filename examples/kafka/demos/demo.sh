@@ -34,11 +34,9 @@ k exec -it pod/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="ba
 
 
 ### Use Pulsar client with non-TLS endpoint in Pulsar with token auth:
-? bin/pulsar-perf produce -r 1000 --size 1024 --auth_plugin org.apache.pulsar.client.impl.auth.AuthenticationToken --auth-params file:///pulsar/token-superuser-stripped.jwt --service-url pulsar://pulsar-proxy.pulsar.svc.cluster.local:6650/ tenants list
-? bin/pulsar-perf produce -r 1000 --size 1024 --auth_plugin org.apache.pulsar.client.impl.auth.AuthenticationToken --auth-params file:///pulsar/token-superuser-stripped.jwt --service-url pulsar+ssl://pulsar-proxy.pulsar.svc.cluster.local:6651/ tenants list
-
+bin/pulsar-perf produce -r 1000 --size 1024 --auth_plugin org.apache.pulsar.client.impl.auth.AuthenticationToken --auth-params file:///pulsar/token-superuser-stripped.jwt --service-url pulsar://pulsar-proxy.pulsar.svc.cluster.local:6650/ persistent://public/default/test
 ### Use Pulsar client with TLS endpoint in Pulsar with token auth:
-? bin/pulsar-perf produce -r 1000 --size 1024 --auth_plugin org.apache.pulsar.client.impl.auth.AuthenticationToken --auth-params file:///pulsar/token-superuser-stripped.jwt persistent://public/default/test
+bin/pulsar-perf produce -r 1000 --size 1024 --auth_plugin org.apache.pulsar.client.impl.auth.AuthenticationToken --auth-params file:///pulsar/token-superuser-stripped.jwt --service-url pulsar+ssl://pulsar-proxy.pulsar.svc.cluster.local:6651/ persistent://public/default/test
 
 ## OIDC Setup:
 cat > /pulsar/conf/creds.json
