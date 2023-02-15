@@ -48,9 +48,9 @@ k cp ~/Downloads/tls.truststore.jks pulsar/$(kg pods -o=jsonpath='{.items[?(@.me
 k exec -it pod/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}') -- env YOUR_USER=$YOUR_USER ISSUER_URI=$ISSUER_URI AUDIENCE=$AUDIENCE SCOPE=$SCOPE AUTH_PARAMS=$AUTH_PARAMS CLIENT_ID=$CLIENT_ID CLIENT_SECRET=$CLIENT_SECRET KAFKA_VERSION=$KAFKA_VERSION PROXY_HOSTNAME=$PROXY_HOSTNAME bash
 
 ### Use Pulsar client with non-TLS endpoint in Pulsar with token auth:
-bin/pulsar-perf produce -r 1000 --size 1024 --auth_plugin org.apache.pulsar.client.impl.auth.AuthenticationToken --auth-params file:///pulsar/token-superuser-stripped.jwt --service-url pulsar://$PROXY_HOSTNAME:6650/ persistent://public/default/test
+bin/pulsar-perf produce --num-messages 1000 -r 1000 --size 1024 --auth_plugin org.apache.pulsar.client.impl.auth.AuthenticationToken --auth-params file:///pulsar/token-superuser-stripped.jwt --service-url pulsar://$PROXY_HOSTNAME:6650/ persistent://public/default/test
 ### Use Pulsar client with TLS endpoint in Pulsar with token auth:
-bin/pulsar-perf produce -r 1000 --size 1024 --auth_plugin org.apache.pulsar.client.impl.auth.AuthenticationToken --auth-params file:///pulsar/token-superuser-stripped.jwt --service-url pulsar+ssl://$PROXY_HOSTNAME:6651/ persistent://public/default/test
+bin/pulsar-perf produce --num-messages 1000 -r 1000 --size 1024 --auth_plugin org.apache.pulsar.client.impl.auth.AuthenticationToken --auth-params file:///pulsar/token-superuser-stripped.jwt --service-url pulsar+ssl://$PROXY_HOSTNAME:6651/ persistent://public/default/test
 
 ## OIDC Setup:
 cat << EOF > /pulsar/conf/creds.json
@@ -58,14 +58,14 @@ cat << EOF > /pulsar/conf/creds.json
 EOF
 
 ### Use Pulsar client with non-TLS endpoint in Pulsar with OIDC:
-bin/pulsar-perf produce -r 1000 --size 1024 --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params $AUTH_PARAMS --service-url pulsar://$PROXY_HOSTNAME:6650/ persistent://public/default/test
+bin/pulsar-perf produce --num-messages 1000 -r 1000 --size 1024 --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params $AUTH_PARAMS --service-url pulsar://$PROXY_HOSTNAME:6650/ persistent://public/default/test
 ### Use Pulsar client with TLS endpoint in Pulsar with OIDC:
-bin/pulsar-perf produce -r 1000 --size 1024 --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params $AUTH_PARAMS --service-url pulsar+ssl://$PROXY_HOSTNAME:6651/ persistent://public/default/test
+bin/pulsar-perf produce --num-messages 1000 -r 1000 --size 1024 --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params $AUTH_PARAMS --service-url pulsar+ssl://$PROXY_HOSTNAME:6651/ persistent://public/default/test
 
-bin/pulsar-admin --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params $AUTH_PARAMS namespaces policies public/default
+# Test admin endpoints:
+bin/pulsar-admin --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params $AUTH_PARAMS --admin-url http://$PROXY_HOSTNAME:8080/ namespaces policies public/default
 
-bin/pulsar-admin --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params $AUTH_PARAMS namespaces policies public/default
-
+bin/pulsar-admin --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params $AUTH_PARAMS --admin-url https://$PROXY_HOSTNAME:8443/ namespaces policies public/default
 
 # Deploy credentials obtained from Okta (https://www.youtube.com/watch?v=UQBrecHOXxU&ab_channel=DataStaxDevelopers) or other provider.
 # Note: The Kafka endpoints occasionally change as they lifecycle versions of Kafka releases. If you have an error when unpacking
@@ -95,7 +95,7 @@ EOF
 
 cd /pulsar/kafka/$KAFKA_VERSION; bin/kafka-console-producer.sh --bootstrap-server PLAINTEXT://pulsar-proxy:9092 --topic test --producer.config /pulsar/kafka/$KAFKA_VERSION/config/producer.properties
 
-
+#### From another CLI tab:
 # Connect to bastion from another tab so we can watch the data come through:
 k exec -it pod/$(kg pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}') -- env YOUR_USER=$YOUR_USER ISSUER_URI=$ISSUER_URI AUDIENCE=$AUDIENCE SCOPE=$SCOPE AUTH_PARAMS=$AUTH_PARAMS CLIENT_ID=$CLIENT_ID CLIENT_SECRET=$CLIENT_SECRET KAFKA_VERSION=$KAFKA_VERSION PROXY_HOSTNAME=$PROXY_HOSTNAME bash
 cd /pulsar
