@@ -150,8 +150,7 @@ sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule \
    required username="public/default"\
    password="token:$SUPERUSER_TOKEN";
 EOF
-# When publishing this doc, we should automate getting the superuser token via the line below:
-$(cat /pulsar/token-superuser-stripped.jwt)
+
 cd /pulsar/kafka/$KAFKA_VERSION; bin/kafka-console-producer.sh --bootstrap-server PLAINTEXT://pulsar-proxy:9092 --topic test --producer.config /pulsar/kafka/$KAFKA_VERSION/config/producer.properties
 
 ######
