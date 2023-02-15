@@ -43,10 +43,11 @@ cat > /pulsar/conf/creds.json
 {"client_id":"0oa7ypwvxnvo9xnDd5d7","client_secret":"CL08ZNhF91fsCUm7rtYqHs-XUak5H7gLY01tF2bP","grant_type": "client_credentials"}
 
 ### Use Pulsar client with non-TLS endpoint in Pulsar with OIDC:
-bin/pulsar-perf produce -r 1000 --size 1024 --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params '{"privateKey":"/pulsar/conf/creds.json","issuerUrl":"https://dev-42506116.okta.com/oauth2/aus3thh6rqs3FU45X697","scope":"pulsar_client_m2m","audience":"api://pulsarClient"}' --service-url pulsar://pulsar-proxy.pulsar.svc.cluster.local:6650/ persistent://public/default/test
+bin/pulsar-perf produce -r 1000 --size 1024 --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params '{"privateKey":"/pulsar/conf/creds.json","issuerUrl":"https://dev-42506116.okta.com/oauth2/aus7ypk6sjvgF4l615d7","scope":"pulsar_client_m2m","audience":"api://pulsarClient"}' --service-url pulsar://pulsar-proxy.pulsar.svc.cluster.local:6650/ persistent://public/default/test
 ### Use Pulsar client with TLS endpoint in Pulsar with OIDC:
-bin/pulsar-perf produce -r 1000 --size 1024 --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params '{"privateKey":"/pulsar/conf/creds.json","issuerUrl":"https://dev-42506116.okta.com/oauth2/aus3thh6rqs3FU45X697","scope":"pulsar_client_m2m","audience":"api://pulsarClient"}' --service-url pulsar+ssl://pulsar-proxy.pulsar.svc.cluster.local:6651/ persistent://public/default/test
+bin/pulsar-perf produce -r 1000 --size 1024 --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params '{"privateKey":"/pulsar/conf/creds.json","issuerUrl":"https://dev-42506116.okta.com/oauth2/aus7ypk6sjvgF4l615d7","scope":"pulsar_client_m2m","audience":"api://pulsarClient"}' --service-url pulsar+ssl://pulsar-proxy.pulsar.svc.cluster.local:6651/ persistent://public/default/test
 
+bin/pulsar-admin --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params '{"privateKey":"/pulsar/conf/creds.json","issuerUrl":"https://dev-42506116.okta.com/oauth2/aus7ypk6sjvgF4l615d7","scope":"pulsar_client_m2m","audience":"api://pulsarClient"}' namespaces policies public/default
 
 # Deploy credentials obtained from Okta (https://www.youtube.com/watch?v=UQBrecHOXxU&ab_channel=DataStaxDevelopers) or other provider.
 # Note: The Kafka endpoints occasionally change as they lifecycle versions of Kafka releases. If you have an error when unpacking
