@@ -73,7 +73,6 @@ data:
   {{- end }}
   {{- end }}
 {{- if .Values.openid.enabled }}
-  PULSAR_PREFIX_openIDAttemptAuthenticationProviderToken: "false"
   PULSAR_PREFIX_saslAllowedMechanisms: "OAUTHBEARER,PLAIN"
   
   PULSAR_PREFIX_openIDAllowedAudience: "{{ .Values.openid.allowedAudience }}"
