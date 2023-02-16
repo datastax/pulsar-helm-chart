@@ -113,16 +113,9 @@ data:
 {{- end }}
 
 {{- if and .Values.openid.enabled .Values.openid.withS4k }}
-  PULSAR_PREFIX_brokerEntryMetadataInterceptors: "org.apache.pulsar.common.intercept.AppendIndexMetadataInterceptor,org.apache.pulsar.common.intercept.AppendBrokerTimestampMetadataInterceptor"
-  PULSAR_PREFIX_kafkaTransactionCoordinatorEnabled: "true"
   PULSAR_PREFIX_kafkaProxySuperUserRole: "{{ .Values.kafkaProxySuperUserRole }}"
-  PULSAR_PREFIX_messagingProtocols: "kafka"
-  PULSAR_PREFIX_brokerDeleteInactiveTopicsEnabled: "false"
   PULSAR_PREFIX_saslAllowedMechanisms: "OAUTHBEARER,PLAIN"
   PULSAR_PREFIX_kopOauth2AuthenticateCallbackHandler: "io.streamnative.pulsar.handlers.kop.security.auth.OauthValidatorCallbackHandler"
-  PULSAR_PREFIX_kopSchemaRegistryEnable: "true"
-  PULSAR_PREFIX_allowAutoTopicCreationType: "partitioned"
-  PULSAR_PREFIX_protocolHandlerDirectory: "./protocols"
   # Java property configuration file of OauthValidatorCallbackHandler:
   PULSAR_PREFIX_kopOauth2ConfigFile: "/pulsar/conf/kop-handler.properties"
 {{- end }}
