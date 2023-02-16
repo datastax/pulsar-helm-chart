@@ -131,7 +131,6 @@ data:
   brokerClientAuthenticationParameters: "file:///pulsar/token-proxy/proxy.jwt"
 {{- end }}
 {{- if .Values.openid.enabled }}
-  PULSAR_PREFIX_openIDAttemptAuthenticationProviderToken: "false"
   PULSAR_PREFIX_saslAllowedMechanisms: "OAUTHBEARER,PLAIN"
 
   PULSAR_PREFIX_openIDAllowedAudience: "{{ .Values.openid.allowedAudience }}"
@@ -147,7 +146,7 @@ data:
   PULSAR_PREFIX_openIDMetadataConnectionTimeoutMillis: "{{ .Values.openid.metadata.connectionTimeoutMillis }}"
   PULSAR_PREFIX_openIDMetadataReadTimeoutMillis: "{{ .Values.openid.metadata.readTimeoutMillis }}"
   PULSAR_PREFIX_openIDRequireHttps: "{{ .Values.openid.requireHttps }}"
-  # Set following to true if admin console is configured to use Okta integration. The admin console uses the user model with local admin token, not Okta integration, according to notes from Ming-Hong Liu.
+  # Set following to true if admin console is configured to use Okta integration. The admin console uses the user model with local admin token, not Okta integration.
   PULSAR_PREFIX_openIDAttemptAuthenticationProviderToken: "{{ .Values.openid.attemptAuthenticationProviderToken }}"
 {{- end }}
 {{- if and .Values.openid.enabled .Values.openid.withS4k }}
