@@ -73,8 +73,6 @@ data:
   {{- end }}
   {{- end }}
 {{- if .Values.openid.enabled }}
-  PULSAR_PREFIX_saslAllowedMechanisms: "OAUTHBEARER,PLAIN"
-  
   PULSAR_PREFIX_openIDAllowedAudience: "{{ .Values.openid.allowedAudience }}"
   PULSAR_PREFIX_openIDRoleClaim: "{{ .Values.openid.roleClaim }}"
 
@@ -90,6 +88,9 @@ data:
   PULSAR_PREFIX_openIDRequireHttps: "{{ .Values.openid.requireHttps }}"
   # Set following to true if admin console is configured to use Okta integration. The admin console uses the user model with local admin token, not Okta integration.
   PULSAR_PREFIX_openIDAttemptAuthenticationProviderToken: "{{ .Values.openid.attemptAuthenticationProviderToken }}"
+  {{- if .Values.openid.withS4k }}
+  PULSAR_PREFIX_saslAllowedMechanisms: "OAUTHBEARER,PLAIN"
+  {{-end }}
 {{- end }}
 {{- if .Values.enableTls }}
   webServicePortTls: "{{ .Values.proxy.wsProxyPortTls }}"
