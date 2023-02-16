@@ -177,7 +177,7 @@ spec:
         {{- if and .Values.openid.enabled .Values.openid.withS4k }}
         - name: openid-s4k
           configMap:
-            name: openid-s4k-config
+            name: "{{ template "pulsar.fullname" . }}-{{ .Values.openid.component }}-s4k"
           {{- end}}
       initContainers:
       {{- if .Values.enableWaitContainers }}
