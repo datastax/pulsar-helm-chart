@@ -1764,9 +1764,6 @@ openid:
   attemptAuthenticationProviderToken: true
   # Comma delimited list of issuers to trust
   allowedIssuerUrls: ""
-  scope: ""
-  client_id: ""
-  client_secret: ""
   acceptedTimeLeewaySeconds: 0
   withS4k: true
   jwk:

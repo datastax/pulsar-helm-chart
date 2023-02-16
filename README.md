@@ -687,9 +687,6 @@ openid:
   enabled: true
   # From token generated in Okta UI or other method:
   allowedIssuerUrls: $ISSUER_URI
-  scope: $SCOPE
-  client_id: "$CLIENT_ID"
-  client_secret: "$CLIENT_SECRET"
   withS4k: true
   allowedAudience: $AUDIENCE
 ```
@@ -699,9 +696,6 @@ openid:
   enabled: true
   # From token generated in Okta UI or other method:
   allowedIssuerUrls: https://dev-1111111.okta.com/oauth2/abcd878787
-  scope: pulsar_client_m2m
-  client_id: "asdfasdfasdf"
-  client_secret: "ABCD3FGabcdefg-abcdefgABCDEFG"
   allowedAudience: api://pulsarClient
   withS4k: true
 ```
@@ -725,8 +719,8 @@ AUTH_PARAMS=$(cat <<EOF
 {"privateKey":"/pulsar/conf/creds.json","issuerUrl":"$ISSUER_URI","scope":"$SCOPE","audience":"$AUDIENCE"}
 EOF
 )
-CLIENT_ID="asdfasdfasdf"
-CLIENT_SECRET="ABCD3FGabcdefg-abcdefgABCDEFG"
+CLIENT_ID="your-client-id"
+CLIENT_SECRET="your-client-secret"
 KAFKA_VERSION="kafka_2.12-3.3.2"
 
 PROXY_HOSTNAME="pulsar-proxy.pulsar.svc.cluster.local"
