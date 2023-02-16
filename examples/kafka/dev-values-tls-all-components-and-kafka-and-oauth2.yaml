@@ -218,6 +218,9 @@ brokerSts:
     PULSAR_PREFIX_kopSchemaRegistryEnable: "true"
     PULSAR_PREFIX_allowAutoTopicCreationType: "partitioned"
     PULSAR_PREFIX_protocolHandlerDirectory: "./protocols"
+    PULSAR_PREFIX_kopTlsEnabledWithBroker: "true"
+    PULSAR_PREFIX_kafkaListeners: "SASL_PLAINTEXT://0.0.0.0:9092,SASL_SSL://0.0.0.0:9093"
+    PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://advertisedAddress:9092,SASL_SSL://advertisedAddress:9093"
 
 autoRecovery:
   enableProvisionContainer: true
@@ -269,6 +272,7 @@ proxy:
     PULSAR_PREFIX_proxyExtensions: "kafka"
     PULSAR_PREFIX_brokerDeleteInactiveTopicsEnabled: "false"
     PULSAR_PREFIX_kafkaTransactionCoordinatorEnabled: "true"
+    PULSAR_PREFIX_kopTlsEnabledWithBroker: "true"
     authenticateMetricsEndpoint: "true"
   autoPortAssign:
     enablePlainTextWithTLS: true

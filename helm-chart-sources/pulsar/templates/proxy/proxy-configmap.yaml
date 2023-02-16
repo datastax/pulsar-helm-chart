@@ -153,9 +153,6 @@ data:
   PULSAR_PREFIX_kopOauth2ConfigFile: "/pulsar/conf/kop-handler.properties"
   PULSAR_PREFIX_saslAllowedMechanisms: "OAUTHBEARER,PLAIN"
 {{- end }}
-{{- if and .Values.openid.enabled .Values.openid.withS4k .Values.enableTls }}
-  PULSAR_PREFIX_kopTlsEnabledWithBroker: "true"
-{{- end }}
 
 {{- range $key, $val := $.Values.proxy.configData }}
   {{ $key }}: {{ $val | replace "\"" "" | trim | quote }}

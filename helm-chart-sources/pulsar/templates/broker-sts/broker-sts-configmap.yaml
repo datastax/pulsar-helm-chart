@@ -119,16 +119,6 @@ data:
   # Java property configuration file of OauthValidatorCallbackHandler:
   PULSAR_PREFIX_kopOauth2ConfigFile: "/pulsar/conf/kop-handler.properties"
 {{- end }}
-{{- if and .Values.openid.enabled .Values.openid.withS4k .Values.enableTls }}
-  PULSAR_PREFIX_kopTlsEnabledWithBroker: "true"
-  PULSAR_PREFIX_kafkaListeners: "SASL_PLAINTEXT://0.0.0.0:9092,SASL_SSL://0.0.0.0:9093" 
-  PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://advertisedAddress:9092,SASL_SSL://advertisedAddress:9093" 
-{{- end }}
-{{- if and .Values.openid.enabled .Values.openid.withS4k (not .Values.enableTls ) }}
-  PULSAR_PREFIX_kopTlsEnabledWithBroker: "false"
-  PULSAR_PREFIX_kafkaListeners: "SASL_PLAINTEXT://0.0.0.0:9092"
-  PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://advertisedAddress:9092"
-{{- end }}
 {{- if .Values.enableTls }}
   tlsEnabled: "true"
   tlsEnableHostnameVerification: "true"
