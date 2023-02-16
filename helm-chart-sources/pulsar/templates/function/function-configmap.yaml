@@ -128,9 +128,6 @@ data:
       openIDAllowedTokenIssuers: "{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ template "pulsar.serviceDnsSuffix" . }}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }}"
       {{- end }}
       {{- if .Values.openid.enabled }}
-      openIDAttemptAuthenticationProviderToken: "false"
-      saslAllowedMechanisms: "OAUTHBEARER,PLAIN"
-      
       openIDAllowedTokenIssuers: "{{ .Values.openid.allowedIssuerUrls }}"
       openIDAllowedAudience: "{{ .Values.openid.allowedAudience }}"
       openIDRoleClaim: "{{ .Values.openid.roleClaim }}"
@@ -147,18 +144,6 @@ data:
       openIDRequireHttps: "{{ .Values.openid.requireHttps }}"
       # Set following to true if admin console is configured to use Okta integration. The admin console uses the user model with local admin token, not Okta integration.
       openIDAttemptAuthenticationProviderToken: "{{ .Values.openid.attemptAuthenticationProviderToken }}"
-      {{- end }}
-      {{- if and .Values.openid.enabled .Values.openid.withS4k }}
-      kopOauth2AuthenticateCallbackHandler: "io.streamnative.pulsar.handlers.kop.security.auth.OauthValidatorCallbackHandler"
-      kopOauth2ConfigFile: "/pulsar/conf/kop-handler.properties"
-      kafkaTransactionCoordinatorEnabled: "true"
-      kafkaProxySuperUserRole: "admin"
-      messagingProtocols: "kafka"
-      proxyExtensions: "kafka"
-      brokerDeleteInactiveTopicsEnabled: "false"
-      {{- end }}
-      {{- if and .Values.openid.enabled .Values.openid.withS4k .Values.enableTls }}
-      kopTlsEnabledWithBroker: "true"
       {{- end }}
       {{- if .Values.function.customProperties }}
 {{ toYaml .Values.function.customProperties | indent 6 }}
