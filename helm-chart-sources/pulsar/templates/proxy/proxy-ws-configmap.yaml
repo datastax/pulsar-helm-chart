@@ -90,7 +90,7 @@ data:
   PULSAR_PREFIX_openIDAttemptAuthenticationProviderToken: "{{ .Values.openid.attemptAuthenticationProviderToken }}"
   {{- if .Values.openid.withS4k }}
   PULSAR_PREFIX_saslAllowedMechanisms: "OAUTHBEARER,PLAIN"
-  {{-end }}
+  {{- end }}
 {{- end }}
 {{- if .Values.enableTls }}
   webServicePortTls: "{{ .Values.proxy.wsProxyPortTls }}"
