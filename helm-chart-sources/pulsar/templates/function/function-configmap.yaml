@@ -131,7 +131,7 @@ data:
       openIDAttemptAuthenticationProviderToken: "false"
       saslAllowedMechanisms: "OAUTHBEARER,PLAIN"
       
-      openIDAllowedTokenIssuers: "{{ .Values.openid.issuerUrl }}"
+      openIDAllowedTokenIssuers: "{{ .Values.openid.allowedIssuerUrls }}"
       openIDAllowedAudience: "{{ .Values.openid.allowedAudience }}"
       openIDRoleClaim: "{{ .Values.openid.roleClaim }}"
 

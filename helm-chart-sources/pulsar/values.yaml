@@ -1762,7 +1762,8 @@ openid:
   roleClaim: sub
     # Set following to true if admin console is configured to use Okta integration. (The admin console uses a local admin token.)
   attemptAuthenticationProviderToken: true
-  issuerUrl: ""
+  # Comma delimited list of issuers to trust
+  allowedIssuerUrls: ""
   scope: ""
   client_id: ""
   client_secret: ""

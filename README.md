@@ -686,7 +686,7 @@ Be sure to provide your appropriate values in the openid section of the values f
 openid:
   enabled: true
   # From token generated in Okta UI or other method:
-  issuerUrl: $ISSUER_URI
+  allowedIssuerUrls: $ISSUER_URI
   scope: $SCOPE
   client_id: "$CLIENT_ID"
   client_secret: "$CLIENT_SECRET"
@@ -698,7 +698,7 @@ like with these example values:
 openid:
   enabled: true
   # From token generated in Okta UI or other method:
-  issuerUrl: https://dev-1111111.okta.com/oauth2/abcd878787
+  allowedIssuerUrls: https://dev-1111111.okta.com/oauth2/abcd878787
   scope: pulsar_client_m2m
   client_id: "asdfasdfasdf"
   client_secret: "ABCD3FGabcdefg-abcdefgABCDEFG"
