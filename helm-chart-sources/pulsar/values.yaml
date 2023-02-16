@@ -1756,6 +1756,7 @@ pulsarHeartbeat:
 # Please also see the docs here: https://github.com/datastax/pulsar-openid-connect-plugin
 # Then, use the values from the Payload generated to populate these fields:
 openid:
+  component: openid
   enabled: false
   allowedAudience: ""
   roleClaim: sub
@@ -1766,6 +1767,7 @@ openid:
   client_id: ""
   client_secret: ""
   acceptedTimeLeewaySeconds: 0
+  withS4k: true
   jwk:
     cacheSize: 10
     expiresSeconds: 300

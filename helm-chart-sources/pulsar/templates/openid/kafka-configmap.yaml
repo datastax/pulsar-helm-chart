@@ -19,7 +19,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: "openid-s4k-config"
+  name: "{{ template "pulsar.fullname" . }}-{{ .Values.openid.component }}-s4k"
   namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "pulsar.name" . }}
