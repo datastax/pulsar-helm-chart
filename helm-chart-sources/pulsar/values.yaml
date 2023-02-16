@@ -1765,7 +1765,7 @@ openid:
   # Comma delimited list of issuers to trust
   allowedIssuerUrls: ""
   acceptedTimeLeewaySeconds: 0
-  withS4k: true
+  withS4k: false
   jwk:
     cacheSize: 10
     expiresSeconds: 300
