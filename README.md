@@ -10,6 +10,7 @@ It includes support for:
 * [TLS](#tls)
 * [Authentication](#authentication)
 * [Token Authentication via Keycloak Integration](#token-authentication-via-keycloak-integration)
+* [OpenID / OAuth2 with Starlight for Kafka](#openid-with-starlight-for-kafka)
 * WebSocket Proxy
 * Standalone Functions Workers
 * Pulsar IO Connectors
@@ -677,3 +678,201 @@ Once you have created the secrets that store the certificate info (or specified 
 enableTls: true
 
 ```
+### OpenID with Starlight for Kafka
+To configure OpenID / OAuth2, you can use the values file that includes OpenID support with Starlight for Kafka: dev-values-tls-all-components-and-oauth2.yaml
+Be sure to provide your appropriate values in the openid section of the values file:
+
+```
+openid:
+  enabled: true
+  # From token generated in Okta UI or other method:
+  issuerUrl: $ISSUER_URI
+  scope: $SCOPE
+  client_id: "$CLIENT_ID"
+  client_secret: "$CLIENT_SECRET"
+  withS4k: true
+  allowedAudience: $AUDIENCE
+```
+like with these example values:
+```
+openid:
+  enabled: true
+  # From token generated in Okta UI or other method:
+  issuerUrl: https://dev-1111111.okta.com/oauth2/abcd878787
+  scope: pulsar_client_m2m
+  client_id: "asdfasdfasdf"
+  client_secret: "ABCD3FGabcdefg-abcdefgABCDEFG"
+  allowedAudience: api://pulsarClient
+  withS4k: true
+```
+
+The chart can be installed as follows:
+
+```
+BASEDIR=/path/to/repo/on/your/local/filesystem
+helm install pulsar datastax-pulsar/pulsar --namespace pulsar --values $BASEDIR/pulsar-helm-chart/examples/kafka/dev-values-tls-all-components-and-kafka-and-oauth2.yaml --create-namespace --debug
+```
+
+To test the functionality (with and without TLS) for both token authentication, and for Starlight for Kafka, you can perform the following steps:
+1. Set variables that will be used for subsequent commands (making sure they match the values used in the Helm values file above):
+Note that these credentials can be obtained from Okta (https://www.youtube.com/watch?v=UQBrecHOXxU&ab_channel=DataStaxDevelopers) or from an equivalent auth provider.
+
+```
+ISSUER_URI="https://dev-1111111.okta.com/oauth2/abcd878787"
+AUDIENCE="api://pulsarClient"
+SCOPE="pulsar_client_m2m"
+AUTH_PARAMS=$(cat <<EOF
+{"privateKey":"/pulsar/conf/creds.json","issuerUrl":"$ISSUER_URI","scope":"$SCOPE","audience":"$AUDIENCE"}
+EOF
+)
+CLIENT_ID="asdfasdfasdf"
+CLIENT_SECRET="ABCD3FGabcdefg-abcdefgABCDEFG"
+KAFKA_VERSION="kafka_2.12-3.3.2"
+
+PROXY_HOSTNAME="pulsar-proxy.pulsar.svc.cluster.local"
+```
+2. (Optional for TLS)
+```
+# Copy truststore from broker to bastion to simplify tests by first copying to local system. (Make sure you're not still in the bastion.)
+kubectl cp pulsar/pulsar-broker-0:/pulsar/tls.truststore.jks ~/Downloads/tls.truststore.jks
+# Provide the expected bastion path:
+kubectl cp ~/Downloads/tls.truststore.jks pulsar/$(kubectl get pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}'):/pulsar/tls.truststore.jks 
+```
+3. SSH to bastion, passing variables for convenience:
+```
+kubectl exec -it pod/$(kubectl get pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}') -- env ISSUER_URI=$ISSUER_URI AUDIENCE=$AUDIENCE SCOPE=$SCOPE AUTH_PARAMS=$AUTH_PARAMS CLIENT_ID=$CLIENT_ID CLIENT_SECRET=$CLIENT_SECRET KAFKA_VERSION=$KAFKA_VERSION PROXY_HOSTNAME=$PROXY_HOSTNAME bash
+```
+4. Test Pulsar client with pulsar-perf with token auth against non-TLS endpoint:
+```
+bin/pulsar-perf produce --num-messages 1000 -r 1000 --size 1024 --auth_plugin org.apache.pulsar.client.impl.auth.AuthenticationToken --auth-params file:///pulsar/token-superuser-stripped.jwt --service-url pulsar://$PROXY_HOSTNAME:6650/ persistent://public/default/test
+```
+5. Test Pulsar client with pulsar-perf with token auth against TLS endpoint (requires the "Optional for TLS" step, above):
+```
+bin/pulsar-perf produce --num-messages 1000 -r 1000 --size 1024 --auth_plugin org.apache.pulsar.client.impl.auth.AuthenticationToken --auth-params file:///pulsar/token-superuser-stripped.jwt --service-url pulsar+ssl://$PROXY_HOSTNAME:6651/ persistent://public/default/test
+```
+6. Configure OIDC credentials (using variables set above)
+```
+cat << EOF > /pulsar/conf/creds.json
+{"client_id":"$CLIENT_ID","client_secret":"$CLIENT_SECRET","grant_type": "client_credentials"}
+EOF
+```
+7. Test Pulsar client with pulsar-perf with token auth against non-TLS endpoint:
+```
+bin/pulsar-perf produce --num-messages 1000 -r 1000 --size 1024 --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params $AUTH_PARAMS --service-url pulsar://$PROXY_HOSTNAME:6650/ persistent://public/default/test
+```
+8. Test Pulsar client with pulsar-perf with token auth against TLS endpoint:
+```
+bin/pulsar-perf produce --num-messages 1000 -r 1000 --size 1024 --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params $AUTH_PARAMS --service-url pulsar+ssl://$PROXY_HOSTNAME:6651/ persistent://public/default/test
+```
+9. Test admin endpoints with token auth for non-TLS:
+```
+bin/pulsar-admin --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params $AUTH_PARAMS --admin-url http://$PROXY_HOSTNAME:8080/ namespaces policies public/default
+```
+10. Test admin endpoints with token auth for TLS:
+```
+bin/pulsar-admin --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params $AUTH_PARAMS --admin-url https://$PROXY_HOSTNAME:8443/ namespaces policies public/default
+```
+11. Configure Kafka client:
+```
+mkdir /pulsar/kafka && cd /pulsar/kafka
+curl -LOs https://downloads.apache.org/kafka/3.3.2/$KAFKA_VERSION.tgz
+tar -zxvf /pulsar/kafka/$KAFKA_VERSION.tgz
+cd /pulsar/kafka/$KAFKA_VERSION/libs
+curl -LOs https://github.com/datastax/starlight-for-kafka/releases/download/v2.10.3.0/oauth-client-2.10.3.0.jar
+cd ..
+```
+12. Test OpenID/OAuth2 on non-TLS endpoint for Starlight for Kafka (S4K):
+Setup Kafka producer properties and then run test command:
+```
+cat << EOF > /pulsar/kafka/$KAFKA_VERSION/config/producer.properties
+bootstrap.servers=pulsar-proxy:9092
+compression.type=none
+sasl.login.callback.handler.class=com.datastax.oss.kafka.oauth.OauthLoginCallbackHandler
+security.protocol=SASL_PLAINTEXT
+sasl.mechanism=OAUTHBEARER
+sasl.jaas.config=org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule \
+   required oauth.issuer.url="$ISSUER_URI"\
+   oauth.credentials.url="file:///pulsar/conf/creds.json"\
+   oauth.audience="$AUDIENCE"\
+   oauth.scope="$SCOPE";
+EOF
+```
+Then, you can run the producer:
+```
+cd /pulsar/kafka/$KAFKA_VERSION; bin/kafka-console-producer.sh --bootstrap-server PLAINTEXT://pulsar-proxy:9092 --topic test --producer.config /pulsar/kafka/$KAFKA_VERSION/config/producer.properties
+```
+If you want to see the data come through, you can open another CLI tab and use the Pulsar client to subscribe to the topic when you produce the messages via Kafka:
+```
+kubectl exec -it pod/$(kubectl get pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}') -- bash
+cd /pulsar
+bin/pulsar-client consume persistent://public/default/test --subscription-name test-kafka --num-messages 0
+```
+Also, if you want to observe the logs during this process, you can follow them for the proxy and broker, as follows:
+```
+kubectl logs pod/$(kubectl get pods -o=jsonpath='{.items[?(@.metadata.labels.component=="proxy")].metadata.name}') --follow
+kubectl logs pod/$(kubectl get pods -o=jsonpath='{.items[?(@.metadata.labels.component=="broker")].metadata.name}') --follow
+```
+Then, produce messages from the Kafka terminal and observe them come through to the Pulsar consumer.
+
+13. Test OpenID/OAuth2 on TLS endpoint for S4K:
+We must setup the Kafka producer a little differently since it requires TLS-specific configurations:
+```
+cat << EOF > /pulsar/kafka/$KAFKA_VERSION/config/producer.properties
+bootstrap.servers=pulsar-proxy:9093
+compression.type=none
+ssl.truststore.location=/pulsar/tls.truststore.jks 
+security.protocol=SASL_SSL
+sasl.login.callback.handler.class=com.datastax.oss.kafka.oauth.OauthLoginCallbackHandler
+sasl.mechanism=OAUTHBEARER
+# The identification algorithm must be empty
+ssl.endpoint.identification.algorithm=
+sasl.jaas.config=org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginModule \
+   required oauth.issuer.url="$ISSUER_URI"\
+   oauth.credentials.url="file:///pulsar/conf/creds.json"\
+   oauth.audience="$AUDIENCE"\
+   oauth.scope="$SCOPE";
+EOF
+```
+Then, you can run the command to start the producer:
+```
+cd /pulsar/kafka/$KAFKA_VERSION; bin/kafka-console-producer.sh --bootstrap-server SSL://pulsar-proxy:9093 --topic test --producer.config /pulsar/kafka/$KAFKA_VERSION/config/producer.properties
+```
+14. Test S4K with token authentication on non-TLS endpoint:
+```
+SUPERUSER_TOKEN=$(</pulsar/token-superuser-stripped.jwt)
+
+# To test token auth on non-TLS endpoint:
+cat << EOF > /pulsar/kafka/$KAFKA_VERSION/config/producer.properties
+bootstrap.servers=pulsar-proxy:9092
+compression.type=none
+security.protocol=SASL_PLAINTEXT
+sasl.mechanism=PLAIN
+sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule \
+   required username="public/default"\
+   password="token:$SUPERUSER_TOKEN";
+EOF
+
+cd /pulsar/kafka/$KAFKA_VERSION; bin/kafka-console-producer.sh --bootstrap-server PLAINTEXT://pulsar-proxy:9092 --topic test --producer.config /pulsar/kafka/$KAFKA_VERSION/config/producer.properties
+```
+15. Test S4K with token authentication on TLS endpoint:
+```
+cat << EOF > /pulsar/kafka/$KAFKA_VERSION/config/producer.properties
+bootstrap.servers=pulsar-proxy:9093
+compression.type=none
+security.protocol=SASL_SSL
+sasl.mechanism=PLAIN
+sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule \
+required username="public/default" password="token:$SUPERUSER_TOKEN";
+ssl.truststore.location=/pulsar/tls.truststore.jks
+# The identification algorithm must be empty
+ssl.endpoint.identification.algorithm=
+EOF
+
+cd /pulsar/kafka/$KAFKA_VERSION; bin/kafka-console-producer.sh --bootstrap-server SSL://pulsar-proxy:9093 --topic test --producer.config /pulsar/kafka/$KAFKA_VERSION/config/producer.properties
+```
+### Grafana dashboards for S4K
+Additionally, if you want to monitor Grafana dashboards for S4K, you can download them via this command:
+```
+cd ~/Downloads; curl -LOs https://raw.githubusercontent.com/datastax/starlight-for-kafka/2.10_ds/grafana/dashboard.json
+```
+Then, after you port-forward or otherwise connect to Grafana, you can follow the UI to import the dashboard from this JSON file.
