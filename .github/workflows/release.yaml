@@ -12,6 +12,7 @@ jobs:
     permissions:
       contents: write
     runs-on: ubuntu-latest
+    if: github.repository == 'datastax/pulsar-helm-chart'
     steps:
       - name: Checkout
         uses: actions/checkout@v3
