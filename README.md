@@ -751,6 +751,10 @@ cat << EOF > /pulsar/conf/creds.json
 {"client_id":"$CLIENT_ID","client_secret":"$CLIENT_SECRET","grant_type": "client_credentials"}
 EOF
 ```
+Verify the credentials file was created as expected:
+```
+cat /pulsar/conf/creds.json
+```
 7. Test Pulsar client with pulsar-perf with token auth against non-TLS endpoint:
 ```
 bin/pulsar-perf produce --num-messages 1000 -r 1000 --size 1024 --auth-plugin "org.apache.pulsar.client.impl.auth.oauth2.AuthenticationOAuth2" --auth-params $AUTH_PARAMS --service-url pulsar://$PROXY_HOSTNAME:6650/ persistent://public/default/test
@@ -776,6 +780,11 @@ cd /pulsar/kafka/$KAFKA_VERSION/libs
 curl -LOs "https://github.com/datastax/starlight-for-kafka/releases/download/v$OAUTH_CLIENT/oauth-client-$OAUTH_CLIENT.jar"
 cd ..
 ```
+Verify the files were downloaded as expected:
+```
+ls /pulsar/kafka/$KAFKA_VERSION
+ls /pulsar/kafka/$KAFKA_VERSION/libs | grep -i "oauth"
+```
 12. Test OpenID/OAuth2 on non-TLS endpoint for Starlight for Kafka (S4K):
 Setup Kafka producer properties and then run test command:
 ```
@@ -791,6 +800,10 @@ sasl.jaas.config=org.apache.kafka.common.security.oauthbearer.OAuthBearerLoginMo
    oauth.audience="$AUDIENCE"\
    oauth.scope="$SCOPE";
 EOF
+```
+Verify the file looks right:
+```
+cat /pulsar/kafka/$KAFKA_VERSION/config/producer.properties
 ```
 Then, you can run the producer:
 ```
