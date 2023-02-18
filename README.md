@@ -722,6 +722,7 @@ EOF
 CLIENT_ID="your-client-id"
 CLIENT_SECRET="your-client-secret"
 KAFKA_VERSION="kafka_2.12-3.3.2"
+OAUTH_CLIENT="2.10.3.2"
 
 PROXY_HOSTNAME="pulsar-proxy.pulsar.svc.cluster.local"
 ```
@@ -734,7 +735,7 @@ kubectl cp ~/Downloads/tls.truststore.jks pulsar/$(kubectl get pods -o=jsonpath=
 ```
 3. SSH to bastion, passing variables for convenience:
 ```
-kubectl exec -it pod/$(kubectl get pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}') -- env ISSUER_URI=$ISSUER_URI AUDIENCE=$AUDIENCE SCOPE=$SCOPE AUTH_PARAMS=$AUTH_PARAMS CLIENT_ID=$CLIENT_ID CLIENT_SECRET=$CLIENT_SECRET KAFKA_VERSION=$KAFKA_VERSION PROXY_HOSTNAME=$PROXY_HOSTNAME bash
+kubectl exec -it pod/$(kubectl get pods -o=jsonpath='{.items[?(@.metadata.labels.component=="bastion")].metadata.name}') -- env ISSUER_URI=$ISSUER_URI AUDIENCE=$AUDIENCE SCOPE=$SCOPE AUTH_PARAMS=$AUTH_PARAMS CLIENT_ID=$CLIENT_ID CLIENT_SECRET=$CLIENT_SECRET KAFKA_VERSION=$KAFKA_VERSION OAUTH_CLIENT=$OAUTH_CLIENT PROXY_HOSTNAME=$PROXY_HOSTNAME bash
 ```
 4. Test Pulsar client with pulsar-perf with token auth against non-TLS endpoint:
 ```
@@ -772,7 +773,7 @@ mkdir /pulsar/kafka && cd /pulsar/kafka
 curl -LOs https://downloads.apache.org/kafka/3.3.2/$KAFKA_VERSION.tgz
 tar -zxvf /pulsar/kafka/$KAFKA_VERSION.tgz
 cd /pulsar/kafka/$KAFKA_VERSION/libs
-curl -LOs https://github.com/datastax/starlight-for-kafka/releases/download/v2.10.3.0/oauth-client-2.10.3.0.jar
+curl -LOs "https://github.com/datastax/starlight-for-kafka/releases/download/v$OAUTH_CLIENT/oauth-client-$OAUTH_CLIENT.jar"
 cd ..
 ```
 12. Test OpenID/OAuth2 on non-TLS endpoint for Starlight for Kafka (S4K):

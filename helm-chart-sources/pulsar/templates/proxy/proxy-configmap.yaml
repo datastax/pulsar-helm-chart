@@ -149,7 +149,7 @@ data:
   PULSAR_PREFIX_openIDAttemptAuthenticationProviderToken: "{{ .Values.openid.attemptAuthenticationProviderToken }}"
 {{- end }}
 {{- if and .Values.openid.enabled .Values.openid.withS4k }}
-  PULSAR_PREFIX_kopOauth2AuthenticateCallbackHandler: "io.streamnative.pulsar.handlers.kop.security.auth.OauthValidatorCallbackHandler"
+  PULSAR_PREFIX_kopOauth2AuthenticateCallbackHandler: "io.streamnative.pulsar.handlers.kop.security.oauth.OauthValidatorCallbackHandler"
   PULSAR_PREFIX_kopOauth2ConfigFile: "/pulsar/conf/kop-handler.properties"
   PULSAR_PREFIX_saslAllowedMechanisms: "OAUTHBEARER,PLAIN"
 {{- end }}
