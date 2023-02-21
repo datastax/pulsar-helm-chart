@@ -453,7 +453,7 @@ The Helm chart has the following optional dependencies:
 The chart can enable two forms of token-based authentication for a Pulsar cluster. See below for information on each:
 
 * [OpenID Connect Authentication](#openid-connect-authentication)
-* [Pulsar's Token Based Authentication]
+* [Pulsar's Token Based Authentication](#pulsars-token-based-authentication)
 
 The chart includes tooling to automatically create the necessary secrets, or you can do this manually.
 
