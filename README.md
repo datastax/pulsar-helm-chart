@@ -9,7 +9,7 @@ This Helm chart configures an Apache Pulsar cluster. It is designed for producti
 It includes support for:
 * [TLS](#tls)
 * [Authentication](#authentication)
-* [Token Authentication via Keycloak Integration](#token-authentication-via-keycloak-integration)
+* [OpenID Connect Authentication](#openid-connect-authentication)
 * [OpenID / OAuth2 with Starlight for Kafka](#openid-with-starlight-for-kafka)
 * WebSocket Proxy
 * Standalone Functions Workers
@@ -452,21 +452,49 @@ The Helm chart has the following optional dependencies:
 ## Authentication
 The chart can enable two forms of token-based authentication for a Pulsar cluster. See below for information on each:
 
-* [Token Authentication via Keycloak Integration](#token-authentication-via-keycloak-integration)
+* [OpenID Connect Authentication](#openid-connect-authentication)
 * [Pulsar's Token Based Authentication]
 
-Note that the chart includes tooling to automatically create the necessary secrets, or you can do this manually.
+The chart includes tooling to automatically create the necessary secrets, or you can do this manually.
 
-### Token Authentication via Keycloak Integration
-In order to provide a more dynamic authentication option for Pulsar, DataStax created the
-[OpenID Connect Authentication Plugin](https://github.com/datastax/pulsar-openid-connect-plugin). This plugin integrates
-with Keycloak to dynamically retrieve Public Keys from a running Keycloak instance for token validation. This dynamic
+### OpenID Connect Authentication
+
+DataStax created the [OpenID Connect Authentication Plugin](https://github.com/datastax/pulsar-openid-connect-plugin)
+to provide a more dynamic authentication option for Pulsar. This plugin integrates with your OIDC compliant Identity
+Provider or the chart can deploy a Keycloak instance in the kubernetes cluster. This plugin integrates with an Identity
+Provider to dynamically retrieve Public Keys from the Identity Provider for token validation. This dynamic
 public key retrieval enables support for key rotation and multiple authentication/identity providers by configuring
 multiple allowed token issuers. It also means that token secret keys will not be stored in Kubernetes secrets.
 
-In order to simplify deployment for Pulsar cluster components, the plugin provides the option to use Keycloak in
+In order to simplify deployment for Pulsar cluster components, the plugin provides the option to use OIDC in
 conjunction with Pulsar's basic token based authentication. See the [plugin project](https://github.com/datastax/pulsar-openid-connect-plugin)
 for information about configuration.
+
+#### Bring Your Own Identity Provider
+
+To enable OpenID Connect with your already running Identity Provider, configure the `openid` section in the
+values and the `authenticationProviders` in the broker, proxy, and function worker.
+
+Here is an example of the values using Okta:
+
+```yaml
+openid:
+  enabled: true
+  # Comma delimited list of issuers to trust
+  allowedIssuerUrls: "https://dev-1111111.okta.com/oauth2/abcd878787"
+  allowedAudience: api://pulsarClient
+
+broker:
+  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID"
+proxy:
+  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID"
+function:
+  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID"
+```
+
+The `AuthenticationProviderOpenID` class is included with all Luna Streaming Docker images.
+
+#### Using Keycloak Deployed by Chart
 
 Here is an example helm [values file](./examples/dev-values-keycloak-auth.yaml) for deploying a working cluster that
 integrates with keycloak. By default, the helm chart creates a `pulsar` realm within keycloak and sets up the client
