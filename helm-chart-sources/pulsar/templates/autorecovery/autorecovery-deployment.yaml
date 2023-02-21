@@ -195,6 +195,9 @@ spec:
         resources:
 {{ toYaml .Values.autoRecovery.resources | indent 10 }}
       {{- end }}
+        ports:
+        - name: http
+          containerPort: 8000
         command: ["sh", "-c"]
         args:
         - >

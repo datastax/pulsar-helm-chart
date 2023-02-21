@@ -248,8 +248,11 @@ tls:
       privateKey: {}
   bastion:
     enableHostnameVerification: true
+ # enable these in case you use tls certificate stored in /pulsar/certs/ca.crt
   pulsarHeartbeat:
-    enableHostnameVerification: true
+    enableHostnameVerification: false
+  transactionCoordinatorInitialiser:
+    enableHostnameVerification: false
 
   # Configuration for the self-signed root CA Certificate. (All Pulsar components are assumed to share the same root CA.)
   ssCaCert:
@@ -411,32 +414,32 @@ image:
     # If not using tiered storage, you can use the smaller pulsar image for the broker
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.3_1.0.11
+    tag: 2.10_1.5
   brokerSts:
     # If not using tiered storage, you can use the smaller pulsar image for the broker
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.3_1.0.11
+    tag: 2.10_1.5
   function:
     repository: datastax/lunastreaming-all
     pullPolicy: IfNotPresent
-    tag: 2.8.3_1.0.11
+    tag: 2.10_1.5
   zookeeper:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.8.3_1.0.11
+    tag: 2.10_1.5
   bookkeeper:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.8.3_1.0.11
+    tag: 2.10_1.5
   proxy:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.8.3_1.0.11
+    tag: 2.10_1.5
   bastion:
     repository: datastax/lunastreaming
     pullPolicy: IfNotPresent
-    tag: 2.8.3_1.0.11
+    tag: 2.10_1.5
   pulsarBeam:
     repository: kesque/pulsar-beam
     pullPolicy: IfNotPresent
@@ -444,14 +447,14 @@ image:
   burnell:
     repository: datastax/burnell
     pullPolicy: Always
-    tag: 1.0.3
+    tag: 1.0.5
   burnellLogCollector:
     repository: datastax/burnell
     pullPolicy: IfNotPresent
     tag: logcollector_latest
   pulsarSQL:
     repository: datastax/lunastreaming-all
-    tag: 2.8.3_1.0.11
+    tag: 2.10_1.5
     pullPolicy: IfNotPresent
   tardigrade:
     repository: storjlabs/gateway
@@ -460,11 +463,11 @@ image:
   pulsarHeartbeat:
     repository: datastax/pulsar-heartbeat
     pullPolicy: IfNotPresent
-    tag: 1.0.14
+    tag: 1.0.17
   pulsarAdminConsole:
     repository: datastax/pulsar-admin-console
     pullPolicy: IfNotPresent
-    tag: 2.1.3
+    tag: 2.1.5
 
 ## Tiered Storage
 ##
@@ -893,6 +896,15 @@ broker:
   # See extra section above
   functionsWorkerEnabled: false
   webSocketServiceEnabled: false
+  # Enable Transactions on the Pulsar cluster.
+  # It starts the transaction coordinator module inside the broker.
+  # It runs the Transaction coordinator metadata setup job.
+  transactionCoordinator:
+    enabled: false
+    # set to true to manually initialize transaction coordinator on existing cluster
+    initialize: false
+    # Count of partitions used for the transaction coordinator.
+    initialCount: 16
   probe:
     enabled: true
     port: 8080
@@ -1004,6 +1016,9 @@ brokerSts:
   # See extras section above
   functionsWorkerEnabled: false
   webSocketServiceEnabled: false
+  transactionCoordinator:
+    enabled: false
+    initialCount: 16
   probe:
     enabled: true
     port: 8080
@@ -1075,6 +1090,12 @@ brokerSts:
   pdb:
     usePolicy: true
     maxUnavailable: 1
+
+## Pulsar Transactions metadata setup.
+## This is the job responsible to prepare the cluster for enabling transactions.
+## Job will start as soon as one broker pod is available.
+brokerTransactionsMetadata:
+  component: broker-transactions-metadata
 
 function:
   component: function
@@ -1731,6 +1752,31 @@ pulsarHeartbeat:
       topicName: "persistent://public/default/pubsub-latency-test"
   service: {}
 
+# For configuring OpenID in Okta for Pulsar, instructions are here: https://www.youtube.com/watch?v=UQBrecHOXxU&ab_channel=DataStaxDevelopers
+# Please also see the docs here: https://github.com/datastax/pulsar-openid-connect-plugin
+# Then, use the values from the Payload generated to populate these fields:
+openid:
+  component: openid
+  enabled: false
+  allowedAudience: ""
+  roleClaim: sub
+    # Set following to true if admin console is configured to use Okta integration. (The admin console uses a local admin token.)
+  attemptAuthenticationProviderToken: true
+  # Comma delimited list of issuers to trust
+  allowedIssuerUrls: ""
+  acceptedTimeLeewaySeconds: 0
+  withS4k: false
+  jwk:
+    cacheSize: 10
+    expiresSeconds: 300
+    connectionTimeoutMillis: 10000
+    readTimeoutMillis: 10000
+  metadata:
+    cacheSize: 10
+    expiresSeconds: 86400
+    connectionTimeoutMillis: 10000
+    readTimeoutMillis: 10000
+  requireHttps: true
 # Deploy Keycloak
 keycloak:
   enabled: false
@@ -1816,6 +1862,11 @@ grafanaDashboards:
   enabled: false
   # namespaceOverride: monitoring
 
+# Deploy a Prometheus Operator PodMonitor to enable scraping metrics from all
+# Pulsar components deployed by this helm chart.
+# Note: when kube-prometheus-stack.enabled is true, the PodMonitor is deployed to enable monitoring the cluster.
+enablePulsarPodMonitor: false
+
 # Deploy the kube-prometheus-stack which includes:
 # * Prometheus (using Prometheus Operator)
 # * Alertmanager (using Prometheus Operator)
@@ -1863,108 +1914,108 @@ kube-prometheus-stack:
       node: true
       prometheusOperator: true
       prometheus: true
-  additionalPrometheusRules:
-  - name: general-rules
-    groups:
-    - name: acks
-      rules:
-      - alert: unacked-message-high
-        expr: pulsar_subscription_unacked_messages > 100
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          identifier: '{{ $labels.topic }}:{{ $labels.subscription }}'
-          description: 'Unacked messages on subscription high'
-      - alert: subscription-blocked-on-unacked-messages
-        expr: pulsar_subscription_blocked_on_unacked_messages > 1
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          identifier: '{{ $labels.topic }}:{{ $labels.subscription }}'
-          description: Subscription is blocked on unacked messages
-    - name: components
-      rules:
-      - alert: zookeeper-write-latency-high
-        expr: zookeeper_server_requests_latency_ms > 500
-        for: 1m
-        labels:
-          severity: warning
-        annotations:
-          identifier: '{{ $labels.kubernetes_pod_name }}'
-          description: 'Zookeeper write latency is high'
-      - alert: bookkeeper-add-latency-high
-        expr: bookkeeper_server_ADD_ENTRY_REQUEST > 1500
-        for: 1m
-        labels:
-          severity: warning
-        annotations:
-          description: Add latency to BookKeeper is high
-          identifier: '{{ $labels.kubernetes_pod_name }}'
-      - alert: bookkeeper-read-latency-high
-        expr: bookkeeper_server_READ_ENTRY_REQUEST > 1000
-        for: 1m
-        labels:
-          severity: warning
-        annotations:
-          description: Read latency from BookKeeper is high
-          identifier: '{{ $labels.kubernetes_pod_name }}'
-      - alert: bookkeeper-bookie-readonly
-        expr: bookie_SERVER_STATUS == 0
-        for: 1m
-        labels:
-          severity: warning
-        annotations:
-          description: Bookie is read-only
-          identifier: '{{ $labels.kubernetes_pod_name }}'
-  - name: cluster-normal
-    groups:
-    - name: exp-counts-rates
-      rules:
-      - alert: producers-high
-        expr: pulsar_producers_count > 500
-        for: 1m
-        labels:
-          severity: warning
-        annotations:
-          description: Producer count is high
-          identifier: '{{ $labels.topic }}'
-      - alert: consumers-high
-        expr: pulsar_consumers_count > 500
-        for: 1m
-        labels:
-          severity: warning
-        annotations:
-          description: Consumer count is high
-          identifier: '{{ $labels.topic }}'
-      - alert: in-rate-high
-        expr: pulsar_rate_in > 5000
-        for: 1m
-        labels:
-          severity: warning
-        annotations:
-          description: Incoming message rate is high on broker
-          identifier: '{{ $labels.topic }}'
-      - alert: out-rate-high
-        expr: pulsar_rate_out > 5000
-        for: 1m
-        labels:
-          severity: warning
-        annotations:
-          description: Outgoing message rate is high on broker
-          identifier: '{{ $labels.topic }}'
-  - name: volumes
-    groups:
-    - name: volumes-filling
-      rules:
-      - alert: KubePersistentVolumeFillingUp
-        expr: kubelet_volume_stats_available_bytes{job="kubelet",metrics_path="/metrics",namespace=~".*"} / kubelet_volume_stats_capacity_bytes{job="kubelet",metrics_path="/metrics",namespace=~".*"} < 0.10
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          message: The PersistentVolume claimed by {{ $labels.persistentvolumeclaim }} in Namespace {{ $labels.namespace }} is only {{ $value | humanizePercentage }} free.
+  additionalPrometheusRulesMap:
+    general-rules:
+      groups:
+      - name: acks
+        rules:
+        - alert: unacked-message-high
+          expr: pulsar_subscription_unacked_messages > 100
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            identifier: '{{ $labels.topic }}:{{ $labels.subscription }}'
+            description: 'Unacked messages on subscription high'
+        - alert: subscription-blocked-on-unacked-messages
+          expr: pulsar_subscription_blocked_on_unacked_messages > 1
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            identifier: '{{ $labels.topic }}:{{ $labels.subscription }}'
+            description: Subscription is blocked on unacked messages
+      - name: components
+        rules:
+        - alert: zookeeper-write-latency-high
+          expr: zookeeper_server_requests_latency_ms > 500
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            identifier: '{{ $labels.kubernetes_pod_name }}'
+            description: 'Zookeeper write latency is high'
+        - alert: bookkeeper-add-latency-high
+          expr: bookkeeper_server_ADD_ENTRY_REQUEST > 1500
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: Add latency to BookKeeper is high
+            identifier: '{{ $labels.kubernetes_pod_name }}'
+        - alert: bookkeeper-read-latency-high
+          expr: bookkeeper_server_READ_ENTRY_REQUEST > 1000
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: Read latency from BookKeeper is high
+            identifier: '{{ $labels.kubernetes_pod_name }}'
+        - alert: bookkeeper-bookie-readonly
+          expr: bookie_SERVER_STATUS == 0
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: Bookie is read-only
+            identifier: '{{ $labels.kubernetes_pod_name }}'
+    cluster-normal:
+      groups:
+      - name: exp-counts-rates
+        rules:
+        - alert: producers-high
+          expr: pulsar_producers_count > 500
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: Producer count is high
+            identifier: '{{ $labels.topic }}'
+        - alert: consumers-high
+          expr: pulsar_consumers_count > 500
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: Consumer count is high
+            identifier: '{{ $labels.topic }}'
+        - alert: in-rate-high
+          expr: pulsar_rate_in > 5000
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: Incoming message rate is high on broker
+            identifier: '{{ $labels.topic }}'
+        - alert: out-rate-high
+          expr: pulsar_rate_out > 5000
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            description: Outgoing message rate is high on broker
+            identifier: '{{ $labels.topic }}'
+    volumes:
+      groups:
+      - name: volumes-filling
+        rules:
+        - alert: KubePersistentVolumeFillingUp
+          expr: kubelet_volume_stats_available_bytes{job="kubelet",metrics_path="/metrics",namespace=~".*"} / kubelet_volume_stats_capacity_bytes{job="kubelet",metrics_path="/metrics",namespace=~".*"} < 0.10
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            message: The PersistentVolume claimed by {{ $labels.persistentvolumeclaim }} in Namespace {{ $labels.namespace }} is only {{ $value | humanizePercentage }} free.
 
   alertmanager:
     enabled: false
@@ -2049,35 +2100,4 @@ kube-prometheus-stack:
       #       resources:
       #         requests:
       #           storage: 50Gi
-      additionalScrapeConfigs:
-      - job_name: 'pulsar-pods'
-        honor_labels: true
-        kubernetes_sd_configs:
-        - role: pod
-          # namespaces:
-          #   names:
-          #   - pulsar
-        relabel_configs:
-        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
-          action: keep
-          regex: true
-        - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
-          action: replace
-          target_label: __metrics_path__
-          regex: (.+)
-        - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
-          action: replace
-          regex: ([^:]+)(?::\d+)?;(\d+)
-          replacement: $1:$2
-          target_label: __address__
-        - action: labelmap
-          regex: __meta_kubernetes_pod_label_(.+)
-        - source_labels: [__meta_kubernetes_namespace]
-          action: replace
-          target_label: kubernetes_namespace
-        - source_labels: [__meta_kubernetes_pod_label_component]
-          action: replace
-          target_label: job
-        - source_labels: [__meta_kubernetes_pod_name]
-          action: replace
-          target_label: kubernetes_pod_name
+      additionalScrapeConfigs: []

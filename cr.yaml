@@ -1,0 +1,3 @@
+index-path: ./
+generate-release-notes: true
+pages-branch: master

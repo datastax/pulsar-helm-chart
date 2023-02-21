@@ -75,6 +75,7 @@ data:
   {{- if .Values.extra.function }}
   functionWorkerWebServiceURL: "http://{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:6750"
   {{- end }}
+  clusterName: {{ template "pulsar.fullname" . }}
 {{- if .Values.enableTls }}
   tlsEnabledWithKeyStore: "true"
   tlsKeyStore: "/pulsar/tls.keystore.jks"
@@ -122,15 +123,42 @@ data:
   {{- end }}
   {{- if .Values.keycloak.enabled }}
   PULSAR_PREFIX_openIDAllowedTokenIssuers: "{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ .Release.Namespace }}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }},{{ template "pulsar.get.http.or.https" . }}{{ template "pulsar.keycloak.fullname" .}}.{{ template "pulsar.serviceDnsSuffix" . }}{{ template "pulsar.keycloak.issuer.port" .}}/realms/{{ .Values.keycloak.realm }}"
+  {{- else if .Values.openid.enabled }}
+  PULSAR_PREFIX_openIDAllowedTokenIssuers: "{{ .Values.openid.allowedIssuerUrls }}"
   {{- end }}
   tokenPublicKey: "file:///pulsar/token-public-key/{{ .Values.tokenPublicKeyFile }}"
   brokerClientAuthenticationPlugin: "org.apache.pulsar.client.impl.auth.AuthenticationToken"
   brokerClientAuthenticationParameters: "file:///pulsar/token-proxy/proxy.jwt"
 {{- end }}
+{{- if .Values.openid.enabled }}
+
+  PULSAR_PREFIX_openIDAllowedAudience: "{{ .Values.openid.allowedAudience }}"
+  PULSAR_PREFIX_openIDRoleClaim: "{{ .Values.openid.roleClaim }}"
+
+  PULSAR_PREFIX_openIDAcceptedTimeLeewaySeconds: "{{ .Values.openid.acceptedTimeLeewaySeconds }}"
+  PULSAR_PREFIX_openIDJwkCacheSize: "{{ .Values.openid.jwk.cacheSize }}"
+  PULSAR_PREFIX_openIDJwkExpiresSeconds: "{{ .Values.openid.jwk.expiresSeconds }}"
+  PULSAR_PREFIX_openIDJwkConnectionTimeoutMillis: "{{ .Values.openid.jwk.connectionTimeoutMillis }}"
+  PULSAR_PREFIX_openIDJwkReadTimeoutMillis: "{{ .Values.openid.jwk.readTimeoutMillis }}"
+  PULSAR_PREFIX_openIDMetadataCacheSize: "{{ .Values.openid.metadata.cacheSize }}"
+  PULSAR_PREFIX_openIDMetadataExpiresSeconds: "{{ .Values.openid.metadata.expiresSeconds }}"
+  PULSAR_PREFIX_openIDMetadataConnectionTimeoutMillis: "{{ .Values.openid.metadata.connectionTimeoutMillis }}"
+  PULSAR_PREFIX_openIDMetadataReadTimeoutMillis: "{{ .Values.openid.metadata.readTimeoutMillis }}"
+  PULSAR_PREFIX_openIDRequireHttps: "{{ .Values.openid.requireHttps }}"
+  # Set following to true if admin console is configured to use Okta integration. The admin console uses the user model with local admin token, not Okta integration.
+  PULSAR_PREFIX_openIDAttemptAuthenticationProviderToken: "{{ .Values.openid.attemptAuthenticationProviderToken }}"
+{{- end }}
+{{- if and .Values.openid.enabled .Values.openid.withS4k }}
+  PULSAR_PREFIX_kopOauth2AuthenticateCallbackHandler: "io.streamnative.pulsar.handlers.kop.security.oauth.OauthValidatorCallbackHandler"
+  PULSAR_PREFIX_kopOauth2ConfigFile: "/pulsar/conf/kop-handler.properties"
+  PULSAR_PREFIX_saslAllowedMechanisms: "OAUTHBEARER,PLAIN"
+{{- end }}
+
 {{- range $key, $val := $.Values.proxy.configData }}
   {{ $key }}: {{ $val | replace "\"" "" | trim | quote }}
 {{- end }}
 {{- end }}
+
 {{- if .Values.proxy.extensions.enabled }}
   PULSAR_PREFIX_proxyExtensionsDirectory: "{{ .Values.proxy.extensions.directory }}"
   PULSAR_PREFIX_proxyExtensions: "{{ .Values.proxy.extensions.extensions }}"

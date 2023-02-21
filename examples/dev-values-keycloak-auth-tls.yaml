@@ -15,11 +15,6 @@
 #
 #
 
-# Temporary solution for issue described in https://github.com/datastax/pulsar-helm-chart/issues/244
-image:
-  proxy:
-    repository: datastax/lunastreaming-all
-
 enableAntiAffinity: false
 enableTls: true
 #tls:

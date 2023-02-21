@@ -23,10 +23,11 @@ maintainers:
   - name: cdbartholomew
   - name: lhotari
   - name: michaeljmarshall
-version: 3.0.3
+  - name: devinbost
+version: 3.1.0
 dependencies:
 - name: kube-prometheus-stack
-  version: 35.x.x
+  version: 44.x.x
   repository: https://prometheus-community.github.io/helm-charts
   condition: kube-prometheus-stack.enabled
 - name: cert-manager

@@ -60,7 +60,7 @@ spec:
       {{- end }}
       containers:
       - name: external-dns
-        image: registry.opensource.zalan.do/teapot/external-dns:latest
+        image: k8s.gcr.io/external-dns/external-dns:v0.12.2
         {{- if .Values.dns.azureVolume }}
         volumeMounts:
           - mountPath: "/etc/kubernetes/"

@@ -27,3 +27,5 @@ Chart.lock
 *.iml
 
 yamllint/
+
+.DS_Store

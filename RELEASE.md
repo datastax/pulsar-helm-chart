@@ -5,30 +5,36 @@ Helm Chart Release
 
  The [chart-releaser](https://github.com/helm/chart-releaser) is being used to enable the pulsar-helm-chart [repo](https://github.com/datastax/pulsar-helm-chart) to self-host Helm Chart releases via the use of GitHub pages.
 
-# CircleCI
+# GitHub Actions
 
-CircleCI is being used to release a new version of the DataStax Pulsar Helm Charts. The [release script](https://github.com/datastax/pulsar-helm-chart/blob/master/.circleci/release.sh) creates a release package of the new Helm Chart version and updates the [index.yaml](https://datastax.github.io/pulsar-helm-chart/index.yaml) which in this case is hosted in a GitHub page. The CircleCI is triggered, when a new commit is pushed in the **release** branch.
+GitHub Actions are used to release a new version of the DataStax Pulsar Helm Charts. The [release action](.github/workflows/release.yaml) creates a release package of the new Helm Chart version and updates the [index.yaml](https://datastax.github.io/pulsar-helm-chart/index.yaml) which in this case is hosted in a GitHub page. The GitHub Action is triggered, when a new commit is pushed to the `master` branch, and a release is performed any time the chart releaser detects a version change.
+
+Note: we switched from CircleCI to GitHub Actions because actions have a token integration which allows us to easily supply a token scoped to the project.
 
 # How to Release a new Version
 
-Before releasing the new version, update the version in the *Chart.yaml* for each chart that has changed. Push the changes to the master branch.
+Before releasing the new version, verify that the most recent Circle CI tests have passed on the master branch. Then, update the version in the *Chart.yaml* for each chart that has changed. Push the changes to the master branch.
 ```
 git add .
-git commit -m "Updating versions"
+git commit -m "Release version x.y.z"
 git push origin master
 ```
 
-The release process is automated using CircleCI. It uses the [chart-releaser](https://github.com/helm/chart-releaser) tool.
+The release is then automatically triggered. It uses the [chart-releaser-action](https://github.com/helm/chart-releaser-action) which in turn uses the [chart-releaser](https://github.com/helm/chart-releaser) tool.
 
-To trigger a release, "force push" the current master branch to the release branch:
+We configure the action in the [release.yaml](.github/workflows/release.yaml), and we configure the chart release in the [cr.yaml](cr.yaml).
+
+The chart-releaser tool will handle the packaging of the new version, will push it to the GitHub repo as a new [release](https://github.com/datastax/pulsar-helm-chart/releases). The release notes should be auto generated. Read through them to verify their correctness.
+
+Later it will update the index.yaml file for the Helm repo and commit it to **master** since this is where the GitHub pages are hosted. If this step fails, it is necessary to manually update the file, which can be done using the `cr` tool. Here is a sample script for working around the error:
+
+```shell
+mkdir .cr-release-packages/
+mv ~/Downloads/pulsar-3.1.0.tgz .cr-release-packages/
+cr index -o datastax -r pulsar-helm-chart
 ```
-git fetch
-git push -f origin origin/master:release
-```
 
-The chart-releaser tool will handle the packaging of the new version, will push it to the GitHub repo as a new [release](https://github.com/datastax/pulsar-helm-chart/releases). Then you have to manually edit the release adding the release notes by clicking on the `Auto-generate release notes` button.
-
-Later it will update the index.yaml file for the Helm repo and commit it to **master** since this is where the GitHub pages are hosted. 
+Then commit the updated index.yaml file.
 
 If you see an error like this from the release script:
 
@@ -43,8 +49,6 @@ You should verify that the new chart version are present in the index.yaml:
 https://datastax.github.io/pulsar-helm-chart/index.yaml
 
 Also confirm that **master** has been updated with the new versions in the Chart.yaml files.
-
-
 
 # How to Install a New Release
 

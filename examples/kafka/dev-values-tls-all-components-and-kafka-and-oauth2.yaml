@@ -1,0 +1,335 @@
+#
+#  Copyright 2022 DataStax, Inc.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+#
+
+image:
+  brokerSts:
+    # If not using tiered storage, you can use the smaller pulsar image for the broker
+    repository: datastax/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: 2.10_3.2
+  function:
+    repository: datastax/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: 2.10_3.2
+  zookeeper:
+    repository: datastax/lunastreaming
+    pullPolicy: IfNotPresent
+    tag: 2.10_3.2
+  bookkeeper:
+    repository: datastax/lunastreaming
+    pullPolicy: IfNotPresent
+    tag: 2.10_3.2
+  proxy:
+    repository: datastax/lunastreaming-all
+    pullPolicy: IfNotPresent
+    tag: 2.10_3.2
+  bastion:
+    repository: datastax/lunastreaming
+    pullPolicy: IfNotPresent
+    tag: 2.10_3.2
+  pulsarBeam:
+    repository: kesque/pulsar-beam
+    pullPolicy: IfNotPresent
+    tag: 1.0.0
+  burnell:
+    repository: datastax/burnell
+    pullPolicy: Always
+    tag: 1.0.3
+  burnellLogCollector:
+    repository: datastax/burnell
+    pullPolicy: IfNotPresent
+    tag: logcollector_latest
+  pulsarSQL:
+    repository: datastax/lunastreaming-all
+    tag: 2.10_3.2
+    pullPolicy: IfNotPresent
+  tardigrade:
+    repository: storjlabs/gateway
+    pullPolicy: IfNotPresent
+    tag: 981f92a-v1.20.0-go1.17.5
+
+enableAntiAffinity: false
+enableTls: true
+tls:
+  # Enable TLS between ZooKeeper nodes (quorum TLS), between BookKeeper and ZooKeeper, and between
+  # broker and ZooKeeper.
+  # Note: The configured certificate must allow for both server and client use since it is used
+  #       for mTLS. This should be in certificate:
+  #
+  # X509v3 Extended Key Usage:
+  #               TLS Web Server Authentication, TLS Web Client Authentication
+  # If using cert-manager, make sure your certificate includes:
+  #
+  zookeeper:
+    enabled: true
+    createCertificates: true
+    enableHostnameVerification: true
+    tlsSecretName: "pulsar-zookeeper-tls"
+    configureKeystoreWithPasswordFile: true
+    certSpec:
+      privateKey:
+        algorithm: "ECDSA"
+        size: 256
+  bookkeeper:
+    enabled: true
+    createCertificates: true
+    tlsSecretName: "pulsar-bookkeeper-tls"
+    certSpec:
+      privateKey:
+        algorithm: "ECDSA"
+        size: 256
+  function:
+    enableTlsWithBroker: true
+    createCertificates: true
+    tlsSecretName: "pulsar-function-tls"
+    enableHostnameVerification: true
+    certSpec:
+      privateKey:
+        algorithm: "ECDSA"
+        size: 256
+  websocket:
+    enableTlsWithBroker: true
+    enableHostnameVerification: true
+    certSpec:
+      privateKey:
+        algorithm: "ECDSA"
+        size: 256
+  proxy:
+    enableTlsWithBroker: true
+    enableHostnameVerification: true
+    createCertificates: true
+    tlsSecretName: "pulsar-proxy-tls"
+    certSpec:
+      privateKey:
+        algorithm: "ECDSA"
+        size: 256
+  broker:
+    createCertificates: true
+    tlsSecretName: "pulsar-broker-tls"
+    certSpec:
+      privateKey:
+        algorithm: "ECDSA"
+        size: 256
+  # Certificate used for TLS authentication with bookkeeper and zookeeper
+  autoRecovery:
+    enableHostnameVerification: true
+    createCertificates: true
+    tlsSecretName: "pulsar-autorecovery-tls"
+    certSpec:
+      privateKey:
+        algorithm: "ECDSA"
+        size: 256
+  pulsarAdminConsole:
+    enableTlsWithBroker: true
+    createCertificates: true
+    tlsSecretName: "pulsar-adminconsole-tls"
+    certSpec:
+      privateKey:
+        algorithm: "ECDSA"
+        size: 256
+  ssCaCert:
+    tlsSecretName: "pulsar-ss-ca"
+    certSpec:
+      privateKey:
+        algorithm: "ECDSA"
+        size: 256
+
+# The current function worker code only uses TLS connections to brokers when authentication is enabled, so enable it here.
+enableTokenAuth: true
+restartOnConfigMapChange:
+  enabled: true
+extra:
+  broker: false
+  brokerSts: true
+  proxy: true
+  function: true
+  burnellLogCollector: false
+  # Note that these deployments currently use the plaintext broker ports
+  burnell: true
+  pulsarHeartbeat: true
+  pulsarAdminConsole: true
+
+cert-manager:
+  enabled: true
+
+createCertificates:
+  selfSignedPerComponent:
+    enabled: true
+
+openid:
+  enabled: true
+  # From token generated in Okta UI or other method:
+  allowedIssuerUrls: https://dev-42506116.okta.com/oauth2/aus7ypk6sjvgF4l615d7
+  allowedAudience: api://pulsarClient
+  withS4k: true
+zookeeper:
+  replicaCount: 1
+  resources:
+    requests:
+      memory: 300Mi
+      cpu: 0.2
+  configData:
+    PULSAR_MEM: "-Xms300m -Xmx300m -Djute.maxbuffer=10485760 -XX:+ExitOnOutOfMemoryError"
+
+bookkeeper:
+  replicaCount: 1
+  resources:
+    requests:
+      memory: 356Mi
+      cpu: 0.1
+  configData:
+    BOOKIE_MEM: "-Xms156m -Xmx156m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError"
+
+brokerSts:
+  component: broker
+  replicaCount: 1
+  service:
+    headless: true
+  ledger:
+    defaultEnsembleSize: 1
+    defaultAckQuorum: 1
+    defaultWriteQuorum: 1
+  resources:
+    requests:
+      memory: 300Mi
+      cpu: 0.3
+  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
+  configData:
+    PULSAR_MEM: "-Xms200m -Xmx200m -XX:MaxDirectMemorySize=100m -XX:+ExitOnOutOfMemoryError"
+    PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info"
+    PULSAR_PREFIX_brokerEntryMetadataInterceptors: "org.apache.pulsar.common.intercept.AppendIndexMetadataInterceptor,org.apache.pulsar.common.intercept.AppendBrokerTimestampMetadataInterceptor"
+    PULSAR_PREFIX_kafkaTransactionCoordinatorEnabled: "true"
+    PULSAR_PREFIX_messagingProtocols: "kafka"
+    PULSAR_PREFIX_brokerDeleteInactiveTopicsEnabled: "false"
+    PULSAR_PREFIX_kopSchemaRegistryEnable: "true"
+    PULSAR_PREFIX_allowAutoTopicCreationType: "partitioned"
+    PULSAR_PREFIX_protocolHandlerDirectory: "./protocols"
+    PULSAR_PREFIX_kopTlsEnabledWithBroker: "true"
+    PULSAR_PREFIX_kafkaListeners: "SASL_PLAINTEXT://0.0.0.0:9092,SASL_SSL://0.0.0.0:9093"
+    PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://advertisedAddress:9092,SASL_SSL://advertisedAddress:9093"
+
+autoRecovery:
+  enableProvisionContainer: true
+  resources:
+    requests:
+      memory: 300Mi
+      cpu: 0.1
+
+function:
+  replicaCount: 1
+  functionReplicaCount: 1
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 0.1
+  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
+  configData:
+    PULSAR_MEM: "-Xms156m -Xmx156m -XX:MaxDirectMemorySize=100m -XX:+ExitOnOutOfMemoryError"
+    PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info"
+
+proxy:
+  replicaCount: 1
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 0.1
+  wsResources:
+    requests:
+      memory: 256Mi
+      cpu: 0.1
+  authenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
+  wsAuthenticationProviders: "com.datastax.oss.pulsar.auth.AuthenticationProviderOpenID,org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
+  configData:
+    PULSAR_MEM: "-Xms200m -Xmx200m -XX:MaxDirectMemorySize=56m"
+    PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info"
+    PULSAR_PREFIX_kafkaListeners: "SASL_PLAINTEXT://0.0.0.0:9092,SASL_SSL://0.0.0.0:9093"
+    # here you have to customize the advertised name if you want to access
+    # Kafka from outside the kube    
+    # Drop the SASL_PLAINTEXT endpoint if you want to allow only TLS (here and above)
+    # The Proxy uses the same TLS certificate configured for the Pulsar protocol
+    #    PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://pulsar-proxy:9092,SASL_SSL://pulsar-proxy:9093"
+    # if you use port forwarding to localhost then you have to set 'localhost'    
+    PULSAR_PREFIX_kafkaAdvertisedListeners: "SASL_PLAINTEXT://pulsar-proxy:9092,SASL_SSL://pulsar-proxy:9093"
+    PULSAR_PREFIX_kopSchemaRegistryProxyEnableTls: "true"
+    PULSAR_PREFIX_kafkaProxySuperUserRole: "admin"
+    PULSAR_PREFIX_kopSchemaRegistryEnable: "true"
+    PULSAR_PREFIX_kopSchemaRegistryProxyPort: "8081"
+    PULSAR_PREFIX_messagingProtocols: "kafka"
+    PULSAR_PREFIX_proxyExtensions: "kafka"
+    PULSAR_PREFIX_brokerDeleteInactiveTopicsEnabled: "false"
+    PULSAR_PREFIX_kafkaTransactionCoordinatorEnabled: "true"
+    PULSAR_PREFIX_kopTlsEnabledWithBroker: "true"
+    authenticateMetricsEndpoint: "true"
+  autoPortAssign:
+    enablePlainTextWithTLS: true
+  service:
+    type: ClusterIP
+    autoPortAssign:
+      enabled: true
+  extensions:
+    enabled: true
+    extensions: "kafka"
+    containerPorts:
+      - name: kafkaplaintext
+        containerPort: 9092
+      - name: kafkassl
+        containerPort: 9093
+      - name: kafkaschemareg
+        containerPort: 8081
+    servicePorts:
+     - name: kafkaplaintext
+       port: 9092
+       protocol: TCP
+       targetPort: kafkaplaintext
+     - name: kafkassl
+       port: 9093
+       protocol: TCP
+       targetPort: kafkassl      
+     - name: kafkaschemareg
+       port: 8081
+       protocol: TCP
+       targetPort: kafkaschemareg
+
+grafanaDashboards:
+  enabled: true
+
+pulsarAdminConsole:
+  replicaCount: 1
+  authMode: openidconnect
+  createUserSecret:
+    enabled: true
+    user: 'admin'
+    # NOTE: use your own password
+    password: 'e9JYtk83*4#PM8'
+  service:
+    type: ClusterIP
+    # Only expose the secure port. This is important because the pod itself only exposes the secure port when TLS
+    # is enabled.
+    ports:
+      - name: https
+        port: 443
+        targetPort: https
+
+kube-prometheus-stack:
+  enabled: true
+  prometheusOperator:
+    enabled: true
+  grafana:
+    enabled: true
+    adminPassword: e9JYtk83*4#PM8
+
+enablePulsarPodMonitor: true
