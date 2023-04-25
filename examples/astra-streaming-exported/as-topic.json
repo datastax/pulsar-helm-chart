@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 31,
+  "id": 28,
   "links": [],
   "liveNow": false,
   "panels": [
@@ -107,7 +107,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_producers_count{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\", topic!~\".*__.*\"})",
+          "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_producers_count{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\", topic!~\".*__.*\"})",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -182,7 +182,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_consumers_count{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\", topic!~\".*__.*\"})",
+          "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_consumers_count{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\", topic!~\".*__.*\"})",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -257,7 +257,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscriptions_count{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\", topic!~\".*__.*\"})",
+          "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscriptions_count{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\", topic!~\".*__.*\"})",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -333,7 +333,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_msg_backlog{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\", topic!~\".*__.*\"})",
+          "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_msg_backlog{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\", topic!~\".*__.*\"})",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -409,7 +409,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_replication_backlog{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\", topic!~\".*__.*\"})",
+          "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_replication_backlog{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\", topic!~\".*__.*\"})",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -485,7 +485,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_storage_size{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\", topic!~\".*__.*\"})",
+          "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_storage_size{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\", topic!~\".*__.*\"})",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -561,7 +561,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_storage_offloaded_size{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\", topic!~\".*__.*\"})",
+          "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_storage_offloaded_size{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\", topic!~\".*__.*\"})",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -638,7 +638,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum by(cluster, tenant, namespace, ptopic) (increase(pulsar_in_messages_total{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\", topic!~\".*__.*\"}[1d]))",
+          "expr": "sum by(cluster, tenant, namespace, ptopic) (increase(pulsar_in_messages_total{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\", topic!~\".*__.*\"}[1d]))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -715,7 +715,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "sum by(cluster, tenant, namespace, ptopic) (increase(pulsar_in_bytes_total{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\", topic!~\".*__.*\"}[1d])) / sum by(cluster, tenant, namespace, ptopic) (increase(pulsar_in_messages_total{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\", topic!~\".*__.*\"}[1d]))",
+          "expr": "sum by(cluster, tenant, namespace, ptopic) (increase(pulsar_in_bytes_total{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\", topic!~\".*__.*\"}[1d])) / sum by(cluster, tenant, namespace, ptopic) (increase(pulsar_in_messages_total{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\", topic!~\".*__.*\"}[1d]))",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -821,11 +821,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic, topic) (pulsar_rate_in{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
+              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_rate_in{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
               "hide": false,
-              "legendFormat": "{{topic}}",
+              "legendFormat": "Total",
               "range": true,
-              "refId": "A"
+              "refId": "B"
             },
             {
               "datasource": {
@@ -833,11 +833,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_rate_in{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
+              "expr": "sum by(cluster, tenant, namespace, ptopic, topic) (pulsar_rate_in{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
               "hide": false,
-              "legendFormat": "Total",
+              "legendFormat": "{{topic}}",
               "range": true,
-              "refId": "B"
+              "refId": "A"
             }
           ],
           "title": "Message Publish Rate (msg/s)",
@@ -955,11 +955,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic, topic) (pulsar_rate_out{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
+              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_rate_out{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
               "hide": false,
-              "legendFormat": "{{topic}}",
+              "legendFormat": "Total",
               "range": true,
-              "refId": "A"
+              "refId": "B"
             },
             {
               "datasource": {
@@ -967,11 +967,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_rate_out{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
+              "expr": "sum by(cluster, tenant, namespace, ptopic, topic) (pulsar_rate_out{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
               "hide": false,
-              "legendFormat": "Total",
+              "legendFormat": "{{topic}}",
               "range": true,
-              "refId": "B"
+              "refId": "A"
             }
           ],
           "title": "Message Delivery Rate (msg/s)",
@@ -1086,11 +1086,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic, topic) (pulsar_throughput_in{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
+              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_throughput_in{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
               "hide": false,
-              "legendFormat": "{{topic}}",
+              "legendFormat": "Total",
               "range": true,
-              "refId": "A"
+              "refId": "B"
             },
             {
               "datasource": {
@@ -1098,11 +1098,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_throughput_in{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
+              "expr": "sum by(cluster, tenant, namespace, ptopic, topic) (pulsar_throughput_in{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
               "hide": false,
-              "legendFormat": "Total",
+              "legendFormat": "{{topic}}",
               "range": true,
-              "refId": "B"
+              "refId": "A"
             }
           ],
           "title": "Message Publish Throughput",
@@ -1217,11 +1217,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic, topic) (pulsar_throughput_out{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
+              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_throughput_out{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
               "hide": false,
-              "legendFormat": "{{topic}}",
+              "legendFormat": "Total",
               "range": true,
-              "refId": "A"
+              "refId": "B"
             },
             {
               "datasource": {
@@ -1229,11 +1229,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_throughput_out{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
+              "expr": "sum by(cluster, tenant, namespace, ptopic, topic) (pulsar_throughput_out{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
               "hide": false,
-              "legendFormat": "Total",
+              "legendFormat": "{{topic}}",
               "range": true,
-              "refId": "B"
+              "refId": "A"
             }
           ],
           "title": "Message Delivery Throughput",
@@ -1350,10 +1350,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic, topic) (pulsar_msg_backlog{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "legendFormat": "{{topic}}",
+              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_msg_backlog{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "hide": false,
+              "legendFormat": "Total",
               "range": true,
-              "refId": "A"
+              "refId": "B"
             },
             {
               "datasource": {
@@ -1361,11 +1362,10 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_msg_backlog{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "hide": false,
-              "legendFormat": "Total",
+              "expr": "sum by(cluster, tenant, namespace, ptopic, topic) (pulsar_msg_backlog{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "legendFormat": "{{topic}}",
               "range": true,
-              "refId": "B"
+              "refId": "A"
             }
           ],
           "title": "Message Backlog",
@@ -1457,10 +1457,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic, topic) (pulsar_subscription_unacked_messages{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "legendFormat": "{{topic}}",
+              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_unacked_messages{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "hide": false,
+              "legendFormat": "Total",
               "range": true,
-              "refId": "A"
+              "refId": "B"
             },
             {
               "datasource": {
@@ -1468,11 +1469,10 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_unacked_messages{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "hide": false,
-              "legendFormat": "Total",
+              "expr": "sum by(cluster, tenant, namespace, ptopic, topic) (pulsar_subscription_unacked_messages{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "legendFormat": "{{topic}}",
               "range": true,
-              "refId": "B"
+              "refId": "A"
             }
           ],
           "title": "Unacked Messages",
@@ -1578,10 +1578,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_back_log{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "legendFormat": "{{subscription}}",
+              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_msg_backlog{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "hide": false,
+              "legendFormat": "Total",
               "range": true,
-              "refId": "A"
+              "refId": "B"
             },
             {
               "datasource": {
@@ -1589,11 +1590,10 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_msg_backlog{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "hide": false,
-              "legendFormat": "Total",
+              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_back_log{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "legendFormat": "{{subscription}}",
               "range": true,
-              "refId": "B"
+              "refId": "A"
             }
           ],
           "title": "Subscription Backlog",
@@ -1685,10 +1685,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_back_log_no_delayed{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "legendFormat": "{{subscription}}",
+              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_back_log_no_delayed{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "hide": false,
+              "legendFormat": "Total",
               "range": true,
-              "refId": "A"
+              "refId": "B"
             },
             {
               "datasource": {
@@ -1696,11 +1697,10 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_back_log_no_delayed{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "hide": false,
-              "legendFormat": "Total",
+              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_back_log_no_delayed{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "legendFormat": "{{subscription}}",
               "range": true,
-              "refId": "B"
+              "refId": "A"
             }
           ],
           "title": "Subscription Backlog No Delay",
@@ -1817,10 +1817,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_unacked_messages{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "legendFormat": "{{subscription}}",
+              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_unacked_messages{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "hide": false,
+              "legendFormat": "Total",
               "range": true,
-              "refId": "A"
+              "refId": "B"
             },
             {
               "datasource": {
@@ -1828,11 +1829,10 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_unacked_messages{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "hide": false,
-              "legendFormat": "Total",
+              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_unacked_messages{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "legendFormat": "{{subscription}}",
               "range": true,
-              "refId": "B"
+              "refId": "A"
             }
           ],
           "title": "Subscription Unacked Messages",
@@ -1924,10 +1924,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_delayed{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "legendFormat": "{{subscription}}",
+              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_delayed{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "hide": false,
+              "legendFormat": "Total",
               "range": true,
-              "refId": "A"
+              "refId": "B"
             },
             {
               "datasource": {
@@ -1935,11 +1936,10 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_delayed{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "hide": false,
-              "legendFormat": "Total",
+              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_delayed{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "legendFormat": "{{subscription}}",
               "range": true,
-              "refId": "B"
+              "refId": "A"
             }
           ],
           "title": "Subscription Delayed Messages",
@@ -2031,10 +2031,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_msg_rate_out{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "legendFormat": "{{subscription}}",
+              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_msg_rate_out{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "hide": false,
+              "legendFormat": "Total",
               "range": true,
-              "refId": "A"
+              "refId": "B"
             },
             {
               "datasource": {
@@ -2042,11 +2043,10 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_msg_rate_out{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "hide": false,
-              "legendFormat": "Total",
+              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_msg_rate_out{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "legendFormat": "{{subscription}}",
               "range": true,
-              "refId": "B"
+              "refId": "A"
             }
           ],
           "title": "Subscription Message Dispatch Rate (msg/s)",
@@ -2139,10 +2139,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_msg_throughput_out{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "legendFormat": "{{subscription}}",
+              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_msg_throughput_out{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "hide": false,
+              "legendFormat": "Total",
               "range": true,
-              "refId": "A"
+              "refId": "B"
             },
             {
               "datasource": {
@@ -2150,11 +2151,10 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_msg_throughput_out{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "hide": false,
-              "legendFormat": "Total",
+              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_msg_throughput_out{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "legendFormat": "{{subscription}}",
               "range": true,
-              "refId": "B"
+              "refId": "A"
             }
           ],
           "title": "Subscription Message Dispatch Throughut",
@@ -2246,10 +2246,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_msg_ack_rate{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "legendFormat": "{{subscription}}",
+              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_msg_ack_rate{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "hide": false,
+              "legendFormat": "Total",
               "range": true,
-              "refId": "A"
+              "refId": "B"
             },
             {
               "datasource": {
@@ -2257,11 +2258,10 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_msg_ack_rate{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "hide": false,
-              "legendFormat": "Total",
+              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_msg_ack_rate{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "legendFormat": "{{subscription}}",
               "range": true,
-              "refId": "B"
+              "refId": "A"
             }
           ],
           "title": "Subscription Message Ack Rate (msg/s)",
@@ -2353,10 +2353,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_msg_rate_redeliver{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "legendFormat": "{{subscription}}",
+              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_msg_rate_redeliver{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "hide": false,
+              "legendFormat": "Total",
               "range": true,
-              "refId": "A"
+              "refId": "B"
             },
             {
               "datasource": {
@@ -2364,11 +2365,10 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_msg_rate_redeliver{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "hide": false,
-              "legendFormat": "Total",
+              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_msg_rate_redeliver{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "legendFormat": "{{subscription}}",
               "range": true,
-              "refId": "B"
+              "refId": "A"
             }
           ],
           "title": "Subscription Message Redlivery Rate (msg/s)",
@@ -2460,7 +2460,7 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_msg_rate_expired{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
+              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_msg_rate_expired{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
               "legendFormat": "{{subscription}}",
               "range": true,
               "refId": "A"
@@ -2471,7 +2471,7 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_msg_rate_expired{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
+              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_msg_rate_expired{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
               "hide": false,
               "legendFormat": "Total",
               "range": true,
@@ -2567,7 +2567,7 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_msg_drop_rate{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
+              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_msg_drop_rate{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
               "legendFormat": "{{subscription}}",
               "range": true,
               "refId": "A"
@@ -2578,7 +2578,7 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_msg_drop_rate{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
+              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_msg_drop_rate{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
               "hide": false,
               "legendFormat": "Total",
               "range": true,
@@ -2674,10 +2674,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_filter_processed_msg_count{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "legendFormat": "{{subscription}}",
+              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_filter_processed_msg_count{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "hide": false,
+              "legendFormat": "Total",
               "range": true,
-              "refId": "A"
+              "refId": "B"
             },
             {
               "datasource": {
@@ -2685,11 +2686,10 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_filter_processed_msg_count{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "hide": false,
-              "legendFormat": "Total",
+              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_filter_processed_msg_count{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "legendFormat": "{{subscription}}",
               "range": true,
-              "refId": "B"
+              "refId": "A"
             }
           ],
           "title": "Messages Processed by EntryFilter",
@@ -2781,10 +2781,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_filter_accepted_msg_count{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "legendFormat": "{{subscription}}",
+              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_filter_accepted_msg_count{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "hide": false,
+              "legendFormat": "Total",
               "range": true,
-              "refId": "A"
+              "refId": "B"
             },
             {
               "datasource": {
@@ -2792,11 +2793,10 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_filter_accepted_msg_count{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "hide": false,
-              "legendFormat": "Total",
+              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_filter_accepted_msg_count{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "legendFormat": "{{subscription}}",
               "range": true,
-              "refId": "B"
+              "refId": "A"
             }
           ],
           "title": "Messages Accepted by EntryFilter",
@@ -2888,10 +2888,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_filter_rejected_msg_count{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "legendFormat": "{{subscription}}",
+              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_filter_rejected_msg_count{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "hide": false,
+              "legendFormat": "Total",
               "range": true,
-              "refId": "A"
+              "refId": "B"
             },
             {
               "datasource": {
@@ -2899,11 +2900,10 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_filter_rejected_msg_count{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "hide": false,
-              "legendFormat": "Total",
+              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_filter_rejected_msg_count{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "legendFormat": "{{subscription}}",
               "range": true,
-              "refId": "B"
+              "refId": "A"
             }
           ],
           "title": "Messages Rejected by EntryFilter",
@@ -2995,10 +2995,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_filter_rescheduled_msg_count{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "legendFormat": "{{subscription}}",
+              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_filter_rescheduled_msg_count{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "hide": false,
+              "legendFormat": "Total",
               "range": true,
-              "refId": "A"
+              "refId": "B"
             },
             {
               "datasource": {
@@ -3006,11 +3007,10 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by(cluster, tenant, namespace, ptopic) (pulsar_subscription_filter_rescheduled_msg_count{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\"})",
-              "hide": false,
-              "legendFormat": "Total",
+              "expr": "sum by(cluster, tenant, namespace, ptopic, subscription) (pulsar_subscription_filter_rescheduled_msg_count{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\"})",
+              "legendFormat": "{{subscription}}",
               "range": true,
-              "refId": "B"
+              "refId": "A"
             }
           ],
           "title": "Messages Rescheduled by EntryFilter",
@@ -3138,10 +3138,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by (remote_cluster, cluster, namespace, ptopic) (pulsar_replication_rate_in{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=\"$ptopic\", topic!~\".*__.*\", remote_cluster!=\"local\"})",
-              "legendFormat": "{{remote_cluster}} → {{cluster}}",
+              "expr": "sum by (cluster, namespace, ptopic) (pulsar_replication_rate_in{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\", topic=~\"$ptopic(-partition.*)?\", remote_cluster!=\"local\"})",
+              "hide": false,
+              "legendFormat": "any → {{cluster}} (total)",
               "range": true,
-              "refId": "A"
+              "refId": "B"
             },
             {
               "datasource": {
@@ -3149,11 +3150,10 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by (cluster, namespace, ptopic) (pulsar_replication_rate_in{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=\"$ptopic\", topic!~\".*__.*\", remote_cluster!=\"local\"})",
-              "hide": false,
-              "legendFormat": "any → {{cluster}} (total)",
+              "expr": "sum by (remote_cluster, cluster, namespace, ptopic) (pulsar_replication_rate_in{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\", topic!~\".*__.*\", remote_cluster!=\"local\"})",
+              "legendFormat": "{{remote_cluster}} → {{cluster}}",
               "range": true,
-              "refId": "B"
+              "refId": "A"
             }
           ],
           "title": "Incoming Replication Rate - Incoming",
@@ -3242,10 +3242,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by (remote_cluster, cluster, namespace, ptopic)(pulsar_replication_rate_out{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=\"$ptopic\", topic!~\".*__.*\", remote_cluster!=\"local\"})",
-              "legendFormat": "{{cluster}} → {{remote_cluster}}",
+              "expr": "sum by (cluster, namespace, ptopic)(pulsar_replication_rate_out{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\", topic!~\".*__.*\", remote_cluster!=\"local\"})",
+              "hide": false,
+              "legendFormat": "{{cluster}} → any (total)",
               "range": true,
-              "refId": "A"
+              "refId": "B"
             },
             {
               "datasource": {
@@ -3253,11 +3254,10 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by (cluster, namespace, ptopic)(pulsar_replication_rate_out{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=\"$ptopic\", topic!~\".*__.*\", remote_cluster!=\"local\"})",
-              "hide": false,
-              "legendFormat": "{{cluster}} → any (total)",
+              "expr": "sum by (remote_cluster, cluster, namespace, ptopic)(pulsar_replication_rate_out{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\", topic!~\".*__.*\", remote_cluster!=\"local\"})",
+              "legendFormat": "{{cluster}} → {{remote_cluster}}",
               "range": true,
-              "refId": "B"
+              "refId": "A"
             }
           ],
           "title": "Outgoing Replication Rate - Outgoing",
@@ -3347,10 +3347,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by (remote_cluster, cluster, namespace, ptopic) (pulsar_replication_throughput_in{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=\"$ptopic\", topic!~\".*__.*\", remote_cluster!=\"local\"})",
-              "legendFormat": "{{remote_cluster}} → {{cluster}}",
+              "expr": "sum by (cluster, namespace, ptopic) (pulsar_replication_throughput_in{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\", topic!~\".*__.*\", remote_cluster!=\"local\"})",
+              "hide": false,
+              "legendFormat": "any → {{cluster}} (total)",
               "range": true,
-              "refId": "A"
+              "refId": "B"
             },
             {
               "datasource": {
@@ -3358,11 +3359,10 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by (cluster, namespace, ptopic) (pulsar_replication_throughput_in{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=\"$ptopic\", topic!~\".*__.*\", remote_cluster!=\"local\"})",
-              "hide": false,
-              "legendFormat": "any → {{cluster}} (total)",
+              "expr": "sum by (remote_cluster, cluster, namespace, ptopic) (pulsar_replication_throughput_in{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\", topic!~\".*__.*\", remote_cluster!=\"local\"})",
+              "legendFormat": "{{remote_cluster}} → {{cluster}}",
               "range": true,
-              "refId": "B"
+              "refId": "A"
             }
           ],
           "title": "Incoming Replication Throughput - Incoming",
@@ -3452,10 +3452,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by (remote_cluster, cluster, namespace, ptopic) (pulsar_replication_throughput_out{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=\"$ptopic\", topic!~\".*__.*\", remote_cluster!=\"local\"})",
-              "legendFormat": "{{cluster}} → {{remote_cluster}}",
+              "expr": "sum by (cluster, namespace, ptopic) (pulsar_replication_throughput_out{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\", topic!~\".*__.*\", remote_cluster!=\"local\"})",
+              "hide": false,
+              "legendFormat": " {{cluster}} → any (total)",
               "range": true,
-              "refId": "A"
+              "refId": "B"
             },
             {
               "datasource": {
@@ -3463,11 +3464,10 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by (cluster, namespace, ptopic) (pulsar_replication_throughput_out{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=\"$ptopic\", topic!~\".*__.*\", remote_cluster!=\"local\"})",
-              "hide": false,
-              "legendFormat": " {{cluster}} → any (total)",
+              "expr": "sum by (remote_cluster, cluster, namespace, ptopic) (pulsar_replication_throughput_out{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\", topic!~\".*__.*\", remote_cluster!=\"local\"})",
+              "legendFormat": "{{cluster}} → {{remote_cluster}}",
               "range": true,
-              "refId": "B"
+              "refId": "A"
             }
           ],
           "title": "Incoming Replication Throughput - Outgoing",
@@ -3556,10 +3556,11 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by (remote_cluster, cluster, namespace, ptopic) (pulsar_replication_backlog{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\", topic!~\".*__.*\", remote_cluster!=\"local\"})",
-              "legendFormat": "{{cluster}} → {{remote_cluster}}",
+              "expr": "sum by (cluster, namespace, ptopic) (pulsar_replication_backlog{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\", topic!~\".*__.*\", remote_cluster!=\"local\"})",
+              "hide": false,
+              "legendFormat": "{{cluster}} → any (total)",
               "range": true,
-              "refId": "A"
+              "refId": "B"
             },
             {
               "datasource": {
@@ -3567,11 +3568,10 @@
                 "uid": "prometheus"
               },
               "editorMode": "code",
-              "expr": "sum by (cluster, namespace, ptopic) (pulsar_replication_backlog{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", ptopic=~\"$ptopic\", topic!~\".*__.*\", remote_cluster!=\"local\"})",
-              "hide": false,
-              "legendFormat": "{{cluster}} → any (total)",
+              "expr": "sum by (remote_cluster, cluster, namespace, ptopic) (pulsar_replication_backlog{cluster=~\"$cluster\", namespace=~\"$tenant.+\", namespace=~\"$namespace\", topic=~\"$ptopic(-partition.*)?\", topic!~\".*__.*\", remote_cluster!=\"local\"})",
+              "legendFormat": "{{cluster}} → {{remote_cluster}}",
               "range": true,
-              "refId": "B"
+              "refId": "A"
             }
           ],
           "title": "Replication Backlog - Outgoing",
@@ -3589,7 +3589,7 @@
     "list": [
       {
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "pulsar-gcp-uscentral1",
           "value": "pulsar-gcp-uscentral1"
         },
@@ -3698,13 +3698,13 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-12h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Topic",
   "uid": "uFNzqlP4k",
-  "version": 16,
+  "version": 2,
   "weekStart": ""
 }

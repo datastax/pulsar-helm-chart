@@ -5,8 +5,8 @@
     credentials: <jwt_token_value>
   static_configs:
   - targets: ['<scrape_endpoint>']
-  metric_relabel_configs:
-  - source_labels: [topic]
-    regex: (.*)(-partition.*)
-    replacement: $1
-    target_label: ptopic
+#  metric_relabel_configs:
+#  - source_labels: [topic]
+#    regex: (.*)(-partition.*)
+#    replacement: $1
+#    target_label: ptopic
