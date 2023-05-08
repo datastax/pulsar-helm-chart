@@ -155,6 +155,9 @@ data:
       - {{ . | quote }}
     {{- end }}
     {{- end }}
+    {{- if .Values.function.customConfiguration }}
+{{ toYaml .Values.function.customConfiguration | indent 4 }}
+    {{- end }}
     connectorsDirectory: "./connectors"
     {{- if eq .Values.function.runtime "process" }}
     processContainerFactory:
