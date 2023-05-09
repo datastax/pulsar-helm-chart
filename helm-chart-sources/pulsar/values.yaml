@@ -1185,6 +1185,9 @@ function:
   ## properties map. For example, you might use this map to configure the openid-connect plugin.
   # customProperties: {}
 
+  ## Arbitrary custom function worker configuration can be added to functions_worker.yml using customConfiguration
+  # customConfiguration: {}
+
   ## Function configmap
   ## templates/function-configmap.yaml
   ##
