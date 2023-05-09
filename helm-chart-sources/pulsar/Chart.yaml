@@ -24,7 +24,7 @@ maintainers:
   - name: lhotari
   - name: michaeljmarshall
   - name: devinbost
-version: 3.2.0
+version: 3.2.1
 dependencies:
 - name: kube-prometheus-stack
   version: 44.x.x
