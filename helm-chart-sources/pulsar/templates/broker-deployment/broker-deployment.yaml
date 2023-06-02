@@ -206,6 +206,14 @@ spec:
         volumeMounts:
           - name: lib-data
             mountPath: {{ .Values.broker.initContainer.emptyDirPath }}
+        {{- if .Values.broker.initContainer.env }}
+        env:
+{{ toYaml .Values.broker.initContainer.env | indent 10 }}
+        {{- end }}
+        {{- if .Values.broker.initContainer.envFrom }}
+        envFrom:
+{{ toYaml .Values.broker.initContainer.envFrom | indent 10 }}
+        {{- end }}
       {{- end }}
       containers:
       - name: "{{ template "pulsar.fullname" . }}-{{ .Values.broker.component }}"
