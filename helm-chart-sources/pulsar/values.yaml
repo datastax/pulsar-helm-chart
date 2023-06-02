@@ -925,7 +925,14 @@ broker:
   #   tag: latest
   #   pullPolicy: IfNotPresent
   #   command: ["cp", "-r", "/pulsar-libs", "/jars" ]
+  #   args: []
   #   emptyDirPath: "/jars"
+  #   env:
+  #   - name: 
+  #     value: 
+  #   envFrom:
+  #   - configMapRef:
+  #     name:
 
   # Comma delimited list of authentication providers
   authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
@@ -1039,7 +1046,14 @@ brokerSts:
   #   tag: latest
   #   pullPolicy: IfNotPresent
   #   command: ["cp", "-r", "/pulsar-libs", "/jars" ]
+  #   args: []
   #   emptyDirPath: "/jars"
+  #   env:
+  #   - name: 
+  #     value: 
+  #   envFrom:
+  #   - configMapRef:
+  #     name:
 
   # Comma delimited list of authentication providers
   authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
@@ -1174,8 +1188,15 @@ function:
   #   tag: latest
   #   pullPolicy: IfNotPresent
   #   command: ["cp", "-r", "/pulsar-connectors", "/connectors" ]
+  #   args: []
   #   emptyDirPath: "/connectors"
   #   mainContainerStartupCmd: "cp -f /connectors/pulsar-connectors/* /pulsar/connectors"
+  #   env:
+  #   - name: 
+  #     value: 
+  #   envFrom:
+  #   - configMapRef:
+  #     name:
 
   authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken,org.apache.pulsar.broker.authentication.AuthenticationProviderTls"
 
@@ -1383,7 +1404,14 @@ proxy:
   #   tag: latest
   #   pullPolicy: IfNotPresent
   #   command: ["cp", "-r", "/pulsar-libs", "/jars" ]
+  #   args: []
   #   emptyDirPath: "/jars"
+  #   env:
+  #   - name: 
+  #     value: 
+  #   envFrom:
+  #   - configMapRef:
+  #     name:
 
   # Comma delimited list of authentication providers
   authenticationProviders: "org.apache.pulsar.broker.authentication.AuthenticationProviderToken"
