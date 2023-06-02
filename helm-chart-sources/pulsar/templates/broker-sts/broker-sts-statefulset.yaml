@@ -209,7 +209,7 @@ spec:
           - name: lib-data
             mountPath: {{ .Values.brokerSts.initContainer.emptyDirPath }}
         {{- if .Values.brokerSts.initContainer.env }}
-        env: 
+        env:
 {{ toYaml .Values.brokerSts.initContainer.env | indent 10 }}
         {{- end }}
         {{- if .Values.brokerSts.initContainer.envFrom }}

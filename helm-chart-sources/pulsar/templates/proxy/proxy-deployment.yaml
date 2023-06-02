@@ -209,7 +209,7 @@ spec:
           - name: lib-data
             mountPath: {{ .Values.proxy.initContainer.emptyDirPath }}
         {{- if .Values.proxy.initContainer.env }}
-        env: 
+        env:
 {{ toYaml .Values.proxy.initContainer.env | indent 10 }}
         {{- end }}
         {{- if .Values.proxy.initContainer.envFrom }}

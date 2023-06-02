@@ -175,7 +175,7 @@ spec:
           - name: extra-data
             mountPath: {{ .Values.function.initContainer.emptyDirPath }}
         {{- if .Values.function.initContainer.env }}
-        env: 
+        env:
 {{ toYaml .Values.function.initContainer.env | indent 10 }}
         {{- end }}
         {{- if .Values.function.initContainer.envFrom }}

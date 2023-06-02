@@ -928,8 +928,8 @@ broker:
   #   args: []
   #   emptyDirPath: "/jars"
   #   env:
-  #   - name: 
-  #     value: 
+  #   - name:
+  #     value:
   #   envFrom:
   #   - configMapRef:
   #     name:
@@ -1049,8 +1049,8 @@ brokerSts:
   #   args: []
   #   emptyDirPath: "/jars"
   #   env:
-  #   - name: 
-  #     value: 
+  #   - name:
+  #     value:
   #   envFrom:
   #   - configMapRef:
   #     name:
@@ -1192,8 +1192,8 @@ function:
   #   emptyDirPath: "/connectors"
   #   mainContainerStartupCmd: "cp -f /connectors/pulsar-connectors/* /pulsar/connectors"
   #   env:
-  #   - name: 
-  #     value: 
+  #   - name:
+  #     value:
   #   envFrom:
   #   - configMapRef:
   #     name:
@@ -1407,8 +1407,8 @@ proxy:
   #   args: []
   #   emptyDirPath: "/jars"
   #   env:
-  #   - name: 
-  #     value: 
+  #   - name:
+  #     value:
   #   envFrom:
   #   - configMapRef:
   #     name:
