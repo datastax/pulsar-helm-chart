@@ -57,6 +57,7 @@ data:
       {{- end }}
     {{- end }}
     zooKeeperSessionTimeoutMillis: 30000
+    uploadBuiltinSinksSources: "{{ Values.function.uploadBuiltinSinksSources }}"
     pulsarFunctionsCluster: "{{ template "pulsar.fullname" . }}"
     workerId: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}"
     workerHostname: "{{ template "pulsar.fullname" . }}-{{ .Values.function.component }}"
