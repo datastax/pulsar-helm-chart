@@ -29,24 +29,30 @@ metadata:
 data:
   proxy_health_check.sh: |
     #!/bin/bash
+    port=${webServicePortTls:webServicePort}
+    scheme=$([ $port == $webServicePortTls ] && echo "https" || echo "http")
     {{- if .Values.enableTokenAuth }}
-    curl -s --max-time {{ .Values.proxy.probe.timeout }} --fail -H "Authorization: Bearer $(cat /pulsar/token-superuser/superuser.jwt | tr -d '\r')" http://localhost:8080/metrics/ > /dev/null
+    curl -s --max-time {{ .Values.proxy.probe.timeout }} --fail -k -H "Authorization: Bearer $(cat /pulsar/token-superuser/superuser.jwt | tr -d '\r')" $scheme://localhost:$port/metrics/ > /dev/null
     {{- else }}
-    curl -s --max-time {{ .Values.proxy.probe.timeout }} --fail http://localhost:8080/metrics/ > /dev/null
+    curl -s --max-time {{ .Values.proxy.probe.timeout }} --fail -k $scheme://localhost:$port/metrics/ > /dev/null
     {{- end }}
 
   broker_health_check.sh: |
     #!/bin/bash
+    port=${webServicePortTls:webServicePort}
+    scheme=$([ $port == $webServicePortTls ] && echo "https" || echo "http")
     {{- if .Values.enableTokenAuth }}
-    curl -s --max-time {{ .Values.broker.probe.timeout }} --fail -H "Authorization: Bearer $(cat /pulsar/token-superuser/superuser.jwt | tr -d '\r')" http://localhost:8080/admin/v2/brokers/health
+    curl -s --max-time {{ .Values.broker.probe.timeout }} --fail -k -H "Authorization: Bearer $(cat /pulsar/token-superuser/superuser.jwt | tr -d '\r')" $scheme://localhost:$port/admin/v2/brokers/health > /dev/null
     {{- else }}
-    curl -s --max-time {{ .Values.broker.probe.timeout }} --fail http://localhost:8080/admin/v2/brokers/health
+    curl -s --max-time {{ .Values.broker.probe.timeout }} --fail -k $scheme://localhost:$port/admin/v2/brokers/health > /dev/null
     {{- end }}
 
   function_worker_health_check.sh: |
     #!/bin/bash
+    port=${webServicePortTls:webServicePort}
+    scheme=$([ $port == $webServicePortTls ] && echo "https" || echo "http")
     {{- if .Values.enableTokenAuth }}
-    curl -s --max-time {{ .Values.proxy.probe.timeout }} --fail -H "Authorization: Bearer $(cat /pulsar/token-superuser/superuser.jwt | tr -d '\r')" http://localhost:{{ .Values.function.probe.port }}/metrics/ > /dev/null
+    curl -s --max-time {{ .Values.function.probe.timeout }} --fail -k -H "Authorization: Bearer $(cat /pulsar/token-superuser/superuser.jwt | tr -d '\r')" $scheme://localhost:$port/metrics/ > /dev/null
     {{- else }}
-    curl -s --max-time {{ .Values.proxy.probe.timeout }} --fail http://localhost:{{ .Values.function.probe.port }}/metrics/ > /dev/null
+    curl -s --max-time {{ .Values.function.probe.timeout }} --fail -k $scheme://localhost:$port/metrics/ > /dev/null
     {{- end }}

@@ -203,6 +203,9 @@ brokerSts:
       cpu: 0.3
   configData:
     PULSAR_MEM: "-Xms400m -Xmx400m -XX:MaxDirectMemorySize=200m -XX:+ExitOnOutOfMemoryError"
+    # Disables plaintext servers in broker.
+    brokerServicePort: ""
+    webServicePort: ""
 
 autoRecovery:
   enableProvisionContainer: true
@@ -233,11 +236,16 @@ proxy:
       cpu: 0.3
   configData:
     PULSAR_MEM: "-Xms400m -Xmx400m -XX:MaxDirectMemorySize=112m"
+    # Disables plaintext servers in proxy.
+    servicePort: ""
+    webServicePort: ""
   autoPortAssign:
-    enablePlainTextWithTLS: true
+    enablePlainTextWithTLS: false
   service:
     autoPortAssign:
       enabled: true
+  # Disables plaintext server in WebSocket proxy.
+  wsProxyPort: ""
 
 grafanaDashboards:
   enabled: false
