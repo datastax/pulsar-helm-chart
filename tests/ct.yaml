@@ -18,7 +18,7 @@
 remote: origin
 check-version-increment: false
 target-branch: release
-helm-extra-args: "--timeout 600s --debug"
+helm-extra-args: "--debug"
 chart-dirs:
   - helm-chart-sources
 chart-repos:
