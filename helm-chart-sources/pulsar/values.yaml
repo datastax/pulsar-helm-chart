@@ -635,6 +635,22 @@ zookeeper:
     usePolicy: true
     maxUnavailable: 1
 
+  # The initial myid used for generating myid for each zookeeper pod
+  initialMyId: 0
+
+  # zookeeper peer type, can be either "participant" or "observer"
+  peerType: participant
+
+  ## reconfig settings
+  reconfig:
+    enabled: false
+    # The zookeeper servers to observe/join
+    zkServers: []
+
+  # Pod securityContext
+  securityContext:
+    fsGroup: 0
+
 ## Pulsar: Zookeeper cluster non persistent storage
 ## Used as floating Zookeeper to maintain quorum in AZ failures
 ## templates/zookeepernp-statefulset.yaml

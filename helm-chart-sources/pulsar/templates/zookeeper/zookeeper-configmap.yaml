@@ -36,6 +36,11 @@ data:
   sslQuorum: "true"
   PULSAR_PREFIX_sslQuorum: "true"
   {{- end }}
+  PULSAR_PREFIX_peerType: {{ .Values.zookeeper.peerType }}
+  {{- if .Values.zookeeper.reconfig.enabled }}
+  PULSAR_PREFIX_reconfigEnabled: "true"
+  PULSAR_PREFIX_skipACL: "yes"
+  {{- end }}
 {{- range $key, $val := $.Values.zookeeper.configData }}
   {{ $key }}: {{ $val | replace "\"" "" | trim | quote }}
 {{- end }}

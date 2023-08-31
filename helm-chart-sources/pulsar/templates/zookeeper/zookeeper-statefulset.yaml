@@ -120,7 +120,7 @@ spec:
       {{- end }}
       terminationGracePeriodSeconds: {{ .Values.zookeeper.gracePeriod }}
       securityContext:
-        fsGroup: 0
+{{ toYaml .Values.zookeeper.securityContext | indent 8 }}
       containers:
       - name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}"
         image: "{{ .Values.image.zookeeper.repository }}:{{ .Values.image.zookeeper.tag }}"
@@ -139,7 +139,11 @@ spec:
           {{- if .Values.extra.zookeepernp }}
           /pulsar/zookeeper-config/generate-zookeeper-config-mixed.sh conf/zookeeper.conf &&
           {{- else }}
-          bin/generate-zookeeper-config.sh conf/zookeeper.conf &&
+          {{- range $server := .Values.zookeeper.reconfig.zkServers }}
+          echo "{{ $server }}" >> conf/zookeeper.conf &&
+          {{- end }}
+          bin/gen-zk-conf.sh conf/zookeeper.conf {{ .Values.zookeeper.initialMyId }} {{ .Values.zookeeper.peerType }} &&
+          cat conf/zookeeper.conf &&
           {{- end }}
           OPTS="${OPTS} -Dlog4j2.formatMsgNoLookups=true" exec bin/pulsar zookeeper
         ports:
@@ -196,6 +200,9 @@ spec:
         - name: zookeeper-config
           mountPath: /pulsar/zookeeper-config
         {{- end }}
+        - name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-genzkconf"
+          mountPath: /pulsar/bin/gen-zk-conf.sh
+          subPath: gen-zk-conf.sh
       volumes:
       {{- if and .Values.enableTls .Values.tls.zookeeper.enabled}}
       - name: certs
@@ -216,6 +223,10 @@ spec:
           name: "{{ template "pulsar.fullname" . }}-zookeeper-config"
           defaultMode: 0755
     {{- end }}
+      - name: "{{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-genzkconf"
+        configMap:
+          name: "{{ template "pulsar.fullname" . }}-genzkconf-configmap"
+          defaultMode: 0755
 {{- if .Values.persistence }}
   volumeClaimTemplates:
   - metadata:
