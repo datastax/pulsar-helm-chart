@@ -57,7 +57,7 @@ data:
     {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2181
     {{- end }}
     {{- end }}
-  clusterName: {{ template "pulsar.fullname" . }}
+  clusterName: {{ template "pulsar.cluster" . }}
   {{- if .Values.brokerSts.functionsWorkerEnabled }}
   functionsWorkerEnabled: "true"
   PF_pulsarFunctionsCluster: {{ template "pulsar.fullname" . }}

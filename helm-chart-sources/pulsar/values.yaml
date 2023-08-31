@@ -21,6 +21,9 @@
 # Override for the name of the helm deployment
 fullnameOverride: pulsar
 
+# Override the cluster name
+clusterNameOverride: ''
+
 # DNS name for loadbalancer
 dnsName: pulsar.example.com
 

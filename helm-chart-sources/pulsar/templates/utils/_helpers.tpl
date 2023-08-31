@@ -25,6 +25,17 @@ If release name contains chart name it will be used as a full name.
 {{- end -}}
 
 {{/*
+Pulsar Cluster Name.
+*/}}
+{{- define "pulsar.cluster" -}}
+{{- if .Values.clusterNameOverride }}
+{{- .Values.clusterNameOverride }}
+{{- else }}
+{{- template "pulsar.fullname" . }}
+{{- end }}
+{{- end }}
+
+{{/*
 Necessary to make proper names for keycloak services (note that it is important that
 the .Chart.Name for the keycloak dependent chart does not change.)
 */}}

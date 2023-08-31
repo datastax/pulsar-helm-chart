@@ -95,7 +95,7 @@ spec:
             /pulsar/tools/certconverter.sh &&
             {{- end }}
             bin/pulsar initialize-cluster-metadata \
-              --cluster {{ template "pulsar.fullname" . }} \
+              --cluster {{ template "pulsar.cluster" . }} \
               {{- if .Values.tls.zookeeper.enabled }}
               --zookeeper {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2281 \
               --configuration-store {{ template "pulsar.fullname" . }}-{{ .Values.zookeeper.component }}-ca.{{ template "pulsar.serviceDnsSuffix" . }}:2281 \
