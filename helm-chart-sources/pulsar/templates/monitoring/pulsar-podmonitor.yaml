@@ -61,6 +61,7 @@ spec:
           {{- end }}
   podMetricsEndpoints:
     - port: "http"
+      honorLabels: {{ .Values.pulsarPodMonitor.honorLabels }}
       relabelings:
         - action: labelmap
           regex: __meta_kubernetes_pod_label_(.+)
