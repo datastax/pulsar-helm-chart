@@ -4,10 +4,11 @@ CI="${CI:-false}"
 set -o errexit
 set -o nounset
 set -o pipefail
+set -x
 
 readonly CT_VERSION=latest
-readonly KIND_VERSION=v0.11.1
-: "${K8S_VERSION:=v1.21.2}"
+readonly KIND_VERSION=v0.22.0
+: "${K8S_VERSION:=v1.28.7}"
 
 readonly CLUSTER_NAME=pulsar-helm-test
 
@@ -17,7 +18,7 @@ run_ct_container() {
         docker run --rm --interactive --detach --network host --name ct \
             --volume "$(pwd):/workdir" \
             --workdir /workdir \
-            --user 1000 \
+            --user "$(id -u):$(id -g)" \
             --env HOME=/workdir \
             "quay.io/helmpack/chart-testing:$CT_VERSION" \
             cat
@@ -34,7 +35,7 @@ cleanup() {
 
 # Set the user so that it properly owns the git repo
 docker_exec() {
-    docker exec --user 1000 --interactive ct "$@"
+    docker exec --user "$(id -u):$(id -g)" --interactive ct "$@"
 }
 
 create_kind_cluster() {
