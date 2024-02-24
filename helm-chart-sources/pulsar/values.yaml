@@ -1430,7 +1430,7 @@ proxy:
     PULSAR_LOG_ROOT_LEVEL: "info"
     PULSAR_EXTRA_OPTS: "-Dpulsar.log.root.level=info"
     # To disable authentication on the Prometheus /metrics endpoint
-    # authenticateMetricsEndpoint: "false"
+    # PULSAR_PREFIX_authenticateMetricsEndpoint: "false"
   wsProxyPort: 8000
   wsProxyPortTls: 8001
   ## Proxy loadbalancer service
