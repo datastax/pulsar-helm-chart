@@ -82,7 +82,7 @@ spec:
           value: "localhost"
         - name: API_PORT
           value: "9001"
-        - name: WEB_HTTP_PORT
+        - name: HTTP_PORT
           value: "8001"
         {{- if .Values.zoonavigator.autoConnect }}
         # Will set Zoonavigator to autoconnect to Zookeepers
@@ -104,6 +104,6 @@ spec:
         - name: api
           containerPort: 9001
         env:
-        - name: API_HTTP_PORT
+        - name: HTTP_PORT
           value: "9001"
 {{- end }}

@@ -1674,9 +1674,9 @@ zoonavigator:
       cpu: 0.1
   image:
     repository:
-      web: elkozmon/zoonavigator-web
-      api: elkozmon/zoonavigator-api
-    tag: 0.6.0
+      web: elkozmon/zoonavigator
+      api: elkozmon/zoonavigator
+    tag: latest
     pullPolicy: IfNotPresent
 
   ## Zoonavigator service
