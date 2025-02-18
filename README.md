@@ -5,7 +5,6 @@
 # Helm Chart for an Apache Pulsar Cluster
 
 This Helm chart configures an Apache Pulsar cluster. It is designed for production use, but can also be used in local development environments with the proper settings.
-
 It includes support for:
 * [TLS](#tls)
 * [Authentication](#authentication)
