@@ -2,7 +2,13 @@
 [![CircleCI](https://circleci.com/gh/datastax/pulsar-helm-chart.svg?style=svg)](https://circleci.com/gh/datastax/pulsar-helm-chart)
 [![LICENSE](https://img.shields.io/hexpm/l/pulsar.svg)](https://github.com/datastax/pulsar-helm-chart/blob/master/LICENSE)
 
-# Helm Chart for an Apache Pulsar Cluster
+# [DEPRECATED] Helm Chart for an Apache Pulsar Cluster
+
+**⚠️ DEPRECATION NOTICE: This Helm chart is deprecated and will no longer receive updates.**
+
+Please migrate to [KAAP (Kubernetes Autoscaling Airspace for Apache Pulsar)](https://github.com/datastax/kaap/) for your Apache Pulsar deployments on Kubernetes. KAAP provides an operator-based approach for managing Pulsar clusters with enhanced features and better resource management.
+
+---
 
 This Helm chart configures an Apache Pulsar cluster. It is designed for production use, but can also be used in local development environments with the proper settings.
 
