@@ -26,7 +26,7 @@ jobs:
       k8s-version:
         type: string
     machine:
-      image: ubuntu-2004:202107-02
+      image: ubuntu-2204:2024.01.1
     steps:
       - checkout
       - run:
@@ -45,4 +45,4 @@ workflows:
             - lint-charts
           matrix:
             parameters:
-              k8s-version: ["v1.18.20", "v1.21.10", "v1.23.5"]
+              k8s-version: ["v1.26.14", "v1.27.11", "v1.28.7"]
