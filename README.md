@@ -6,7 +6,7 @@
 
 **⚠️ DEPRECATION NOTICE: This Helm chart is deprecated and will no longer receive updates.**
 
-Please migrate to [KAAP (Kubernetes Autoscaling Airspace for Apache Pulsar)](https://github.com/datastax/kaap/) for your Apache Pulsar deployments on Kubernetes. KAAP provides an operator-based approach for managing Pulsar clusters with enhanced features and better resource management.
+Please migrate to [KAAP (Kubernetes Autoscaling for Apache Pulsar)](https://github.com/datastax/kaap) for your Apache Pulsar deployments on Kubernetes. KAAP provides an operator-based approach for managing Pulsar clusters with enhanced features and better resource management.
 
 ---
 
