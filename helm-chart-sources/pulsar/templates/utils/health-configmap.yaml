@@ -47,6 +47,25 @@ data:
     #!/bin/bash
     {{- if .Values.enableTokenAuth }}
     curl -s --max-time {{ .Values.proxy.probe.timeout }} --fail -H "Authorization: Bearer $(cat /pulsar/token-superuser/superuser.jwt | tr -d '\r')" http://localhost:{{ .Values.function.probe.port }}/metrics/ > /dev/null
+    METRICS_STATUS=$?
+    curl -s --max-time {{ .Values.proxy.probe.timeout }} --fail -H "Authorization: Bearer $(cat /pulsar/token-superuser/superuser.jwt | tr -d '\r')" http://localhost:{{ .Values.function.probe.port }}/admin/v3/functions/healthz/ > /dev/null
+    HEALTH_STATUS=$?
     {{- else }}
     curl -s --max-time {{ .Values.proxy.probe.timeout }} --fail http://localhost:{{ .Values.function.probe.port }}/metrics/ > /dev/null
+    METRICS_STATUS=$?
+    curl -s --max-time {{ .Values.proxy.probe.timeout }} --fail http://localhost:{{ .Values.function.probe.port }}/admin/v3/functions/healthz/ > /dev/null
+    HEALTH_STATUS=$?
     {{- end }}
+    
+    if [ $METRICS_STATUS -ne 0 ]; then
+    echo "Metrics check failed."
+    exit 1
+    fi
+    
+    if [ $HEALTH_STATUS -ne 0 ]; then
+    echo "Health check failed."
+    exit 1
+    fi
+    
+    echo "Health check passed."
+    exit 0
